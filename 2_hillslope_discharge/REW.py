@@ -1,11 +1,10 @@
 class REW:
-    def __init__(self,temp,pet,precip,vadoseZone,groundwaterZone,**kwargs):
+    def __init__(self,temperature,potentialEvapotranspiration,precipitation,vadoseZone,groundwaterZone,**kwargs):
         for key, value in kwargs.items(): setattr(self, key, value)
-        self.temp               = temp
-        self.precip             = precip
-        self.pet                = pet
-        self.vadoseZone         = vadoseZone
-        self.vadoseZoneArgs     = self.asssembleInputs(self,self.vadoseZone.fluxInputArgs)
-        self.groundwaterZone    = groundwaterZone
+        self.tmp        = temperature
+        self.pet        = potentialEvapotranspiration        
+        self.ppt        = precipitation
+        self.vz         = vadoseZone(self)
+        self.gz         = groundwaterZone(self)
         
-    def assembleInputs(self,obj,inputs): return dict([(input,getattr(obj,input,None)) for input in inputs])
+        
