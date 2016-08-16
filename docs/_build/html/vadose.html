@@ -1,0 +1,277 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Documentation for the Vadose Zone &mdash; Streamflow Temperature Model 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Streamflow Temperature Model 0.1 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="documentation-for-the-vadose-zone">
+<h1>Documentation for the Vadose Zone<a class="headerlink" href="#documentation-for-the-vadose-zone" title="Permalink to this headline">¶</a></h1>
+<p>import numpy as np</p>
+<dl class="docutils">
+<dt>class VadoseZone:</dt>
+<dd><blockquote class="first">
+<div><p>&#8220;&#8221;&#8221; Abstract base class for all vadose zone models.</p>
+<dl class="docutils">
+<dt>Public attributes:</dt>
+<dd><ul class="first last simple">
+<li>rew: REW class instance</li>
+</ul>
+</dd>
+<dt>Public methods:</dt>
+<dd><ul class="first last simple">
+<li>update: update state of vadose zone stocks and return dictionary of fluxes</li>
+</ul>
+</dd>
+</dl>
+<p>&#8220;&#8221;&#8220;</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>def __init__(self,rew):</dt>
+<dd>self.rew    = rew</dd>
+</dl>
+<p class="last">def update(self): raise NameError(&#8216;computeFluxes&#8217;)</p>
+</dd>
+<dt>class LaioVadoseZone(VadoseZone):</dt>
+<dd><blockquote class="first">
+<div><p>&#8220;&#8221;&#8221; Vadose zone model based on Laio</p>
+<dl class="docutils">
+<dt>Public attributes:</dt>
+<dd><ul class="first last simple">
+<li>rew: REW class instance</li>
+<li>storage [cm]</li>
+<li>vi [cm/d]: rainfall intercepted by vegetation</li>
+<li>zr [cm]: root zone depth</li>
+<li>n []: porosity</li>
+<li>sh []: hygroscopic point</li>
+<li>sw []: wilting point</li>
+<li>sfc []: field capacity</li>
+<li>sstar []:</li>
+<li>ew [cm/d]: evapotranspiration at wiling point</li>
+<li>emax [cm/d]: maximum evapotranspiration</li>
+<li>ks [cm/d]: saturated hydraulic conducitvity</li>
+<li>b []:</li>
+</ul>
+</dd>
+<dt>Public methods:</dt>
+<dd><ul class="first last simple">
+<li>update: Expects precipitation (ppt) and optionally potential ET (pet).</li>
+</ul>
+</dd>
+</dl>
+<p>&#8220;&#8221;&#8220;</p>
+</div></blockquote>
+<p>#NATE DAWG, I THINK WE SHOULD MAKE VEG INTERCEPTION AT THE REW LEVEL. OTHERWISE, WE&#8217;D NEED TO SPREAD vi
+#ACROSS EACH DAY; right now, if dt is very small, vi will always be larger than rain. Either that,
+#or we need to think of vi and ppt as</p>
+<p>#also, in your groundwater zone, i think your output discharge is in units of depth; to get in cm/day (like in your plot)
+#you&#8217;d need to divide those outputs by dt?
+def __init__(self,</p>
+<blockquote>
+<div><blockquote>
+<div>rew,
+storage = 0,
+vi      = 0.2,          # default: trees; 0.05 cm/d for grass
+zr      = 75,
+n       = 0.45,
+sh      = 0.19,         # default: loam
+sw      = 0.24,         # default: loam
+sfc     = 0.65,         # default: loam
+sstar   = 0.57,
+ew      = 0.01,
+emax    = 0.5,          # default: tree-dominated; hot growing season
+ks      = 20,           # default: loam
+b       = 14.8          # default: loam
+):</div></blockquote>
+<p># make sure we get the attrs that ANY vadose zone model must have
+VadoseZone.__init__(self,rew)</p>
+<p># right now these are all set to the defaults,
+# but we could easily set these values based on REW properties</p>
+<p># main external variables
+self.storage        = storage   # [cm]
+self.leakage        = 0         # [cm/d]
+self.ET             = 0         # [cm/d]
+self.overlandFlow   = 0         # [cm/d]</p>
+<p># auxiliary external variables
+self.vi     = vi
+self.sh     = sh
+self.sw     = sw
+self.ew     = ew
+self.emax   = emax
+self.ks     = ks
+self.sfc    = sfc
+self.b      = b
+self.sstar  = sstar
+self.asd    = zr*n</p>
+<p># internal variables
+self._etaw  = ew/self.asd
+self._eta   = emax/self.asd
+self._m     = ks/(self.asd*(np.exp(b*(1-sfc))-1))
+self._s     = self.storage/self.asd</p>
+</div></blockquote>
+<dl class="last docutils">
+<dt>def update(self,dt,ppt,pet=None):</dt>
+<dd><p class="first">if pet == None: pet = self.emax                     # [cm/d]
+pet = pet/self.asd</p>
+<p>self.interceptedRainfall = np.min((self.vi,ppt))    # [cm/d]
+R = np.max((ppt - self.vi,0))                       # [cm/d]</p>
+<p>s = self.storage/self.asd                           # []</p>
+<p># et and lkg: [1/d]
+if s &lt; self.sh:</p>
+<blockquote>
+<div>et = 0</div></blockquote>
+<dl class="docutils">
+<dt>elif s &lt;= self.sw:</dt>
+<dd>et = self._etaw*(s - self.sh)/(self.sw - self.sh)</dd>
+<dt>elif s &lt;= self.sstar:</dt>
+<dd>et = self._etaw + (pet - self._etaw)*(s - self.sw)/(self.sstar - self.sw)</dd>
+<dt>else:</dt>
+<dd>et = pet</dd>
+</dl>
+<p>if s &lt; self.sfc: lkg = 0
+else: lkg = self._m*(np.exp(self.b*(s - self.sfc))-1)</p>
+<p>self.ET             = et*self.asd                               # [cm/d]
+self.leakage        = lkg*self.asd                              # [cm/d]
+self.storage        += (R - self.ET - self.leakage)*dt          # [cm]
+self.overlandFlow   = np.max((self.storage - self.asd,0))/dt    # [cm/d]
+self.storage        = np.min((self.storage,self.asd))           # [cm]</p>
+<p class="last">return {&#8216;ET&#8217;:self.ET, &#8216;leakage&#8217;:self.leakage, &#8216;overlandFlow&#8217;:self.overlandFlow,&#8217;interceptedRainfall&#8217;:self.interceptedRainfall}</p>
+</dd>
+<dt>def closed_form(self,t,s0):</dt>
+<dd><p class="first">tsfc    = 1/(self.b*(self._m-self._eta))*(self.b*(self.sfc-s0) + np.log((self._eta - self._m + self._m*np.exp(self.b*(s0-self.sfc)))/self._eta))
+tsstar  = (self.sfc - self.sstar)/self._eta + tsfc
+tsw     = (self.sstar-self.sw)/(self._eta - self._etaw)*np.log(self.emax/self._etaw) + tsstar</p>
+<p class="last">if t &lt; tsfc: return s0 - (1/self.b)*np.log(((self._eta - self._m + self._m*np.exp(self.b*(s0 - self.sfc)))*np.exp(self.b*(self._eta-self._m)*t) - self._m*np.exp(self.b*(s0-self.sfc )))/(self._eta-self._m))
+if t &lt; tsstar: return self.sfc - self._eta*(t - tsfc)
+if t &lt; tsw: return self.sw + (self.sstar - self.sw)*(self._eta/(self._eta - self._etaw)*np.exp(-(self._eta-self._etaw)/(self.sstar - self.sw)*(t - tsstar)) - self._etaw/(self._eta-self._etaw))
+else: return self.sh + (self.sw - self.sh)*np.exp(-self._etaw/(self.sw-self.sh)*(t-tsw))</p>
+</dd>
+</dl>
+</dd>
+<dt>class PorporatoVadoseZone(VadoseZone):</dt>
+<dd><dl class="first last docutils">
+<dt>def __init__(self,</dt>
+<dd><blockquote class="first">
+<div>rew,
+storage = 0,            # [cm] storage depth in vadose zone
+zr      = 75,           # [cm] rooting zone depth
+sw      = 0.19,         # [ ] wilting point (default: loam)
+emax    = 0.5,          # [cm/d] maximum ET (default: tree-dominated; hot growing season)
+sfc     = 0.65,         # [ ] field capacity (default: loam)
+n       = 0.45          # [ ] porosity
+):</div></blockquote>
+<p># make sure we get the attrs that ANY vadose zone model must have
+VadoseZone.__init__(self,rew)</p>
+<p># right now these are all set to the defaults,
+# but we could easily set these values based on REW properties</p>
+<p># main external variables
+self.storage        = storage       # [cm]
+self.leakage        = 0             # [cm/day]
+self.ET             = 0             # [cm/day]</p>
+<p class="last"># auxiliary external variables
+self.zr     = zr
+self.sw     = sw
+self.emax   = emax
+self.sfc    = sfc
+self.n      = n</p>
+</dd>
+<dt>def update(self,dt,ppt,pet=None):</dt>
+<dd><p class="first">if pet == None: pet = self.emax</p>
+<p>#convert current storage to normalized relative soil moisture
+s = self.storage/(self.n*self.zr)
+self.ET = 0 if (s &lt;= self.sw) else pet*(s-self.sw)/(self.sfc-self.sw)</p>
+<p>s += ppt*dt/(self.n*self.zr) - self.ET*dt/(self.n*self.zr)</p>
+<p class="last">#anything in excess of field capacity is drained
+self.leakage = np.max([s - self.sfc, 0])*self.n*self.zr/dt
+s = np.min([s, self.sfc])
+self.storage = s*self.n*self.zr</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/vadose.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, David Dralle & Nathaniel Karst.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="_sources/vadose.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>vadoseZone module &mdash; Hillslope Discharge v0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Hillslope Discharge v0.1 documentation" href="index.html" />
+    <link rel="next" title="channel module" href="channel.html" />
+    <link rel="prev" title="groundwaterZone module" href="groundwaterZone.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="channel.html" title="channel module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="groundwaterZone.html" title="groundwaterZone module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-vadoseZone">
+<span id="vadosezone-module"></span><h1>vadoseZone module<a class="headerlink" href="#module-vadoseZone" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="vadoseZone.LaioVadoseZone">
+<em class="property">class </em><code class="descclassname">vadoseZone.</code><code class="descname">LaioVadoseZone</code><span class="sig-paren">(</span><em>rew</em>, <em>storage=0</em>, <em>vi=0.2</em>, <em>zr=75</em>, <em>n=0.45</em>, <em>sh=0.19</em>, <em>sw=0.24</em>, <em>sfc=0.65</em>, <em>sstar=0.57</em>, <em>ew=0.01</em>, <em>emax=0.5</em>, <em>ks=20</em>, <em>b=14.8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vadoseZone.html#LaioVadoseZone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vadoseZone.LaioVadoseZone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vadoseZone.VadoseZone" title="vadoseZone.VadoseZone"><code class="xref py py-class docutils literal"><span class="pre">vadoseZone.VadoseZone</span></code></a></p>
+<p>Vadose zone model based on Laio et al (doi:10.1016/S0309-1708(01)00005-7)</p>
+<dl class="docutils">
+<dt>Public attributes:</dt>
+<dd><ul class="first last simple">
+<li>rew: <a class="reference internal" href="REW.html#module-REW" title="REW"><code class="xref py py-class docutils literal"><span class="pre">REW</span></code></a> instance to which the vadose zone belongs</li>
+<li>storage [cm]: vadose zone storage stock</li>
+<li>vi [cm/d]: rainfall intercepted by vegetation</li>
+<li>zr [cm]: root zone depth</li>
+<li>n []: porosity</li>
+<li>sh []: hygroscopic point</li>
+<li>sw []: wilting point</li>
+<li>sfc []: field capacity</li>
+<li>sstar []:</li>
+<li>ew [cm/d]: evapotranspiration at wiling point</li>
+<li>emax [cm/d]: maximum evapotranspiration</li>
+<li>ks [cm/d]: saturated hydraulic conducitvity</li>
+<li>b []:</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="vadoseZone.LaioVadoseZone.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>dt</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vadoseZone.html#LaioVadoseZone.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vadoseZone.LaioVadoseZone.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update vadose zone stocks and compute fluxes.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li>dt (float): time step</li>
+</ul>
+</dd>
+<dt>Kwargs (dict), with keys:</dt>
+<dd><ul class="first last simple">
+<li>ppt (float): precipitation flux [L / T]</li>
+<li>pet (float): potential evapotranspiration flux [L / T] &#8211; if not specified, set to LaioVadoseZone::emax</li>
+</ul>
+</dd>
+<dt>Returns: </dt>
+<dd><ul class="first last simple">
+<li>fluxes (dict): dictionary of fluxes, with keys [ET, leakage, overlandFlow, interceptedRainfall]</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="vadoseZone.PorporatoVadoseZone">
+<em class="property">class </em><code class="descclassname">vadoseZone.</code><code class="descname">PorporatoVadoseZone</code><span class="sig-paren">(</span><em>rew</em>, <em>storage=0</em>, <em>zr=75</em>, <em>sw=0.19</em>, <em>emax=0.5</em>, <em>sfc=0.65</em>, <em>n=0.45</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vadoseZone.html#PorporatoVadoseZone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vadoseZone.PorporatoVadoseZone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vadoseZone.VadoseZone" title="vadoseZone.VadoseZone"><code class="xref py py-class docutils literal"><span class="pre">vadoseZone.VadoseZone</span></code></a></p>
+<p>Vadose zone model based on Porporato</p>
+<dl class="docutils">
+<dt>Public attributes:</dt>
+<dd><ul class="first last simple">
+<li>rew: <a class="reference internal" href="REW.html#module-REW" title="REW"><code class="xref py py-class docutils literal"><span class="pre">REW</span></code></a> instance to which the vadose belongs</li>
+<li>storage (float): [L] current vadose zone storage stock</li>
+<li>zr (float): [L] rooting zone depth</li>
+<li>sw (float): [] wilting point</li>
+<li>emax (float): [L/T] maximum ET</li>
+<li>sfc (float): [] field capacity</li>
+<li>n (float): [] porosity</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="vadoseZone.PorporatoVadoseZone.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>dt</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vadoseZone.html#PorporatoVadoseZone.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vadoseZone.PorporatoVadoseZone.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update vadose zone stocks and compute fluxes.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li>dt (float): time step</li>
+<li>ppt (float): precipitation flux [L / T]</li>
+<li>pet (float): potential evapotranspiration flux [L / T] &#8211; if not specified, set to LaioVadoseZone::emax</li>
+</ul>
+</dd>
+<dt>Returns: </dt>
+<dd><ul class="first last simple">
+<li>fluxes (dict): dictionary of fluxes, with keys [ET, leakage]</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="vadoseZone.VadoseZone">
+<em class="property">class </em><code class="descclassname">vadoseZone.</code><code class="descname">VadoseZone</code><span class="sig-paren">(</span><em>rew</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vadoseZone.html#VadoseZone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vadoseZone.VadoseZone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract base class for all vadose zone models.</p>
+<dl class="docutils">
+<dt>Public attributes: </dt>
+<dd><ul class="first last simple">
+<li>rew: <a class="reference internal" href="REW.html#module-REW" title="REW"><code class="xref py py-class docutils literal"><span class="pre">REW</span></code></a> instance to which the vadose belongs</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="vadoseZone.VadoseZone.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vadoseZone.html#VadoseZone.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vadoseZone.VadoseZone.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update vadose zone stocks and compute fluxes.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="groundwaterZone.html"
+                        title="previous chapter">groundwaterZone module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="channel.html"
+                        title="next chapter">channel module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/vadoseZone.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="channel.html" title="channel module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="groundwaterZone.html" title="groundwaterZone module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, David Dralle &amp; Nathaniel Karst.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>prism_pt_laio_forcing_prep &mdash; Hillslope Discharge v0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Hillslope Discharge v0.1 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for prism_pt_laio_forcing_prep</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Script to extract REW hydrologic forcing data from PRISM precip, mean temp, and tdmean data</span>
+<span class="sd">for use in the Priestley-Taylor ET model. Data is generated for use vadose zone models </span>
+<span class="sd">of the type developed in Laio et al. 2009.</span>
+
+<span class="sd">The lat/long of each REW centroid is used to fetch the value at each </span>
+<span class="sd">gridpoint of the climate forcing surface. </span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">gdal</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">fiona</span>
+<span class="kn">import</span> <span class="nn">shapely</span>
+<span class="kn">from</span> <span class="nn">shapely</span> <span class="kn">import</span> <span class="n">geometry</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">dirname</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+<span class="n">parent_dir</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()))</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span><span class="s1">&#39;StreamflowTempModel&#39;</span><span class="p">,</span><span class="s1">&#39;lib&#39;</span><span class="p">))</span>
+<span class="kn">import</span> <span class="nn">zonal_stats</span> <span class="kn">as</span> <span class="nn">zs</span>
+<span class="kn">import</span> <span class="nn">meteolib</span> <span class="kn">as</span> <span class="nn">meteo</span>
+<span class="kn">import</span> <span class="nn">evaplib</span> <span class="kn">as</span> <span class="nn">evap</span>
+
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../prism_pt_laio_forcing_prep.html#prism_pt_laio_forcing_prep.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Extract hydrologic forcing data. </span>
+<span class="sd">    </span>
+<span class="sd">    Script to extract REW hydrologic forcing data from PRISM precip, mean temp, and tdmean data</span>
+<span class="sd">    for use in the Priestley-Taylor ET model. Data is generated for vadose zone models</span>
+<span class="sd">    of the type developed in Laio et al. 2009.</span>
+
+<span class="sd">    The lat/long of each REW centroid is used to fetch the value at each </span>
+<span class="sd">    generatedridpoint of the climate forcing surface. </span>
+<span class="sd">    </span>
+<span class="sd">    Dataframe columns include:</span>
+<span class="sd">        - </span>
+<span class="sd">    </span>
+<span class="sd">    Args: </span>
+<span class="sd">        - None</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        - None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">prism_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ppt&#39;</span><span class="p">,</span><span class="s1">&#39;tmean&#39;</span><span class="p">,</span> <span class="s1">&#39;tdmean&#39;</span><span class="p">]</span>
+    
+    <span class="c1">#Get basins shapefile. </span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">basins</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span><span class="s1">&#39;raw_data&#39;</span><span class="p">,</span><span class="s1">&#39;basins_poly&#39;</span><span class="p">,</span><span class="s1">&#39;*.shp&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s1">&#39;Cannot find basins shapefile. Please make sure basins shapefile is located in </span><span class="se">\n</span><span class="s1"> the model directory under /raw_data/basins_poly&#39;</span>
+
+
+    <span class="c1">#Get list of lat/long centroid tuples for each REW</span>
+    <span class="n">fc</span> <span class="o">=</span> <span class="n">fiona</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">basins</span><span class="p">)</span>
+    <span class="n">shapefile_record</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+    <span class="n">pos_dict</span><span class="o">=</span><span class="p">{}</span>
+    <span class="k">for</span> <span class="n">shapefile_record</span> <span class="ow">in</span> <span class="n">fc</span><span class="p">:</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">asShape</span><span class="p">(</span><span class="n">shapefile_record</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">])</span>
+        <span class="n">long_point</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">centroid</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">xy</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">lat_point</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">centroid</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">xy</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">long_point</span><span class="p">,</span> <span class="n">lat_point</span><span class="p">)</span>
+        <span class="n">pos_dict</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">shapefile_record</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="s1">&#39;cat&#39;</span><span class="p">])]</span><span class="o">=</span><span class="n">pos</span>
+        
+    
+    <span class="c1">#initialize hdf5 forcing database in model_data folder</span>
+    <span class="c1">#forcing_store = pd.HDFStore(os.path.join(parent_dir,&#39;model_data&#39;,&#39;forcing.h5&#39;))</span>
+
+    
+    <span class="c1">#dictionary that will hold list of rew forcing lists for each forcing variable</span>
+    <span class="n">forcing_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">dates_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">prism_var</span> <span class="ow">in</span> <span class="n">prism_vars</span><span class="p">:</span>
+        <span class="n">years</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span><span class="s1">&#39;raw_data&#39;</span><span class="p">,</span><span class="n">prism_var</span><span class="p">))</span>
+        
+        <span class="c1">#key of vals_dict is rew id, corresponding list </span>
+        <span class="c1">#is forcing data in dateorder of date_list</span>
+        <span class="n">vals_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:[]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">pos_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+        <span class="n">date_list</span><span class="o">=</span><span class="p">[]</span>
+        <span class="c1">#for all years of forcing variable, load each day of raster data and extract to all REWs</span>
+        <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span> 
+                <span class="nb">int</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">print</span> <span class="s1">&#39;...processing &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">prism_var</span> <span class="o">+</span> <span class="s1">&#39; data...&#39;</span>
+
+            <span class="c1">#Data should be in .bil format from PRISM</span>
+            <span class="c1">#Data for each REW is extracted to REW centroid lat/long, </span>
+            <span class="c1">#Not zonally averaged over the REW area. Zonal averaging can be used, </span>
+            <span class="c1">#but it is computationally intensive </span>
+            <span class="n">raster_list</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span><span class="s1">&#39;raw_data&#39;</span><span class="p">,</span><span class="n">prism_var</span><span class="p">,</span><span class="n">year</span><span class="p">,</span><span class="s1">&#39;*.bil&#39;</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">rast</span> <span class="ow">in</span> <span class="n">raster_list</span><span class="p">:</span>
+                <span class="n">date_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rast</span><span class="p">[</span><span class="o">-</span><span class="mi">16</span><span class="p">:][:</span><span class="mi">8</span><span class="p">])</span>
+                <span class="n">raster_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span><span class="s1">&#39;raw_data&#39;</span><span class="p">,</span><span class="n">prism_var</span><span class="p">,</span><span class="n">year</span><span class="p">,</span><span class="n">rast</span><span class="p">)</span>
+                <span class="n">gdata</span> <span class="o">=</span> <span class="n">gdal</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">raster_file</span><span class="p">)</span>
+                <span class="n">gt</span> <span class="o">=</span> <span class="n">gdata</span><span class="o">.</span><span class="n">GetGeoTransform</span><span class="p">()</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">gdata</span><span class="o">.</span><span class="n">ReadAsArray</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+                <span class="n">gdata</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">for</span> <span class="n">rew_id</span> <span class="ow">in</span> <span class="n">pos_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span> 
+                    <span class="n">pos</span> <span class="o">=</span> <span class="n">pos_dict</span><span class="p">[</span><span class="n">rew_id</span><span class="p">]</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">gt</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="n">gt</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">gt</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span><span class="o">/</span><span class="n">gt</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+                    <span class="n">vals_dict</span><span class="p">[</span><span class="n">rew_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">])</span>
+        
+        <span class="c1">#store forcing variable data for each rew </span>
+        <span class="c1">#and corresponding list of daily dates          </span>
+        <span class="n">forcing_dict</span><span class="p">[</span><span class="n">prism_var</span><span class="p">]</span><span class="o">=</span><span class="n">vals_dict</span>
+        <span class="n">dates_dict</span><span class="p">[</span><span class="n">prism_var</span><span class="p">]</span><span class="o">=</span><span class="n">date_list</span>
+  
+    
+    <span class="c1">#check that for each forcing variable, the dates are the same</span>
+    <span class="n">unique_dates</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dates_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_dates</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s1">&#39;Forcing data dates do not all match, please check raw data&#39;</span>
+        <span class="k">return</span>
+  
+    <span class="c1">#initialize a list of pandas forcing dataframes for each REW</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">unique_dates</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">unique_dates</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">rew_dfs_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">pos_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+    
+    <span class="c1">#for each date in rew_dfs_dict, fill radiative forcing data</span>
+    <span class="c1">#currently, this accessses an rn data frame generated by ipython notebook </span>
+    <span class="n">rew_dfs_dict</span> <span class="o">=</span> <span class="n">get_rad</span><span class="p">(</span><span class="n">rew_dfs_dict</span><span class="p">,</span> <span class="n">parent_dir</span><span class="p">)</span>
+
+    <span class="c1">#for each forcing variable, add the forcing data to each REW dataframe</span>
+    <span class="k">for</span> <span class="n">prism_var</span> <span class="ow">in</span> <span class="n">prism_vars</span><span class="p">:</span>
+        <span class="c1">#need to convert ppt from mm/day to cm/day for PRISM data</span>
+        <span class="k">if</span> <span class="n">prism_var</span><span class="o">==</span><span class="s1">&#39;ppt&#39;</span><span class="p">:</span>
+            <span class="n">div</span> <span class="o">=</span> <span class="mf">10.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">div</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">for</span> <span class="n">rew_id</span> <span class="ow">in</span> <span class="n">pos_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">rew_dfs_dict</span><span class="p">[</span><span class="n">rew_id</span><span class="p">][</span><span class="n">prism_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">forcing_dict</span><span class="p">[</span><span class="n">prism_var</span><span class="p">][</span><span class="n">rew_id</span><span class="p">])</span><span class="o">/</span><span class="n">div</span>
+
+    <span class="c1">#for each rew, compute ETmax</span>
+    <span class="c1">#...to do this, first compute pressure...</span>
+    <span class="n">rew_elevations</span> <span class="o">=</span> <span class="n">get_rew_elevations</span><span class="p">(</span><span class="n">basins</span><span class="p">,</span> <span class="n">parent_dir</span><span class="p">)</span>
+    <span class="n">rew_pressures</span> <span class="o">=</span> <span class="n">get_rew_pressures</span><span class="p">(</span><span class="n">rew_elevations</span><span class="p">)</span>
+    <span class="c1">#...then compute relative humidity and use priestley taylor for PET</span>
+    <span class="k">for</span> <span class="n">rew_id</span> <span class="ow">in</span> <span class="n">pos_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">rh</span> <span class="o">=</span> <span class="n">get_rh</span><span class="p">(</span><span class="n">rew_dfs_dict</span><span class="p">[</span><span class="n">rew_id</span><span class="p">][</span><span class="s1">&#39;tmean&#39;</span><span class="p">],</span> <span class="n">rew_dfs_dict</span><span class="p">[</span><span class="n">rew_id</span><span class="p">][</span><span class="s1">&#39;tdmean&#39;</span><span class="p">])</span>
+
+        <span class="c1">#priestley taylor equation for PET</span>
+        <span class="c1">#needs mean temp, relative humidity, atmospheric pressure, net radiation, </span>
+        <span class="c1">#and soil heat flux (assumed zero at daily timescale)</span>
+        <span class="n">pet</span> <span class="o">=</span> <span class="n">evap</span><span class="o">.</span><span class="n">Ept</span><span class="p">(</span>
+            <span class="n">rew_dfs_dict</span><span class="p">[</span><span class="n">rew_id</span><span class="p">][</span><span class="s1">&#39;tmean&#39;</span><span class="p">],</span>
+            <span class="n">rh</span><span class="p">,</span> 
+            <span class="n">rew_pressures</span><span class="p">[</span><span class="n">rew_id</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rh</span><span class="p">)),</span> 
+            <span class="n">rew_dfs_dict</span><span class="p">[</span><span class="n">rew_id</span><span class="p">][</span><span class="s1">&#39;rn&#39;</span><span class="p">],</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rh</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="c1">#convert to cm/day</span>
+        <span class="n">rew_dfs_dict</span><span class="p">[</span><span class="n">rew_id</span><span class="p">][</span><span class="s1">&#39;pet&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pet</span><span class="o">/</span><span class="mf">10.0</span>
+
+            
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span> <span class="n">rew_dfs_dict</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span><span class="s1">&#39;model_data&#39;</span><span class="p">,</span><span class="s1">&#39;rew_forcing_dict.p&#39;</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span> <span class="p">)</span> <span class="p">)</span></div>
+        
+
+<div class="viewcode-block" id="get_rh"><a class="viewcode-back" href="../prism_pt_laio_forcing_prep.html#prism_pt_laio_forcing_prep.get_rh">[docs]</a><span class="k">def</span> <span class="nf">get_rh</span><span class="p">(</span><span class="n">tmean</span><span class="p">,</span> <span class="n">tdmean</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mf">17.625</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mf">243.04</span>
+    <span class="k">return</span> <span class="mi">100</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">tdmean</span><span class="o">/</span><span class="p">(</span><span class="n">b</span><span class="o">+</span><span class="n">tdmean</span><span class="p">))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">tmean</span><span class="o">/</span><span class="p">(</span><span class="n">b</span><span class="o">+</span><span class="n">tmean</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="get_rad"><a class="viewcode-back" href="../prism_pt_laio_forcing_prep.html#prism_pt_laio_forcing_prep.get_rad">[docs]</a><span class="k">def</span> <span class="nf">get_rad</span><span class="p">(</span><span class="n">rew_dfs_dict</span><span class="p">,</span> <span class="n">parent_dir</span><span class="p">):</span>
+    <span class="c1">#for now, uses data frame in /raw_data/rn folder</span>
+    <span class="c1">#assumes that rn already has AT LEAST date range of PRISM data</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span> <span class="nb">open</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span> <span class="s1">&#39;raw_data&#39;</span><span class="p">,</span><span class="s1">&#39;rn&#39;</span><span class="p">,</span> <span class="s1">&#39;rn.p&#39;</span><span class="p">),</span> <span class="s2">&quot;rb&quot;</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="n">rew_id</span> <span class="o">=</span> <span class="n">rew_dfs_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">rew_dfs_dict</span><span class="p">[</span><span class="n">rew_id</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">stop</span> <span class="o">=</span> <span class="n">rew_dfs_dict</span><span class="p">[</span><span class="n">rew_id</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">rew_id</span> <span class="ow">in</span> <span class="n">rew_dfs_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">rew_dfs_dict</span><span class="p">[</span><span class="n">rew_id</span><span class="p">][</span><span class="s1">&#39;rn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">rew_dfs_dict</span></div>
+          
+<div class="viewcode-block" id="get_rew_elevations"><a class="viewcode-back" href="../prism_pt_laio_forcing_prep.html#prism_pt_laio_forcing_prep.get_rew_elevations">[docs]</a><span class="k">def</span> <span class="nf">get_rew_elevations</span><span class="p">(</span><span class="n">basins</span><span class="p">,</span> <span class="n">parent_dir</span><span class="p">):</span>
+    <span class="c1">#get mean rew elevation</span>
+    <span class="n">dem_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span><span class="s1">&#39;raw_data&#39;</span><span class="p">,</span><span class="s1">&#39;dem&#39;</span><span class="p">))</span>
+    <span class="n">dem_file</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dem_file</span> <span class="k">if</span> <span class="s1">&#39;dem&#39;</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+    <span class="n">elev_stats</span> <span class="o">=</span> <span class="n">zs</span><span class="o">.</span><span class="n">zonal_stats</span><span class="p">(</span><span class="n">basins</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span><span class="s1">&#39;raw_data&#39;</span><span class="p">,</span><span class="s1">&#39;dem&#39;</span><span class="p">,</span><span class="n">dem_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    
+    <span class="n">rew_elevations</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">translated</span> <span class="o">=</span> <span class="n">translate_to_rew_id</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="n">elev_stats</span><span class="p">:</span> 
+        <span class="n">rew_elevations</span><span class="p">[</span><span class="n">translated</span><span class="p">[</span><span class="n">stat</span><span class="p">[</span><span class="s1">&#39;fid&#39;</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">stat</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">rew_elevations</span></div>
+
+<div class="viewcode-block" id="get_rew_pressures"><a class="viewcode-back" href="../prism_pt_laio_forcing_prep.html#prism_pt_laio_forcing_prep.get_rew_pressures">[docs]</a><span class="k">def</span> <span class="nf">get_rew_pressures</span><span class="p">(</span><span class="n">rew_elevations</span><span class="p">):</span>
+    <span class="c1">#elevations in meters, output pressure in Pa</span>
+    <span class="c1">#using simple elevation/pressure relationship</span>
+    <span class="n">rew_pressures</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">rew_elevations</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">rew_pressures</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span><span class="o">*</span><span class="mf">101.325</span><span class="o">*</span><span class="p">((</span><span class="mi">293</span><span class="o">-</span><span class="mf">0.0065</span><span class="o">*</span><span class="n">rew_elevations</span><span class="p">[</span><span class="n">key</span><span class="p">])</span><span class="o">/</span><span class="mi">293</span><span class="p">)</span><span class="o">**</span><span class="mf">5.26</span>
+
+    <span class="k">return</span> <span class="n">rew_pressures</span></div>
+
+
+<div class="viewcode-block" id="translate_to_fid"><a class="viewcode-back" href="../prism_pt_laio_forcing_prep.html#prism_pt_laio_forcing_prep.translate_to_fid">[docs]</a><span class="k">def</span> <span class="nf">translate_to_fid</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">):</span>
+    <span class="c1">#function that translates feature id&#39;s to rew id&#39;s</span>
+    <span class="c1">#returns a dictionary where the key is fid and value is rew id</span>
+    <span class="n">basins</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span><span class="s1">&#39;raw_data&#39;</span><span class="p">,</span><span class="s1">&#39;basins_poly&#39;</span><span class="p">,</span><span class="s1">&#39;*.shp&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">translated</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">fc</span> <span class="o">=</span> <span class="n">fiona</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">basins</span><span class="p">)</span>
+    <span class="n">shapefile_record</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">shapefile_record</span> <span class="ow">in</span> <span class="n">fc</span><span class="p">:</span>
+        <span class="n">translated</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">shapefile_record</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="s1">&#39;cat&#39;</span><span class="p">])]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">shapefile_record</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">translated</span></div>
+
+<div class="viewcode-block" id="translate_to_rew_id"><a class="viewcode-back" href="../prism_pt_laio_forcing_prep.html#prism_pt_laio_forcing_prep.translate_to_rew_id">[docs]</a><span class="k">def</span> <span class="nf">translate_to_rew_id</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">):</span>
+    <span class="c1">#function that translates rew id&#39;s to feature id&#39;s</span>
+    <span class="n">basins</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span><span class="s1">&#39;raw_data&#39;</span><span class="p">,</span><span class="s1">&#39;basins_poly&#39;</span><span class="p">,</span><span class="s1">&#39;*.shp&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">translated</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">fc</span> <span class="o">=</span> <span class="n">fiona</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">basins</span><span class="p">)</span>
+    <span class="n">shapefile_record</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">shapefile_record</span> <span class="ow">in</span> <span class="n">fc</span><span class="p">:</span>
+        <span class="n">translated</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">shapefile_record</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">shapefile_record</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="s1">&#39;cat&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">translated</span></div>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+
+    <span class="c1"># BELOW CAN BE USED FOR QUERYING RN RASTER USING REWS</span>
+    <span class="c1"># rad_files = os.listdir(os.path.join(parent_dir,&#39;raw_data&#39;,&#39;rn&#39;))</span>
+    <span class="c1">#     rad_files = [x for x in rad_files if &#39;.&#39; not in x]</span>
+    <span class="c1">#     #store radiation data in numpy array of size num_REW by len(rng)</span>
+    <span class="c1">#     rad_dict = {k: [] for k in pos_dict.keys()}</span>
+    <span class="c1">#     counter=1</span>
+    <span class="c1">#     for rad_file in rad_files:</span>
+    <span class="c1">#         print &#39;processing radiation data, DOY: &#39;, counter</span>
+    <span class="c1">#         stats = zs.zonal_stats(basins, os.path.join(parent_dir,&#39;raw_data&#39;,&#39;rn&#39;,rad_file))</span>
+    <span class="c1">#         for stat in stats:</span>
+    <span class="c1">#             rad_dict[stat[&#39;fid&#39;]].append(stat[&#39;mean&#39;])</span>
+
+    <span class="c1">#         counter=counter+1</span>
+            
+            
+
+
+
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, David Dralle &amp; Nathaniel Karst.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
+    </div>
+  </body>
+</html>

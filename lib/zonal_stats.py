@@ -79,7 +79,6 @@ def zonal_stats(vector_path, raster_path, nodata_value=None, global_src_extent=F
     i=0
     while feat is not None:
         i = i+1
-        print i
         if not global_src_extent:
             # use local source extent
             # fastest option when you have fast disks and well indexed raster (ie tiled Geotiff)

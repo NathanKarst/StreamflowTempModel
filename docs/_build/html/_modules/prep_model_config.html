@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>prep_model_config &mdash; Hillslope Discharge v0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Hillslope Discharge v0.1 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for prep_model_config</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="n">parent_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()))</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+  
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../prep_model_config.html#prep_model_config.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span> 
+    <span class="sd">&quot;&quot;&quot; Write model configuration file.</span>
+<span class="sd">    </span>
+<span class="sd">    This function writes a dictionary containing model configuration information to model_config.p in the model_data directory. </span>
+<span class="sd">    </span>
+<span class="sd">    Keys of the dictionary include: </span>
+<span class="sd">        - start_date (datetime instance): Start date for running model </span>
+<span class="sd">        - stop_date (datetime instance): Stop date for running model</span>
+<span class="sd">        - spinup_date (datetime instance): Date after which model has spun up. </span>
+<span class="sd">        - Tmax (float): Number of days of simulation</span>
+<span class="sd">        - dt (float): Simulation timestep in days</span>
+<span class="sd">        - resample_freq (float): Frequency at which to resample forcing data depending on timestep</span>
+<span class="sd">        </span>
+<span class="sd">    Args: </span>
+<span class="sd">        - None</span>
+<span class="sd">        </span>
+<span class="sd">    Returns: </span>
+<span class="sd">        - None</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#start/stop dates for running model</span>
+    <span class="n">spinup_date</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mo">07</span><span class="p">,</span> <span class="mo">01</span><span class="p">)</span>             
+    <span class="n">start_date</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mo">01</span><span class="p">)</span>
+    <span class="n">stop_date</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+    
+    <span class="n">Tmax</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">*</span><span class="p">(</span><span class="n">stop_date</span> <span class="o">-</span> <span class="n">start_date</span><span class="p">)</span><span class="o">.</span><span class="n">days</span>
+
+    <span class="c1">#hillslope timestep information</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">4.</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">Tmax</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">Tmax</span><span class="o">/</span><span class="n">dt</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">resample_freq</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">dt</span><span class="o">*</span><span class="mi">24</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;H&#39;</span>
+    <span class="n">timestamps_hillslope</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">stop_date</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">resample_freq</span><span class="p">)</span>
+
+    <span class="c1">#channel timestep information</span>
+    <span class="n">dt_channel</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">24.</span>
+    <span class="n">t_channel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Tmax</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">Tmax</span><span class="o">/</span><span class="n">dt_channel</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">resample_freq_channel</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">dt_channel</span><span class="o">*</span><span class="mi">24</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;H&#39;</span>
+    <span class="n">timestamps_channel</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">stop_date</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">resample_freq_channel</span><span class="p">)</span>
+
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;spinup_date&#39;</span><span class="p">:</span><span class="n">spinup_date</span><span class="p">,</span> <span class="s1">&#39;start_date&#39;</span><span class="p">:</span><span class="n">start_date</span><span class="p">,</span> <span class="s1">&#39;stop_date&#39;</span><span class="p">:</span><span class="n">stop_date</span><span class="p">,</span> <span class="s1">&#39;Tmax&#39;</span><span class="p">:</span><span class="n">Tmax</span><span class="p">,</span>
+    				<span class="s1">&#39;dt&#39;</span><span class="p">:</span><span class="n">dt</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span><span class="n">t</span><span class="p">,</span> <span class="s1">&#39;resample_freq&#39;</span><span class="p">:</span><span class="n">resample_freq</span><span class="p">,</span> <span class="s1">&#39;dt_channel&#39;</span><span class="p">:</span><span class="n">dt_channel</span><span class="p">,</span> <span class="s1">&#39;t_channel&#39;</span><span class="p">:</span><span class="n">t_channel</span><span class="p">,</span>
+                    <span class="s1">&#39;resample_freq_channel&#39;</span><span class="p">:</span><span class="n">resample_freq_channel</span><span class="p">,</span> <span class="s1">&#39;timestamps_channel&#39;</span><span class="p">:</span><span class="n">timestamps_channel</span><span class="p">,</span> <span class="s1">&#39;timestamps_hillslope&#39;</span><span class="p">:</span><span class="n">timestamps_hillslope</span><span class="p">}</span>
+
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span> <span class="n">model_config</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span><span class="s1">&#39;model_data&#39;</span><span class="p">,</span><span class="s1">&#39;model_config.p&#39;</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span> <span class="p">)</span> <span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+	<span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, David Dralle &amp; Nathaniel Karst.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
+    </div>
+  </body>
+</html>

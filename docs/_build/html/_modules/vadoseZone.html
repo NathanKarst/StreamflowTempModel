@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>vadoseZone &mdash; Hillslope Discharge v0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Hillslope Discharge v0.1 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for vadoseZone</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="VadoseZone"><a class="viewcode-back" href="../vadoseZone.html#vadoseZone.VadoseZone">[docs]</a><span class="k">class</span> <span class="nc">VadoseZone</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Abstract base class for all vadose zone models. </span>
+
+<span class="sd">    Public attributes: </span>
+<span class="sd">        - rew: :class:`REW` instance to which the vadose belongs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rew</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">rew</span> <span class="o">=</span> <span class="n">rew</span>     
+
+<div class="viewcode-block" id="VadoseZone.update"><a class="viewcode-back" href="../vadoseZone.html#vadoseZone.VadoseZone.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot; Update vadose zone stocks and compute fluxes.</span>
+<span class="sd">    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;update&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="LaioVadoseZone"><a class="viewcode-back" href="../vadoseZone.html#vadoseZone.LaioVadoseZone">[docs]</a><span class="k">class</span> <span class="nc">LaioVadoseZone</span><span class="p">(</span><span class="n">VadoseZone</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Vadose zone model based on Laio et al (doi:10.1016/S0309-1708(01)00005-7)</span>
+
+<span class="sd">    Public attributes:</span>
+<span class="sd">         - rew: :class:`REW` instance to which the vadose zone belongs</span>
+<span class="sd">         - storage [cm]: vadose zone storage stock</span>
+<span class="sd">         - vi [cm/d]: rainfall intercepted by vegetation</span>
+<span class="sd">         - zr [cm]: root zone depth</span>
+<span class="sd">         - n []: porosity</span>
+<span class="sd">         - sh []: hygroscopic point</span>
+<span class="sd">         - sw []: wilting point</span>
+<span class="sd">         - sfc []: field capacity</span>
+<span class="sd">         - sstar []:</span>
+<span class="sd">         - ew [cm/d]: evapotranspiration at wiling point</span>
+<span class="sd">         - emax [cm/d]: maximum evapotranspiration</span>
+<span class="sd">         - ks [cm/d]: saturated hydraulic conducitvity</span>
+<span class="sd">         - b []: </span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+    <span class="c1">#NATE DAWG, I THINK WE SHOULD MAKE VEG INTERCEPTION AT THE REW LEVEL. OTHERWISE, WE&#39;D NEED TO SPREAD vi </span>
+    <span class="c1">#ACROSS EACH DAY; right now, if dt is very small, vi will always be larger than rain. Either that, </span>
+    <span class="c1">#or we need to think of vi and ppt as</span>
+
+    <span class="c1">#also, in your groundwater zone, i think your output discharge is in units of depth; to get in cm/day (like in your plot)</span>
+    <span class="c1">#you&#39;d need to divide those outputs by dt? </span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rew</span><span class="p">,</span> <span class="n">storage</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">vi</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">zr</span> <span class="o">=</span> <span class="mi">75</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mf">0.45</span><span class="p">,</span> <span class="n">sh</span> <span class="o">=</span> <span class="mf">0.19</span><span class="p">,</span> <span class="n">sw</span> <span class="o">=</span> <span class="mf">0.24</span><span class="p">,</span><span class="n">sfc</span> <span class="o">=</span> <span class="mf">0.65</span><span class="p">,</span><span class="n">sstar</span> <span class="o">=</span> <span class="mf">0.57</span><span class="p">,</span><span class="n">ew</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span><span class="n">emax</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span><span class="n">ks</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="mf">14.8</span><span class="p">):</span>
+        <span class="c1"># make sure we get the attrs that ANY vadose zone model must have</span>
+        <span class="n">VadoseZone</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rew</span><span class="p">)</span>
+        
+        <span class="c1"># right now these are all set to the defaults, </span>
+        <span class="c1"># but we could easily set these values based on REW properties </span>
+
+        <span class="c1"># main external variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">storage</span>        <span class="o">=</span> <span class="n">storage</span>   <span class="c1"># [cm]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leakage</span>        <span class="o">=</span> <span class="mi">0</span>         <span class="c1"># [cm/d]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ET</span>             <span class="o">=</span> <span class="mi">0</span>         <span class="c1"># [cm/d]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overlandFlow</span>   <span class="o">=</span> <span class="mi">0</span>         <span class="c1"># [cm/d]</span>
+                
+        <span class="c1"># auxiliary external variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vi</span>     <span class="o">=</span> <span class="n">vi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sh</span>     <span class="o">=</span> <span class="n">sh</span>    
+        <span class="bp">self</span><span class="o">.</span><span class="n">sw</span>     <span class="o">=</span> <span class="n">sw</span>    
+        <span class="bp">self</span><span class="o">.</span><span class="n">ew</span>     <span class="o">=</span> <span class="n">ew</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">emax</span>   <span class="o">=</span> <span class="n">emax</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ks</span>     <span class="o">=</span> <span class="n">ks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sfc</span>    <span class="o">=</span> <span class="n">sfc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span>      <span class="o">=</span> <span class="n">b</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">sstar</span>  <span class="o">=</span> <span class="n">sstar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asd</span>    <span class="o">=</span> <span class="n">zr</span><span class="o">*</span><span class="n">n</span>
+        
+        <span class="c1"># internal variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_etaw</span>  <span class="o">=</span> <span class="n">ew</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">asd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_eta</span>   <span class="o">=</span> <span class="n">emax</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">asd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_m</span>     <span class="o">=</span> <span class="n">ks</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">asd</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">sfc</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">asd</span>
+    
+<div class="viewcode-block" id="LaioVadoseZone.update"><a class="viewcode-back" href="../vadoseZone.html#vadoseZone.LaioVadoseZone.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dt</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Update vadose zone stocks and compute fluxes.</span>
+<span class="sd">    </span>
+<span class="sd">        Args:</span>
+<span class="sd">            - dt (float): time step</span>
+<span class="sd">            </span>
+<span class="sd">        Kwargs (dict), with keys:</span>
+<span class="sd">            - ppt (float): precipitation flux [L / T]</span>
+<span class="sd">            - pet (float): potential evapotranspiration flux [L / T] -- if not specified, set to LaioVadoseZone::emax</span>
+<span class="sd">        Returns: </span>
+<span class="sd">            - fluxes (dict): dictionary of fluxes, with keys [ET, leakage, overlandFlow, interceptedRainfall]</span>
+<span class="sd">    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">ppt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ppt&#39;</span><span class="p">]</span>
+        <span class="n">pet</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pet&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_eta</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">interceptedRainfall</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="p">,</span><span class="n">ppt</span><span class="p">))</span>    <span class="c1"># [cm/d]    </span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">((</span><span class="n">ppt</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>                       <span class="c1"># [cm/d]</span>
+        
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">asd</span>                           <span class="c1"># []</span>
+        
+        <span class="c1"># et and lkg: [1/d]</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">sh</span><span class="p">:</span> 
+            <span class="n">et</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sw</span><span class="p">:</span> 
+            <span class="n">et</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_etaw</span><span class="o">*</span><span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sh</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sw</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sh</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sstar</span><span class="p">:</span> 
+            <span class="n">et</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_etaw</span> <span class="o">+</span> <span class="p">(</span><span class="n">pet</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_etaw</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sw</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sstar</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sw</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">et</span> <span class="o">=</span> <span class="n">pet</span>
+
+        <span class="k">if</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">sfc</span><span class="p">:</span> <span class="n">lkg</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">lkg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sfc</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+  
+        <span class="bp">self</span><span class="o">.</span><span class="n">ET</span>             <span class="o">=</span> <span class="n">et</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">asd</span>                               <span class="c1"># [cm/d]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leakage</span>        <span class="o">=</span> <span class="n">lkg</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">asd</span>                              <span class="c1"># [cm/d]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">storage</span>        <span class="o">+=</span> <span class="p">(</span><span class="n">R</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ET</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">leakage</span><span class="p">)</span><span class="o">*</span><span class="n">dt</span>          <span class="c1"># [cm]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overlandFlow</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">asd</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span><span class="o">/</span><span class="n">dt</span>    <span class="c1"># [cm/d]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">storage</span>        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">asd</span><span class="p">))</span>           <span class="c1"># [cm]</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;ET&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">ET</span><span class="p">,</span> <span class="s1">&#39;leakage&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">leakage</span><span class="p">,</span> <span class="s1">&#39;overlandFlow&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">overlandFlow</span><span class="p">,</span><span class="s1">&#39;interceptedRainfall&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">interceptedRainfall</span><span class="p">}</span></div>
+        
+    <span class="k">def</span> <span class="nf">_closed_form</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">s0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Validation method.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tsfc</span>    <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_eta</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sfc</span><span class="o">-</span><span class="n">s0</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_eta</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="n">s0</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">sfc</span><span class="p">)))</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_eta</span><span class="p">))</span>
+        <span class="n">tsstar</span>  <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sfc</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sstar</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_eta</span> <span class="o">+</span> <span class="n">tsfc</span>
+        <span class="n">tsw</span>     <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sstar</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">sw</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eta</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_etaw</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">emax</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_etaw</span><span class="p">)</span> <span class="o">+</span> <span class="n">tsstar</span>
+
+
+        <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">tsfc</span><span class="p">:</span> <span class="k">return</span> <span class="n">s0</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(((</span><span class="bp">self</span><span class="o">.</span><span class="n">_eta</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="n">s0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sfc</span><span class="p">)))</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eta</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="p">)</span><span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="n">s0</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">sfc</span> <span class="p">)))</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eta</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">tsstar</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sfc</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eta</span><span class="o">*</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">tsfc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">tsw</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sw</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sstar</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sw</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eta</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eta</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_etaw</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eta</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_etaw</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sstar</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sw</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">tsstar</span><span class="p">))</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_etaw</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eta</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_etaw</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sh</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sw</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sh</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_etaw</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sw</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">sh</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">tsw</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="PorporatoVadoseZone"><a class="viewcode-back" href="../vadoseZone.html#vadoseZone.PorporatoVadoseZone">[docs]</a><span class="k">class</span> <span class="nc">PorporatoVadoseZone</span><span class="p">(</span><span class="n">VadoseZone</span><span class="p">):</span> 
+    <span class="sd">&quot;&quot;&quot; Vadose zone model based on Porporato </span>
+<span class="sd">    </span>
+<span class="sd">    Public attributes:</span>
+<span class="sd">    	- rew: :class:`REW` instance to which the vadose belongs</span>
+<span class="sd">    	- storage (float): [L] current vadose zone storage stock</span>
+<span class="sd">    	- zr (float): [L] rooting zone depth</span>
+<span class="sd">    	- sw (float): [] wilting point</span>
+<span class="sd">    	- emax (float): [L/T] maximum ET</span>
+<span class="sd">    	- sfc (float): [] field capacity</span>
+<span class="sd">    	- n (float): [] porosity </span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rew</span><span class="p">,</span> <span class="n">storage</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">zr</span> <span class="o">=</span> <span class="mi">75</span><span class="p">,</span> <span class="n">sw</span> <span class="o">=</span> <span class="mf">0.19</span><span class="p">,</span> <span class="n">emax</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">sfc</span> <span class="o">=</span> <span class="mf">0.65</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mf">0.45</span><span class="p">):</span>
+        
+        <span class="c1"># make sure we get the attrs that ANY vadose zone model must have</span>
+        <span class="n">VadoseZone</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rew</span><span class="p">)</span>
+        
+        <span class="c1"># right now these are all set to the defaults, </span>
+        <span class="c1"># but we could easily set these values based on REW properties </span>
+
+        <span class="c1"># main external variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">storage</span>        <span class="o">=</span> <span class="n">storage</span>       <span class="c1"># [cm]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leakage</span>        <span class="o">=</span> <span class="mi">0</span>             <span class="c1"># [cm/day]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ET</span>             <span class="o">=</span> <span class="mi">0</span>             <span class="c1"># [cm/day]</span>
+                
+        <span class="c1"># auxiliary external variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zr</span>     <span class="o">=</span> <span class="n">zr</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">sw</span>     <span class="o">=</span> <span class="n">sw</span>    
+        <span class="bp">self</span><span class="o">.</span><span class="n">emax</span>   <span class="o">=</span> <span class="n">emax</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sfc</span>    <span class="o">=</span> <span class="n">sfc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span>      <span class="o">=</span> <span class="n">n</span>
+        
+    
+<div class="viewcode-block" id="PorporatoVadoseZone.update"><a class="viewcode-back" href="../vadoseZone.html#vadoseZone.PorporatoVadoseZone.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dt</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Update vadose zone stocks and compute fluxes.</span>
+<span class="sd">    </span>
+<span class="sd">        Args:</span>
+<span class="sd">            - dt (float): time step</span>
+<span class="sd">            - ppt (float): precipitation flux [L / T]</span>
+<span class="sd">            - pet (float): potential evapotranspiration flux [L / T] -- if not specified, set to LaioVadoseZone::emax</span>
+
+<span class="sd">        Returns: </span>
+<span class="sd">            - fluxes (dict): dictionary of fluxes, with keys [ET, leakage]</span>
+<span class="sd">    	</span>
+<span class="sd">         &quot;&quot;&quot;</span>
+        
+        <span class="n">ppt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ppt&#39;</span><span class="p">]</span>
+        <span class="n">pet</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pet&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">emax</span><span class="p">)</span>
+
+        <span class="c1">#convert current storage to normalized relative soil moisture</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">zr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ET</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sw</span><span class="p">)</span> <span class="k">else</span> <span class="n">pet</span><span class="o">*</span><span class="p">(</span><span class="n">s</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">sw</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sfc</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">sw</span><span class="p">)</span>
+
+        <span class="n">s</span> <span class="o">+=</span> <span class="n">ppt</span><span class="o">*</span><span class="n">dt</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">zr</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ET</span><span class="o">*</span><span class="n">dt</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">zr</span><span class="p">)</span>
+
+        <span class="c1">#anything in excess of field capacity is drained</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leakage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="n">s</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sfc</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">zr</span><span class="o">/</span><span class="n">dt</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sfc</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">storage</span> <span class="o">=</span> <span class="n">s</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">zr</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;ET&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">ET</span><span class="p">,</span> <span class="s1">&#39;leakage&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">leakage</span><span class="p">}</span></div></div>
+
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, David Dralle &amp; Nathaniel Karst.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
+    </div>
+  </body>
+</html>

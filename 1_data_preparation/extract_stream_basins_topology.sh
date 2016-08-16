@@ -1,8 +1,9 @@
 #!/bin/sh
-# Purpose: Script to get REW network
-# Needs to be re-written so as to use inputs from command line, instead of having to open and edit 
-# Inputs, in order:
+# Purpose: Script to extract REW network
+# Inputs, passed to script upon execution:
 # dem name, accumulation threshold, parent directory of model. 
+# to run, open GRASS terminal and execute the command: 
+# sh extract_stream_basins_toplogy.sh $input1 $input2 $input3
 
 M=$1
 THRESH=$2
@@ -51,15 +52,22 @@ STREAMVECT="stream_vect_$THRESH"
 r.stream.order --overwrite accumulation=$ACCUMSTRING elevation=$M stream_rast=$STREAMSTRING direction=$DIRSTRING stream_vect=$STREAMVECT
 
 #export table with stream topology
-db.out.ogr --overwrite input=$STREAMVECT output="$MODEL/raw_data/topology"
+db.out.ogr --overwrite input=$STREAMVECT output="$MODEL/raw_data/topology/topology.csv"
 
 #get raster of basins corresponding to stream network
 BASINSTRING="basins_$THRESH"
 BASINVECT="basins_vect_$THRESH"
+BASINVECTCLEAN="basins_vect_clean_$THRESH"
 r.stream.basins --overwrite direction=$DIRSTRING stream_rast=$STREAMSTRING basins=$BASINSTRING
 
 #convert basins raster into basins polygons
-r.to.vect --overwrite input=$BASINSTRING output=$BASINVECT type=area
+#NOTE! IN THE FUTURE THE THRESHOLD NEEDS TO BE CHANGED TO BE A FUNCTION OF MAP RESOLUTION
+r.to.vect --overwrite -v input=$BASINSTRING output=$BASINVECT type=area
+v.clean --overwrite input=$BASINVECT output=$BASINVECTCLEAN type=area tool=rmarea thresh=500.0
+v.db.addcolumn map=$BASINVECTCLEAN columns="area_sqkm DOUBLE PRECISION"
+v.to.db map=$BASINVECTCLEAN option=area columns=area_sqkm unit=k
 
 #export basins polygon as shape file
-v.out.ogr --overwrite -c input=$BASINVECT type=area output="$MODEL/raw_data/basins_poly"
+v.out.ogr --overwrite -c input=$BASINVECTCLEAN type=area output="$MODEL/raw_data/basins_poly"
+db.out.ogr --overwrite input=$BASINVECTCLEAN output="$MODEL/raw_data/topology/basin.csv"
+

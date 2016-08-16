@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>groundwaterZone module &mdash; Hillslope Discharge v0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Hillslope Discharge v0.1 documentation" href="index.html" />
+    <link rel="next" title="vadoseZone module" href="vadoseZone.html" />
+    <link rel="prev" title="REW module" href="REW.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vadoseZone.html" title="vadoseZone module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="REW.html" title="REW module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-groundwaterZone">
+<span id="groundwaterzone-module"></span><h1>groundwaterZone module<a class="headerlink" href="#module-groundwaterZone" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="groundwaterZone.GroundwaterZone">
+<em class="property">class </em><code class="descclassname">groundwaterZone.</code><code class="descname">GroundwaterZone</code><span class="sig-paren">(</span><em>rew</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/groundwaterZone.html#GroundwaterZone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#groundwaterZone.GroundwaterZone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract base class for all groundwater zone models.</p>
+<dl class="docutils">
+<dt>Public attributes: </dt>
+<dd><ul class="first last simple">
+<li>rew: <a class="reference internal" href="REW.html#module-REW" title="REW"><code class="xref py py-class docutils literal"><span class="pre">REW</span></code></a> instance</li>
+</ul>
+</dd>
+<dt>Public methods:</dt>
+<dd><ul class="first last simple">
+<li>update: update state of groundwater zone stocks and return dictionary of fluxes</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="groundwaterZone.GroundwaterZone.update">
+<code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/groundwaterZone.html#GroundwaterZone.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#groundwaterZone.GroundwaterZone.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update state of groundwater zone stocks.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="groundwaterZone.LinearReservoir">
+<em class="property">class </em><code class="descclassname">groundwaterZone.</code><code class="descname">LinearReservoir</code><span class="sig-paren">(</span><em>rew</em>, <em>groundwater=0</em>, <em>k=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/groundwaterZone.html#LinearReservoir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#groundwaterZone.LinearReservoir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#groundwaterZone.GroundwaterZone" title="groundwaterZone.GroundwaterZone"><code class="xref py py-class docutils literal"><span class="pre">groundwaterZone.GroundwaterZone</span></code></a></p>
+<p>Simple linear reservoir model.</p>
+<dl class="docutils">
+<dt>Public attributes: </dt>
+<dd><ul class="first last simple">
+<li>groundwater (float): [L] initial condition for groundwater stock</li>
+<li>k (float): [1/T] recession parameter</li>
+<li>discharge (float): [L/T] current discharge flux</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="groundwaterZone.LinearReservoir.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>dt</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/groundwaterZone.html#LinearReservoir.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#groundwaterZone.LinearReservoir.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update state of groundwater zone stocks.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li>dt (float): [T] time step</li>
+</ul>
+</dd>
+<dt>Kwargs (dict) has keys:</dt>
+<dd><ul class="first last simple">
+<li>leakage (float): i[L/T] incoming leakage flux from vadose zone</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li>fluxes (dict): dictionary of fluxes [L/T], with keys [discharge]</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="groundwaterZone.NonlinearReservoir">
+<em class="property">class </em><code class="descclassname">groundwaterZone.</code><code class="descname">NonlinearReservoir</code><span class="sig-paren">(</span><em>rew</em>, <em>groundwater=0</em>, <em>a=0.5</em>, <em>b=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/groundwaterZone.html#NonlinearReservoir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#groundwaterZone.NonlinearReservoir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#groundwaterZone.GroundwaterZone" title="groundwaterZone.GroundwaterZone"><code class="xref py py-class docutils literal"><span class="pre">groundwaterZone.GroundwaterZone</span></code></a></p>
+<p>Nonlinear reservoir model.</p>
+<dl class="docutils">
+<dt>Public attributes: </dt>
+<dd><ul class="first last simple">
+<li>a (float): powerlaw scale parameter</li>
+<li>b (float): powerlaw exponent</li>
+<li>discharge: [L/T] current discharge flux</li>
+<li>groundwater: [L] current groundwater stock</li>
+</ul>
+</dd>
+<dt>Public methods:</dt>
+<dd><ul class="first last simple">
+<li>update:  (here, discharge only)</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="groundwaterZone.NonlinearReservoir.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>dt</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/groundwaterZone.html#NonlinearReservoir.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#groundwaterZone.NonlinearReservoir.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update state of groundwater zone stocks.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li>dt (float): [T] time step</li>
+</ul>
+</dd>
+<dt>Kwargs (dict) has keys:</dt>
+<dd><ul class="first last simple">
+<li>leakage (float): i[L/T] incoming leakage flux from vadose zone</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li>fluxes (dict): dictionary of fluxes [L/T], with keys [discharge]</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="groundwaterZone.TwoLinearReservoir">
+<em class="property">class </em><code class="descclassname">groundwaterZone.</code><code class="descname">TwoLinearReservoir</code><span class="sig-paren">(</span><em>rew</em>, <em>groundwater=0</em>, <em>res1=0</em>, <em>res2=0</em>, <em>k1=0.5</em>, <em>k2=0.2</em>, <em>k12=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/groundwaterZone.html#TwoLinearReservoir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#groundwaterZone.TwoLinearReservoir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#groundwaterZone.GroundwaterZone" title="groundwaterZone.GroundwaterZone"><code class="xref py py-class docutils literal"><span class="pre">groundwaterZone.GroundwaterZone</span></code></a></p>
+<p>Two linear reservoir model.</p>
+<p>Res. 1 and res. 2 are in series. Res. 1 drains to both the stream and res. 2; res. 2 drains only to stream.</p>
+<dl class="docutils">
+<dt>Public attributes: </dt>
+<dd><ul class="first last simple">
+<li>k1 (float): [1/T] rate at which res. 1 drains to stream</li>
+<li>res1 (float): [L] current groundwater stock in res. 1</li>
+<li>k2 (float): [1/T] rate at which res. 2 drains to stream</li>
+<li>res2 (float): [L] current groundwater stock in res. 2</li>
+<li>k12 (float): [1/T] rate at which res. 1 drains to res. 2</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="groundwaterZone.TwoLinearReservoir.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>dt</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/groundwaterZone.html#TwoLinearReservoir.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#groundwaterZone.TwoLinearReservoir.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update state of groundwater zone stocks.</p>
+<p>Res. 1 drains to both the stream and res. 2; res. 2 drains only to stream.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li>dt (float): [T] time step</li>
+</ul>
+</dd>
+<dt>Kwargs (dict) has keys:</dt>
+<dd><ul class="first last simple">
+<li>leakage (float): i[L/T] incoming leakage flux from vadose zone</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li>fluxes (dict): dictionary of fluxes [L/T], with keys [discharge]</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="groundwaterZone.TwoParallelLinearReservoir">
+<em class="property">class </em><code class="descclassname">groundwaterZone.</code><code class="descname">TwoParallelLinearReservoir</code><span class="sig-paren">(</span><em>rew</em>, <em>groundwater=0</em>, <em>res1=0</em>, <em>res2=0</em>, <em>k1=0.5</em>, <em>k2=0.2</em>, <em>f1=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/groundwaterZone.html#TwoParallelLinearReservoir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#groundwaterZone.TwoParallelLinearReservoir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#groundwaterZone.GroundwaterZone" title="groundwaterZone.GroundwaterZone"><code class="xref py py-class docutils literal"><span class="pre">groundwaterZone.GroundwaterZone</span></code></a></p>
+<p>Two linear reservoir model.</p>
+<p>Res. 1 and res. 2 are in parallel; both drain directly to stream.</p>
+<dl class="docutils">
+<dt>Public attributes: </dt>
+<dd><ul class="first last simple">
+<li>k1 (float): [1/T] rate at which res. 1 drains to stream</li>
+<li>res1 (float): [L] current groundwater stock in res. 1</li>
+<li>k2 (float): [1/T] rate at which res. 2 drains to stream</li>
+<li>res2 (float): [L] current groundwater stock in res. 2</li>
+<li>f1 (float): [] fraction of incoming flux apportioned to res. 1</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="groundwaterZone.TwoParallelLinearReservoir.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>dt</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/groundwaterZone.html#TwoParallelLinearReservoir.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#groundwaterZone.TwoParallelLinearReservoir.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update state of groundwater zone stocks.</p>
+<p>Res. 1 drains to both the stream and res. 2; res. 2 drains only to stream.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li>dt (float): [T] time step</li>
+</ul>
+</dd>
+<dt>Kwargs (dict) has keys:</dt>
+<dd><ul class="first last simple">
+<li>leakage (float): i[L/T] incoming leakage flux from vadose zone</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li>fluxes (dict): dictionary of fluxes [L/T], with keys [discharge]</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="REW.html"
+                        title="previous chapter">REW module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="vadoseZone.html"
+                        title="next chapter">vadoseZone module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/groundwaterZone.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vadoseZone.html" title="vadoseZone module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="REW.html" title="REW module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, David Dralle &amp; Nathaniel Karst.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
+    </div>
+  </body>
+</html>

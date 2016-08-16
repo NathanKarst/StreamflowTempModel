@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>prism_pt_laio_forcing_prep module &mdash; Hillslope Discharge v0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Hillslope Discharge v0.1 documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-prism_pt_laio_forcing_prep">
+<span id="prism-pt-laio-forcing-prep-module"></span><h1>prism_pt_laio_forcing_prep module<a class="headerlink" href="#module-prism_pt_laio_forcing_prep" title="Permalink to this headline">¶</a></h1>
+<p>Script to extract REW hydrologic forcing data from PRISM precip, mean temp, and tdmean data
+for use in the Priestley-Taylor ET model. Data is generated for use vadose zone models 
+of the type developed in Laio et al. 2009.</p>
+<p>The lat/long of each REW centroid is used to fetch the value at each 
+gridpoint of the climate forcing surface.</p>
+<dl class="function">
+<dt id="prism_pt_laio_forcing_prep.get_rad">
+<code class="descclassname">prism_pt_laio_forcing_prep.</code><code class="descname">get_rad</code><span class="sig-paren">(</span><em>rew_dfs_dict</em>, <em>parent_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/prism_pt_laio_forcing_prep.html#get_rad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#prism_pt_laio_forcing_prep.get_rad" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="prism_pt_laio_forcing_prep.get_rew_elevations">
+<code class="descclassname">prism_pt_laio_forcing_prep.</code><code class="descname">get_rew_elevations</code><span class="sig-paren">(</span><em>basins</em>, <em>parent_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/prism_pt_laio_forcing_prep.html#get_rew_elevations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#prism_pt_laio_forcing_prep.get_rew_elevations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="prism_pt_laio_forcing_prep.get_rew_pressures">
+<code class="descclassname">prism_pt_laio_forcing_prep.</code><code class="descname">get_rew_pressures</code><span class="sig-paren">(</span><em>rew_elevations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/prism_pt_laio_forcing_prep.html#get_rew_pressures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#prism_pt_laio_forcing_prep.get_rew_pressures" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="prism_pt_laio_forcing_prep.get_rh">
+<code class="descclassname">prism_pt_laio_forcing_prep.</code><code class="descname">get_rh</code><span class="sig-paren">(</span><em>tmean</em>, <em>tdmean</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/prism_pt_laio_forcing_prep.html#get_rh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#prism_pt_laio_forcing_prep.get_rh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="prism_pt_laio_forcing_prep.main">
+<code class="descclassname">prism_pt_laio_forcing_prep.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/prism_pt_laio_forcing_prep.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#prism_pt_laio_forcing_prep.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract hydrologic forcing data.</p>
+<p>Script to extract REW hydrologic forcing data from PRISM precip, mean temp, and tdmean data
+for use in the Priestley-Taylor ET model. Data is generated for vadose zone models
+of the type developed in Laio et al. 2009.</p>
+<p>The lat/long of each REW centroid is used to fetch the value at each 
+generatedridpoint of the climate forcing surface.</p>
+<dl class="docutils">
+<dt>Dataframe columns include:</dt>
+<dd><ul class="first last simple">
+<li></li>
+</ul>
+</dd>
+<dt>Args: </dt>
+<dd><ul class="first last simple">
+<li>None</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li>None</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="prism_pt_laio_forcing_prep.translate_to_fid">
+<code class="descclassname">prism_pt_laio_forcing_prep.</code><code class="descname">translate_to_fid</code><span class="sig-paren">(</span><em>parent_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/prism_pt_laio_forcing_prep.html#translate_to_fid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#prism_pt_laio_forcing_prep.translate_to_fid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="prism_pt_laio_forcing_prep.translate_to_rew_id">
+<code class="descclassname">prism_pt_laio_forcing_prep.</code><code class="descname">translate_to_rew_id</code><span class="sig-paren">(</span><em>parent_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/prism_pt_laio_forcing_prep.html#translate_to_rew_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#prism_pt_laio_forcing_prep.translate_to_rew_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/prism_pt_laio_forcing_prep.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, David Dralle &amp; Nathaniel Karst.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
+    </div>
+  </body>
+</html>

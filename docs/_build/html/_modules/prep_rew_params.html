@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>prep_rew_params &mdash; Hillslope Discharge v0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Hillslope Discharge v0.1 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for prep_rew_params</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">dirname</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+
+<span class="c1">#must import all hillslope modules to set models for each group</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">parent_dir</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()))</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span><span class="s1">&#39;StreamflowTempModel&#39;</span><span class="p">,</span><span class="s1">&#39;2_hillslope_discharge&#39;</span><span class="p">))</span>
+<span class="kn">from</span> <span class="nn">vadoseZone</span> <span class="kn">import</span> <span class="n">LaioVadoseZone</span><span class="p">,</span> <span class="n">PorporatoVadoseZone</span>
+<span class="kn">from</span> <span class="nn">groundwaterZone</span> <span class="kn">import</span> <span class="n">GroundwaterZone</span><span class="p">,</span> <span class="n">NonlinearReservoir</span><span class="p">,</span> <span class="n">NonlinearReservoir</span><span class="p">,</span> <span class="n">TwoLinearReservoir</span><span class="p">,</span> <span class="n">TwoParallelLinearReservoir</span>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../prep_rew_params.html#prep_rew_params.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Write REW parameter file. </span>
+<span class="sd">    </span>
+<span class="sd">    This function writes two files to the model_data directory:</span>
+<span class="sd">        - group_params.p: parameters for each REW group, as specified in model_data/rew_config.p under the &#39;group&#39; key. All REWs in a given group will have identical parameters. </span>
+<span class="sd">        - param_ranges.p: ranges for some subset of parameters specified for each REW. This file can be used for model calibration. Parameters whose ranges are not specified are assumed to be constant.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        - None</span>
+<span class="sd">        </span>
+<span class="sd">    Returns: </span>
+<span class="sd">        - None. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="c1">#create rew parameter file; each rew gets it&#39;s own parameter set</span>
+    <span class="c1">#assumes that the REW config file has already been generated by prep_rew_config. </span>
+    <span class="c1">#at some point, certain parameters will depend on the rew group (lithology, etc)</span>
+    <span class="c1">#and some will be unique to the rew </span>
+
+    <span class="c1">#define all parameters to be the same, use Porporato model with two linear reservoir for now</span>
+    <span class="c1">#for these models, the parameters are...</span>
+    <span class="n">parent_dir</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()))</span>
+    <span class="n">rew_config</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span> <span class="nb">open</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span><span class="s1">&#39;model_data&#39;</span><span class="p">,</span><span class="s1">&#39;rew_config.p&#39;</span><span class="p">),</span> <span class="s2">&quot;rb&quot;</span> <span class="p">)</span> <span class="p">)</span>
+    
+     <span class="c1"># group_params = {i:{&#39;ET&#39;:0, &#39;emax&#39;:0.5, &#39;leakage&#39;:0.0, &#39;n&#39;:0.45, &#39;sfc&#39;:0.7, &#39;storage&#39;:0.0, &#39;sw&#39;:0.44, &#39;zr&#39;:52.3, </span>
+    <span class="c1">#                 &#39;discharge&#39;:0.0, &#39;groundwater&#39;:0.0, &#39;k1&#39;:0.79, &#39;k2&#39;:0.126, &#39;k12&#39;:0.2, &#39;res1&#39;:0.0, &#39;res2&#39;:0.0} for i in set(rew_config[&#39;group&#39;])}</span>
+
+
+    <span class="c1">#NONLINEAR GROUNDWATER RESERVOIR, PORPORATO VADOSE ZONE</span>
+    <span class="c1"># group_params = {i:{&#39;ET&#39;:0, &#39;emax&#39;:0.5, &#39;leakage&#39;:0, &#39;n&#39;:0.29, &#39;sfc&#39;:0.51, &#39;storage&#39;:0, &#39;sw&#39;:0.30, &#39;zr&#39;:76.4, </span>
+    <span class="c1">#                 &#39;discharge&#39;:0, &#39;groundwater&#39;:0, &#39;a&#39;:0.0001064, &#39;b&#39;:3} for i in set(rew_config[&#39;group&#39;])}</span>
+    <span class="c1"># param_ranges = {i:{&#39;zr&#39;:(50,300), &#39;sw&#39;:(.1,.4), &#39;a&#39;:(.0001,.01), &#39;sfc&#39;:(.4,.9),&#39;n&#39;:(.2,.8)} for i in set(rew_config[&#39;group&#39;])}</span>
+
+    <span class="c1"># group_params = {i:{&#39;ET&#39;:.1, &#39;emax&#39;:0.5, &#39;leakage&#39;:0.1, &#39;n&#39;:0.43, &#39;sfc&#39;:0.5, &#39;storage&#39;:0.1, &#39;sw&#39;:0.19, &#39;zr&#39;:46, </span>
+    <span class="c1">#                 &#39;discharge&#39;:0.1, &#39;groundwater&#39;:0.1, &#39;k&#39;:0.5, &#39;groundwaterMax&#39;:200} for i in set(rew_config[&#39;group&#39;])}</span>
+    <span class="c1"># param_ranges = {i:{&#39;zr&#39;:(0,200), &#39;sw&#39;:(.1,.4), &#39;k&#39;:(.1,2), &#39;sfc&#39;:(.4,.9),&#39;n&#39;:(.2,.8)} for i in set(rew_config[&#39;group&#39;])}</span>
+
+
+    <span class="c1">#TWO RESERVOIR GROUNDWATER, PORPORATO VADOSE ZONE</span>
+    <span class="c1"># group_params = {i:{&#39;ET&#39;:0, &#39;emax&#39;:0.5, &#39;leakage&#39;:0.0, &#39;n&#39;:0.29, &#39;sfc&#39;:0.4, &#39;storage&#39;:0.0, &#39;sw&#39;:0.18, &#39;zr&#39;:95, </span>
+    <span class="c1">#                 &#39;discharge&#39;:0.0, &#39;groundwater&#39;:0.0, &#39;k1&#39;:0.35, &#39;k2&#39;:0.038, &#39;k12&#39;:.99, &#39;res1&#39;:0.0, &#39;res2&#39;:0.0} for i in set(rew_config[&#39;group&#39;])}</span>
+    <span class="c1"># param_ranges = {i:{&#39;zr&#39;:(50,300), &#39;sw&#39;:(.1,.4), &#39;k1&#39;:(.1,1), &#39;k2&#39;:(0.01,1), &#39;k12&#39;:(.1,1), &#39;sfc&#39;:(.4,.9),&#39;n&#39;:(.2,.8)} for i in set(rew_config[&#39;group&#39;])}</span>
+
+    <span class="c1">#TWO PARALLEL LINEAR RESERVOIR, PORPORATOR VADOSE ZONE</span>
+    <span class="n">group_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:{</span><span class="s1">&#39;ET&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;emax&#39;</span><span class="p">:</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;res1&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;res2&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;leakage&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span><span class="mf">0.29</span><span class="p">,</span> <span class="s1">&#39;sfc&#39;</span><span class="p">:</span><span class="mf">0.51</span><span class="p">,</span> <span class="s1">&#39;storage&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;sw&#39;</span><span class="p">:</span><span class="mf">0.30</span><span class="p">,</span> <span class="s1">&#39;zr&#39;</span><span class="p">:</span><span class="mf">76.4</span><span class="p">,</span> 
+                    <span class="s1">&#39;discharge&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;groundwater&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;k1&#39;</span><span class="p">:</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;k2&#39;</span><span class="p">:</span><span class="mf">0.05</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">:</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;vz&#39;</span><span class="p">:</span><span class="n">PorporatoVadoseZone</span><span class="p">,</span> <span class="s1">&#39;gz&#39;</span><span class="p">:</span><span class="n">TwoParallelLinearReservoir</span><span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">rew_config</span><span class="p">[</span><span class="s1">&#39;group&#39;</span><span class="p">])}</span>
+    <span class="n">param_ranges</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:{</span><span class="s1">&#39;zr&#39;</span><span class="p">:(</span><span class="mi">50</span><span class="p">,</span><span class="mi">300</span><span class="p">),</span> <span class="s1">&#39;sw&#39;</span><span class="p">:(</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span><span class="o">.</span><span class="mi">4</span><span class="p">),</span> <span class="s1">&#39;k1&#39;</span><span class="p">:(</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;sfc&#39;</span><span class="p">:(</span><span class="o">.</span><span class="mi">4</span><span class="p">,</span><span class="o">.</span><span class="mi">9</span><span class="p">),</span><span class="s1">&#39;n&#39;</span><span class="p">:(</span><span class="o">.</span><span class="mi">2</span><span class="p">,</span><span class="o">.</span><span class="mi">8</span><span class="p">),</span> <span class="s1">&#39;k2&#39;</span><span class="p">:(</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.4</span><span class="p">),</span> <span class="s1">&#39;f1&#39;</span><span class="p">:(</span><span class="o">.</span><span class="mo">01</span><span class="p">,</span><span class="o">.</span><span class="mi">99</span><span class="p">)}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">rew_config</span><span class="p">[</span><span class="s1">&#39;group&#39;</span><span class="p">])}</span>
+
+    <span class="c1">#in the future, we will want to give different parameterization and even different model structure to each group</span>
+
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span> <span class="n">group_params</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span><span class="s1">&#39;model_data&#39;</span><span class="p">,</span><span class="s1">&#39;group_params.p&#39;</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span> <span class="n">param_ranges</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span><span class="s1">&#39;model_data&#39;</span><span class="p">,</span><span class="s1">&#39;param_ranges.p&#39;</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span> <span class="p">)</span> <span class="p">)</span></div>
+    
+
+    
+    
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span> 
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, David Dralle &amp; Nathaniel Karst.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
+    </div>
+  </body>
+</html>

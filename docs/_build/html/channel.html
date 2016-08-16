@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>channel module &mdash; Hillslope Discharge v0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Hillslope Discharge v0.1 documentation" href="index.html" />
+    <link rel="prev" title="vadoseZone module" href="vadoseZone.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vadoseZone.html" title="vadoseZone module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-channel">
+<span id="channel-module"></span><h1>channel module<a class="headerlink" href="#module-channel" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="channel.Channel">
+<em class="property">class </em><code class="descclassname">channel.</code><code class="descname">Channel</code><span class="sig-paren">(</span><em>rew_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/channel.html#Channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#channel.Channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract base class for all channel  models. (Test)</p>
+<dl class="method">
+<dt id="channel.Channel.update">
+<code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/channel.html#Channel.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#channel.Channel.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update channel storage stock and volumetric discharge</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="channel.SimpleChannel">
+<em class="property">class </em><code class="descclassname">channel.</code><code class="descname">SimpleChannel</code><span class="sig-paren">(</span><em>rew_id</em>, <em>volume=0</em>, <em>volumetric_discharge=0</em>, <em>mannings_n=0.00038580246913580245</em>, <em>width=500</em>, <em>length=100000</em>, <em>slope=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/channel.html#SimpleChannel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#channel.SimpleChannel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#channel.Channel" title="channel.Channel"><code class="xref py py-class docutils literal"><span class="pre">channel.Channel</span></code></a></p>
+<p>Simple hydrologic channel model.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li>rew: <a class="reference internal" href="REW.html#module-REW" title="REW"><code class="xref py py-class docutils literal"><span class="pre">REW</span></code></a> instance to which the channel belongs</li>
+<li>volume (float): [L^3]</li>
+<li>volumetric_discharge (float): [L^3/T]</li>
+<li>mannings_n (int):</li>
+<li>width (float): [L] channel width</li>
+<li>length (float): [L] channel length</li>
+<li>slope (float): [] channel slope</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="channel.SimpleChannel.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>dt</em>, <em>upstream_volumetric_discharge</em>, <em>hillslope_volumetric_discharge</em>, <em>ppt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/channel.html#SimpleChannel.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#channel.SimpleChannel.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update channel storage stock and volumetric discharge</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li>dt (float): [T] time step</li>
+<li>upstream_volumetric_discharge (float): [L^3/T]</li>
+<li>hillslope_volumetric_discharge (float): [L^3/T]</li>
+<li>ppt (float): [L/T] precipitation flux falling channel itself</li>
+</ul>
+</dd>
+<dt>Returns: </dt>
+<dd><ul class="first last simple">
+<li>None</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="vadoseZone.html"
+                        title="previous chapter">vadoseZone module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/channel.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vadoseZone.html" title="vadoseZone module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, David Dralle &amp; Nathaniel Karst.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
+    </div>
+  </body>
+</html>

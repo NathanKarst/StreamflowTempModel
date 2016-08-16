@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>channel &mdash; Hillslope Discharge v0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Hillslope Discharge v0.1 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for channel</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<div class="viewcode-block" id="Channel"><a class="viewcode-back" href="../channel.html#channel.Channel">[docs]</a><span class="k">class</span> <span class="nc">Channel</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Abstract base class for all channel  models. (Test) </span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rew_id</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">rew_id</span> <span class="o">=</span> <span class="n">rew_id</span>
+                
+<div class="viewcode-block" id="Channel.update"><a class="viewcode-back" href="../channel.html#channel.Channel.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot; Update channel storage stock and volumetric discharge&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;update&#39;</span><span class="p">)</span>     </div></div>
+
+
+
+
+<div class="viewcode-block" id="SimpleChannel"><a class="viewcode-back" href="../channel.html#channel.SimpleChannel">[docs]</a><span class="k">class</span> <span class="nc">SimpleChannel</span><span class="p">(</span><span class="n">Channel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Simple hydrologic channel model.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        - rew: :class:`REW` instance to which the channel belongs</span>
+<span class="sd">        - volume (float): [L^3]</span>
+<span class="sd">        - volumetric_discharge (float): [L^3/T]</span>
+<span class="sd">        - mannings_n (int): </span>
+<span class="sd">        - width (float): [L] channel width</span>
+<span class="sd">        - length (float): [L] channel length</span>
+<span class="sd">        - slope (float): [] channel slope</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rew_id</span><span class="p">,</span> <span class="n">volume</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">volumetric_discharge</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">mannings_n</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">2592.0</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">slope</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">):</span>
+        <span class="n">Channel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rew_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">volume</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mannings_n</span> <span class="o">=</span> <span class="n">mannings_n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slope</span> <span class="o">=</span> <span class="n">slope</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volumetric_discharge</span> <span class="o">=</span> <span class="n">_manning_u</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mannings_n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="o">*</span><span class="n">h</span>
+
+<div class="viewcode-block" id="SimpleChannel.update"><a class="viewcode-back" href="../channel.html#channel.SimpleChannel.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">upstream_volumetric_discharge</span><span class="p">,</span> <span class="n">hillslope_volumetric_discharge</span><span class="p">,</span> <span class="n">ppt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Update channel storage stock and volumetric discharge</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            - dt (float): [T] time step</span>
+<span class="sd">            - upstream_volumetric_discharge (float): [L^3/T] </span>
+<span class="sd">            - hillslope_volumetric_discharge (float): [L^3/T]</span>
+<span class="sd">            - ppt (float): [L/T] precipitation flux falling channel itself</span>
+<span class="sd">        </span>
+<span class="sd">        Returns: </span>
+<span class="sd">            - None</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volumetric_discharge</span> <span class="o">=</span> <span class="n">_manning_u</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mannings_n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="o">*</span><span class="n">h</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">+=</span> <span class="n">ppt</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">+=</span> <span class="n">upstream_volumetric_discharge</span><span class="o">*</span><span class="n">dt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">+=</span> <span class="n">hillslope_volumetric_discharge</span><span class="o">*</span><span class="n">dt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">-=</span> <span class="n">_manning_u</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mannings_n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="o">*</span><span class="n">h</span><span class="o">*</span><span class="n">dt</span></div></div>
+
+<span class="k">def</span> <span class="nf">_manning_u</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">slope</span><span class="p">):</span>
+	<span class="k">return</span> <span class="n">h</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mf">3.</span><span class="p">)</span><span class="o">*</span><span class="n">slope</span><span class="o">**</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="o">/</span><span class="n">n</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Hillslope Discharge v0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, David Dralle &amp; Nathaniel Karst.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
+    </div>
+  </body>
+</html>
