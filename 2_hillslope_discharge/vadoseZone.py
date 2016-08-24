@@ -2,12 +2,9 @@ import numpy as np
 
 class VadoseZone:
     """ Abstract base class for all vadose zone models. 
-
-    Public attributes: 
-        - rew: :class:`REW` instance to which the vadose belongs
     """
 
-    def __init__(self,rew): self.rew = rew     
+    def __init__(self): pass
 
     def update(self,**kwargs): 
         """ Update vadose zone stocks and compute fluxes.
@@ -19,7 +16,6 @@ class LaioVadoseZone(VadoseZone):
     """ Vadose zone model based on Laio et al (doi:10.1016/S0309-1708(01)00005-7)
 
     Public attributes:
-         - rew: :class:`REW` instance to which the vadose zone belongs
          - storage [cm]: vadose zone storage stock
          - vi [cm/d]: rainfall intercepted by vegetation
          - zr [cm]: root zone depth
@@ -32,44 +28,30 @@ class LaioVadoseZone(VadoseZone):
          - emax [cm/d]: maximum evapotranspiration
          - ks [cm/d]: saturated hydraulic conducitvity
          - b []: 
-	"""
-	
+    """
+
     #NATE DAWG, I THINK WE SHOULD MAKE VEG INTERCEPTION AT THE REW LEVEL. OTHERWISE, WE'D NEED TO SPREAD vi 
     #ACROSS EACH DAY; right now, if dt is very small, vi will always be larger than rain. Either that, 
     #or we need to think of vi and ppt as
 
     #also, in your groundwater zone, i think your output discharge is in units of depth; to get in cm/day (like in your plot)
     #you'd need to divide those outputs by dt? 
-    def __init__(self, rew, storage = 0, vi = 0.2, zr = 75, n = 0.45, sh = 0.19, sw = 0.24,sfc = 0.65,sstar = 0.57,ew = 0.01,emax = 0.5,ks = 20,b = 14.8):
-        # make sure we get the attrs that ANY vadose zone model must have
-        VadoseZone.__init__(self,rew)
-        
-        # right now these are all set to the defaults, 
-        # but we could easily set these values based on REW properties 
+    def __init__(self, **kwargs):
+        args = ['storage','vi','zr','n','sh','sw','sfc','sstar','ew','emax','ks','b']
+        for arg in args: setattr(self, arg, kwargs[arg])
 
         # main external variables
-        self.storage        = storage   # [cm]
         self.leakage        = 0         # [cm/d]
         self.ET             = 0         # [cm/d]
         self.overlandFlow   = 0         # [cm/d]
-                
+        
         # auxiliary external variables
-        self.vi     = vi
-        self.sh     = sh    
-        self.sw     = sw    
-        self.ew     = ew 
-        self.emax   = emax
-        self.ks     = ks
-        self.sfc    = sfc
-        self.b      = b 
-        self.sstar  = sstar
-        self.asd    = zr*n
+        self.asd    = self.zr*self.n
         
         # internal variables
-        self._etaw  = ew/self.asd
-        self._eta   = emax/self.asd
-        self._m     = ks/(self.asd*(np.exp(b*(1-sfc))-1))
-        self._s     = self.storage/self.asd
+        self._etaw  = self.ew/self.asd
+        self._eta   = self.emax/self.asd
+        self._m     = self.ks/(self.asd*(np.exp(self.b*(1-self.sfc))-1))
     
     def update(self,dt,**kwargs):
         """ Update vadose zone stocks and compute fluxes.
@@ -132,35 +114,23 @@ class PorporatoVadoseZone(VadoseZone):
     """ Vadose zone model based on Porporato 
     
     Public attributes:
-    	- rew: :class:`REW` instance to which the vadose belongs
-    	- storage (float): [L] current vadose zone storage stock
-    	- zr (float): [L] rooting zone depth
-    	- sw (float): [] wilting point
-    	- emax (float): [L/T] maximum ET
-    	- sfc (float): [] field capacity
-    	- n (float): [] porosity 
+        - storage (float): [L] current vadose zone storage stock
+        - zr (float): [L] rooting zone depth
+        - sw (float): [] wilting point
+        - emax (float): [L/T] maximum ET
+        - sfc (float): [] field capacity
+        - n (float): [] porosity 
     
     """
-    def __init__(self, rew, storage = 0, zr = 75, sw = 0.19, emax = 0.5, sfc = 0.65, n = 0.45):
-        
-        # make sure we get the attrs that ANY vadose zone model must have
-        VadoseZone.__init__(self,rew)
-        
-        # right now these are all set to the defaults, 
-        # but we could easily set these values based on REW properties 
+    def __init__(self, **kwargs):        
+    
+        args = ['storage','zr','sw','emax','sfc','n']
+        for arg in args: setattr(self, arg, kwargs[arg])
 
         # main external variables
-        self.storage        = storage       # [cm]
         self.leakage        = 0             # [cm/day]
         self.ET             = 0             # [cm/day]
                 
-        # auxiliary external variables
-        self.zr     = zr 
-        self.sw     = sw    
-        self.emax   = emax
-        self.sfc    = sfc
-        self.n      = n
-        
     
     def update(self,dt,**kwargs):
         """ Update vadose zone stocks and compute fluxes.
@@ -172,7 +142,6 @@ class PorporatoVadoseZone(VadoseZone):
 
         Returns: 
             - fluxes (dict): dictionary of fluxes, with keys [ET, leakage]
-    	
          """
         
         ppt = kwargs['ppt']
