@@ -111,6 +111,7 @@ class TwoLinearReservoir(GroundwaterZone):
     """
     def __init__(self, **kwargs):
         args = ['storage','k1','k2','res1','res2','k12','discharge']
+        for arg in args: setattr(self, arg, kwargs[arg])
         self.storage = self.res1 + self.res2
         
     def update(self,dt, **kwargs):
@@ -152,6 +153,7 @@ class TwoParallelLinearReservoir(GroundwaterZone):
     """
     def __init__(self, **kwargs):
         args = ['storage','k1','k2','res1','res2','f1','discharge']
+        for arg in args: setattr(self, arg, kwargs[arg])
         self.storage = self.res1 + self.res2
         
     def update(self,dt,**kwargs):
@@ -177,45 +179,5 @@ class TwoParallelLinearReservoir(GroundwaterZone):
         
         return {'discharge':self.discharge}
 
-class ZanardoModel(GroundwaterZone):
-    """ Two linear reservoir in series model with constant leakage from first to second
-    
-    Res. 1 and res. 2 are in series; both drain directly to stream.
-    
-    Public attributes:
-        - storage (float): [L] current groundwater stock 
-        - k1 (float): [1/T] rate at which res. 1 drains to stream
-        - res1 (float): [L] current groundwater stock in res. 1
-        - k2 (float): [1/T] rate at which res. 2 drains to stream
-        - res2 (float): [L] current groundwater stock in res. 2
-        - d (float): [L/T] rate of constant leakage from res. 1 to res. 2
-        - discharge (float): [L/T] rate of discharge from groundwater zone to stream
-    """
-    def __init__(self, **kwargs):
-        args = ['storage','k1','k2','res1','res2','d','discharge']
-        self.storage = self.res1 + self.res2
-        
-    def update(self,dt,**kwargs):
-        """ Update state of groundwater zone stocks.
-        
-        Res. 1 drains to both the stream and res. 2; res. 2 drains only to stream.
-        
-        Args:
-            - dt (float): [T] time step
-            
-        Kwargs (dict) has keys:
-            - leakage (float): i[L/T] incoming leakage flux from vadose zone
-        
-        Returns:
-            - fluxes (dict): dictionary of fluxes [L/T], with keys [discharge]
-        """
-        leakage = kwargs['leakage']
-        
-        self.discharge = self.k2*self.res2 + self.k1*self.res1
-        self.storage += (leakage - self.discharge)*dt
-        self.res2 += -self.k2*self.res2*dt + self.d*dt*(self.res1>0)
-        self.res1 += np.max([leakage*dt - self.k1*self.res1*dt - self.d*dt,0])
 
-        
-        return {'discharge':self.discharge}
         

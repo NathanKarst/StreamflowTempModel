@@ -62,7 +62,6 @@ def main():
     pickle.dump( group_params, open( os.path.join(parent_dir,'model_data','group_params.p'), "wb" ) )
     pickle.dump( channel_params, open( os.path.join(parent_dir,'model_data','channel_params.p'), "wb" ) )
     pickle.dump( param_ranges, open( os.path.join(parent_dir,'model_data','param_ranges.p'), "wb" ) )
-    
 
     
     

@@ -50,6 +50,8 @@ r.mask --overwrite raster=$WATERSTRING
 #output stream order vector map
 STREAMVECT="stream_vect_$THRESH"
 r.stream.order --overwrite accumulation=$ACCUMSTRING elevation=$M stream_rast=$STREAMSTRING direction=$DIRSTRING stream_vect=$STREAMVECT
+v.out.ogr --overwrite -c input=$STREAMVECT type=line output="$MODEL/raw_data/streams_poly"
+
 
 #export table with stream topology
 db.out.ogr --overwrite input=$STREAMVECT output="$MODEL/raw_data/topology/topology.csv"
