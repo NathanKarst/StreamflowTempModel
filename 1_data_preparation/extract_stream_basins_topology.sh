@@ -1,14 +1,19 @@
 #!/bin/sh
 # Purpose: Script to extract REW network
-# Inputs, passed to script upon execution:
-# dem name, accumulation threshold, parent directory of model. 
-# to run, open GRASS terminal and execute the command: 
-# sh extract_stream_basins_toplogy.sh $input1 $input2 $input3
+# Inputs must be variables THRESH and MODEL
+# THRESH is the threshold in pixels for channel head formation
+# MODEL is the absolute path of the model directory
+# These must be set as environment variables prior to execution of this script,
+# e.g. export THRESH=20000
 
-M=$1
-THRESH=$2
-MODEL=$3
+#clear out any existing data
+rm $MODEL/raw_data/topology/basin.csv
+rm $MODEL/raw_data/topology/topology.csv
+rm $MODEL/raw_data/basins_poly/*
+rm $MODEL/raw_data/streams_poly/*
 
+M=dem
+r.in.gdal input=$MODEL/raw_data/dem/dem.tif output=$M
 g.region -p -a raster=$M
 
 #run r.watershed to get accum, drainage direction, stream raster
@@ -72,4 +77,5 @@ v.to.db map=$BASINVECTCLEAN option=area columns=area_sqkm unit=k
 #export basins polygon as shape file
 v.out.ogr --overwrite -c input=$BASINVECTCLEAN type=area output="$MODEL/raw_data/basins_poly"
 db.out.ogr --overwrite input=$BASINVECTCLEAN output="$MODEL/raw_data/topology/basin.csv"
+
 
