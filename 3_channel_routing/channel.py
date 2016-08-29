@@ -9,9 +9,7 @@ class Channel:
                 
     def update(self): 
         """ Update channel storage stock and volumetric discharge"""
-        raise NameError('update')     
-
-
+        raise NameError('update')
 
 
 class SimpleChannel(Channel):
@@ -27,15 +25,15 @@ class SimpleChannel(Channel):
         - slope (float): [] channel slope
         
     """
-    def __init__(self, rew_id, rew_config, volume = 0, mannings_n = 0.03, e=0.01, f=0.39):
+    def __init__(self, rew_id, **kwargs):
         Channel.__init__(self, rew_id)
-        self.volume = volume
-        self.mannings_n = mannings_n
-        self.width = e*rew_config.upstream_area.loc[rew_id]**f
-        self.length = rew_config.length.loc[rew_id]
-        self.slope = rew_config.gradient.loc[rew_id]
+        
+        args = ['volume','mannings_n','upstream_area','gradient','length','e','f']
+        for arg in args: setattr(self, arg, kwargs[arg])        
+
+        self.width = self.e*self.upstream_area**self.f
         h = self.volume/(self.length*self.width)
-        self.volumetric_discharge = _manning_u(h, self.mannings_n, self.slope)*self.width*h
+        self.volumetric_discharge = _manning_u(h, self.mannings_n, self.gradient)*self.width*h
 
     def update(self, dt, upstream_volumetric_discharge, hillslope_volumetric_discharge, ppt):
         """ Update channel storage stock and volumetric discharge
@@ -52,7 +50,7 @@ class SimpleChannel(Channel):
         """
 
         h = self.volume/(self.length*self.width)
-        if _manning_u(h, self.mannings_n, self.slope)*dt>self.length:
+        if _manning_u(h, self.mannings_n, self.gradient)*dt>self.length:
             self.volumetric_discharge = h*self.width*self.length/dt
             self.volume = 0
             self.volume += ppt*dt*self.width*self.length
@@ -60,11 +58,11 @@ class SimpleChannel(Channel):
             self.volume += hillslope_volumetric_discharge*dt
             return 1
         else:
-            self.volumetric_discharge = _manning_u(h, self.mannings_n, self.slope)*self.width*h
+            self.volumetric_discharge = _manning_u(h, self.mannings_n, self.gradient)*self.width*h
             self.volume += ppt*dt*self.width*self.length
             self.volume += upstream_volumetric_discharge*dt
             self.volume += hillslope_volumetric_discharge*dt
-            self.volume -= _manning_u(h, self.mannings_n, self.slope)*self.width*h*dt
+            self.volume -= _manning_u(h, self.mannings_n, self.gradient)*self.width*h*dt
             return 0
 
 def _manning_u(h, n, slope):

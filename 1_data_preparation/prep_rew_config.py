@@ -11,6 +11,7 @@ import sys
 import pickle
 from functools import partial
 import pyproj
+import geopandas as gp
 
 def main():
     """ Write REW configuration file. 
@@ -104,6 +105,8 @@ def main():
     print('Total number of REW IDs used: %d'%len(x))
     print 'Total number of unique REW group(s): ' + str(len(set(rew_config['group']))) + '\n'
 
+    #write centroids to file
+    write_coords(parent_dir=parent_dir)
 
     #save config dataframe into model_data folder
     pickle.dump( rew_config, open( os.path.join(parent_dir,'model_data','rew_config.p'), "wb" ) )
@@ -122,7 +125,13 @@ def get_upstream_contributing(rew_config, rew_id):
 
         
 
+def write_coords(parent_dir):
+    basins = glob.glob(os.path.join(parent_dir,'raw_data','basins_poly','*.shp'))[0]
+    basins_shape = gp.GeoDataFrame.from_file(basins)
+    basins_shape['coords'] = basins_shape['geometry'].apply(lambda x: x.representative_point().coords[:])
+    basins_shape['coords'] = [coords[0] for coords in basins_shape['coords']]
 
+    basins_shape.set_index('cat').drop(['label','area_sqkm','geometry'],axis=1).to_csv(os.path.join(parent_dir,'raw_data','basins_centroids','points.csv'))
 
 
 

@@ -27,8 +27,6 @@ import zonal_stats as zs
 import meteolib as meteo
 import evaplib as evap
 
-
-
 def main():
     """ Extract hydrologic forcing data. 
     
