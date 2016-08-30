@@ -13,7 +13,7 @@ class Channel:
 
 
 class SimpleChannel(Channel):
-    """ Simple hydrologic channel model.
+    """ Simple hydrologic channel model using Manning's equation for open channel flow (for a reference, see doi:10.1103/PhysRevLett.88.014501.)
     
     Args:
         - rew_id (int) : id of rew to which the channel belongs
@@ -42,7 +42,7 @@ class SimpleChannel(Channel):
             - dt (float): [T] time step
             - upstream_volumetric_discharge (float): [L^3/T] 
             - hillslope_volumetric_discharge (float): [L^3/T]
-            - ppt (float): [L/T] precipitation flux falling channel itself
+            - ppt (float): [L/T] precipitation falling channel itself
         
         Returns: 
             - Boolean variable indicating whether or not instability approximation was used to solve kinematic wave.
