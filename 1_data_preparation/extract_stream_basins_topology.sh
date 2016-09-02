@@ -13,21 +13,30 @@ rm $MODEL/raw_data/basins_poly/*
 rm $MODEL/raw_data/streams_poly/*
 
 M=dem
-r.in.gdal input=$MODEL/raw_data/dem/dem.tif output=$M
-g.region -p -a raster=$M
+r.in.gdal input=$MODEL/raw_data/dem/dem.tif output=dem_unfilled
+v.in.ogr input=$MODEL/raw_data/watershed_poly/$WATERSHED_POLY output=watershed_poly
+v.to.rast input=watershed_poly output=watershed_raster use=val
+
+#g.region -p -a raster=dem_unfilled
+r.mask --overwrite raster=watershed_raster
 
 #run r.watershed to get accum, drainage direction, stream raster
 #could change accumulation threshold here, or convergence, or
+r.fill.dir --overwrite input=dem_unfilled output=$M direction=dir_temp
 ACCUMSTRING="accum_$THRESH"
 DIRSTRING="dir_$THRESH"
 STREAMSTRING="stream_$THRESH"
-r.watershed -a --overwrite elevation=$M threshold=$THRESH accumulation=$ACCUMSTRING drainage=$DIRSTRING stream=$STREAMSTRING convergence=5
+r.watershed -a --overwrite elevation=$M accumulation=$ACCUMSTRING
+
+
+r.stream.extract --overwrite elevation=$M threshold=$THRESH stream_length=20 stream_raster=$STREAMSTRING stream_vector=stream_vector_temp direction=$DIRSTRING
 
 #get the maximum accumulation point and use as watershed outlet for 
 #r.watershed
 STATS=$(r.describe -r $ACCUMSTRING)
 searchstring="-"
 MAX=${STATS#*$searchstring}
+MAX=$(echo ${MAX%.*})
 
 
 #create watershed outlet point, get east/north coords of outlet
@@ -35,6 +44,7 @@ r.mapcalc --overwrite "newmap = if($ACCUMSTRING < $MAX, null(), $ACCUMSTRING)"
 r.out.xyz --overwrite input=newmap output="$MODEL/aux_data/watershed_outlet"
 EAST=$(tr '|' '\n' < $MODEL/aux_data/watershed_outlet | sed -n 1p)
 NORTH=$(tr '|' '\n' < $MODEL/aux_data/watershed_outlet | sed -n 2p)
+
 
 #get watershed polygon corresponding to outlet
 WATERSTRING="watershed_$THRESH"
@@ -57,7 +67,6 @@ STREAMVECT="stream_vect_$THRESH"
 r.stream.order --overwrite accumulation=$ACCUMSTRING elevation=$M stream_rast=$STREAMSTRING direction=$DIRSTRING stream_vect=$STREAMVECT
 v.out.ogr --overwrite -c input=$STREAMVECT type=line output="$MODEL/raw_data/streams_poly"
 
-
 #export table with stream topology
 db.out.ogr --overwrite input=$STREAMVECT output="$MODEL/raw_data/topology/topology.csv"
 
@@ -70,7 +79,7 @@ r.stream.basins --overwrite direction=$DIRSTRING stream_rast=$STREAMSTRING basin
 #convert basins raster into basins polygons
 #NOTE! IN THE FUTURE THE THRESHOLD NEEDS TO BE CHANGED TO BE A FUNCTION OF MAP RESOLUTION
 r.to.vect --overwrite -v input=$BASINSTRING output=$BASINVECT type=area
-v.clean --overwrite input=$BASINVECT output=$BASINVECTCLEAN type=area tool=rmarea thresh=500.0
+v.clean --overwrite input=$BASINVECT output=$BASINVECTCLEAN type=area tool=rmarea thresh=100.0
 v.db.addcolumn map=$BASINVECTCLEAN columns="area_sqkm DOUBLE PRECISION"
 v.to.db map=$BASINVECTCLEAN option=area columns=area_sqkm unit=k
 

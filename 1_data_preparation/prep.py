@@ -134,8 +134,20 @@ def rew_config():
     del df_basins['label']
     df_basins.set_index('cat', inplace=True)
     rew_config = pd.concat([rew_config, df_basins], axis=1)
-    #Assign groups
-    rew_config['group']=get_groups(rew_config)
+
+    ##################################
+    ##################################
+    #Assign parameter groups
+    #and climate groups
+    # for the time being, assume each REW is in its own climate group
+    rew_config['parameter_group']=get_parameter_groups(rew_config)
+    rew_config['climate_group']=range(len(rew_config))
+    rew_config['group'] = zip(rew_config['parameter_group'], rew_config['climate_group'])
+
+    #find rews that have the same parameter and climate groups, assign them to a group
+
+    ##################################
+    ##################################
 
     #Get basins from shapefile to check that the REW ids and basins ids match
     try:
@@ -173,6 +185,8 @@ def rew_config():
     else: 
         print 'REW IDs do not match basins IDs. REW config file cannot be written. \n Please clear out model data folders and re-run extract stream basins script.'
     print('Total number of REW IDs used: %d'%len(x))
+    print 'Total number of unique REW parameter group(s): ' + str(len(set(rew_config['parameter_group'])))
+    print 'Total number of unique REW climate group(s): ' + str(len(set(rew_config['climate_group'])))
     print 'Total number of unique REW group(s): ' + str(len(set(rew_config['group']))) + '\n'
 
     #write centroids to file
@@ -184,7 +198,7 @@ def rew_config():
     #save config dataframe into model_data folder
     pickle.dump( rew_config, open( os.path.join(parent_dir,'model_data','rew_config.p'), "wb" ) )
     
-def get_groups(rew_config):
+def get_parameter_groups(rew_config):
     #to be used later for grouping REWs to save VadoseZone compute time
     #for now, just return a single group, 0
     return [0]*len(rew_config)
@@ -209,8 +223,8 @@ def rew_params():
     """ Write REW groups and channel parameter files. 
     
     This function writes three files to the model_data directory:
-        - group_params.p: parameters for each REW group, as specified in model_data/rew_config.p under the 'group' key. All REWs in a given group will have identical parameters. 
-        - param_ranges.p: ranges for some subset of parameters specified for each REW. This file can be used for model calibration. Parameters whose ranges are not specified are assumed to be constant.
+        - parameter_group_params.p: parameters for each REW parameter group, as specified in model_data/rew_config.p under the 'parameter_group' key. All REWs in a given parameter group will have identical parameters. 
+        - parameter_ranges.p: ranges for some subset of parameters specified for each parameter group. This file can be used for model calibration. Parameters whose ranges are not specified are assumed constant.
         - channel_params.p: parameters for each REW's channel model. 
     Args:
         - None
@@ -225,13 +239,13 @@ def rew_params():
     
     
     rews = rew_config.keys()
-    groups = set([rew_config[i]['group'] for i in rew_config.keys()])
+    parameter_groups = set([rew_config[i]['parameter_group'] for i in rew_config.keys()])
 
     #NONLINEAR GROUNDWATER RESERVOIR, PORPORATO VADOSE ZONE
-    group_params = {i:{'ET':0, 'emax':0.5, 'leakage':0, 'n':0.29, 'sfc':0.51, 'storage':0, 'sw':0.30, 'zr':76.4, 
-                    'discharge':0, 'groundwater':0, 'a':0.0001064, 'b':3, 'vz':PorporatoVadoseZone, 'gz':NonlinearReservoir} for i in groups}
+    parameter_group_params = {i:{'ET':0, 'emax':0.5, 'leakage':0, 'n':0.29, 'sfc':0.51, 'storage':0, 'sw':0.30, 'zr':76.4, 
+                    'discharge':0, 'groundwater':0, 'a':0.0001064, 'b':3, 'vz':PorporatoVadoseZone, 'gz':NonlinearReservoir} for i in parameter_groups}
 
-    param_ranges = {i:{'zr':(50,300), 'sw':(.1,.4), 'a':(.0001,.01), 'sfc':(.4,.9),'n':(.2,.8)} for i in groups}
+    parameter_ranges = {i:{'zr':(50,300), 'sw':(.1,.4), 'a':(.0001,.01), 'sfc':(.4,.9),'n':(.2,.8)} for i in parameter_groups}
 
 
     # SINGLE LINEAR RESERVOIR MODEL, PORPORATO VADOSE ZONE
@@ -255,8 +269,8 @@ def rew_params():
     channel_params = {i:{'mannings_n':0.03, 'e':0.01, 'f':0.39, 'volume':0} for i in rews}
 
 
-    pickle.dump( group_params, open( os.path.join(parent_dir,'model_data','group_params.p'), "wb" ) )
+    pickle.dump( parameter_group_params, open( os.path.join(parent_dir,'model_data','parameter_group_params.p'), "wb" ) )
     pickle.dump( channel_params, open( os.path.join(parent_dir,'model_data','channel_params.p'), "wb" ) )
-    pickle.dump( param_ranges, open( os.path.join(parent_dir,'model_data','param_ranges.p'), "wb" ) )
+    pickle.dump( parameter_ranges, open( os.path.join(parent_dir,'model_data','parameter_ranges.p'), "wb" ) )
     
     

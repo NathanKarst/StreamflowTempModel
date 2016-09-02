@@ -114,7 +114,7 @@ def main():
 def get_groups(rew_config):
     #to be used later for grouping REWs to save VadoseZone compute time
     #for now, just return a single group, 0
-    return [0]*len(rew_config)
+    return range(len(rew_config))
 
 
 def get_upstream_contributing(rew_config, rew_id):

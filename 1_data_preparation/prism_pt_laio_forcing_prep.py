@@ -36,6 +36,10 @@ def main():
 
     The lat/long of each REW centroid is used to fetch the value at each 
     generatedridpoint of the climate forcing surface. 
+
+    Following forcing data extraction to all REWs, REW forcing data is merged by climate group. 
+    Merging is performed using the mean. 
+
     
     Dataframe columns include:
         - 
@@ -160,8 +164,19 @@ def main():
         #convert to cm/day
         rew_dfs_dict[rew_id]['pet'] = pet/10.0
 
-            
-    pickle.dump( rew_dfs_dict, open( os.path.join(parent_dir,'model_data','rew_forcing_dict.p'), "wb" ) )
+    # the forcing dictionary must have climate_group id's as keys. 
+    # for the time being, we will merge REWs within each climate group
+    # using the mean of the forcings for all REWs in the group. 
+    rew_config = pickle.load( open( os.path.joi[n(parent_dir,'model_data','rew_config.p'), "rb" ) )
+    climate_group_forcing_dict = {}
+    for group in set([x[i]['group'] for i in rew_config.keys()]):
+        rew_ids_in_group = [i for i in rew_config.keys() if rew_config[i]['group']==group]
+        rew_dfs  = [rew_dfs_dict[rew_id] for rew_id in rew_ids_in_group]
+        climate_group_forcing_dict[group] = pd.concat(rew_dfs,axis=1).mean(axis=1)
+
+
+
+    pickle.dump( climate_group_forcing_dict, open( os.path.join(parent_dir,'model_data','climate_group_forcing_dict.p'), "wb" ) )
         
 
 def get_rh(tmean, tdmean):
