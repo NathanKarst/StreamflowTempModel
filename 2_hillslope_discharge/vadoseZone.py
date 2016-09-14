@@ -161,4 +161,86 @@ class PorporatoVadoseZone(VadoseZone):
         return {'ET':self.ET, 'leakage':self.leakage}
 
 
+class SimpleRockMoistureZone(VadoseZone): 
+    """ Two layer vadose zone model. Each layer is treated as a porporato type vadose zone. 
+    
+    Public attributes:
+        - nS (float): [] porosity of soil layer
+        - nR (float): [] porosity of rock moisture layer
+        - s0R (float): [] water content at which ET = 0 in rock moisture zone
+        - s0S (float): [] water content at which ET = 0 in soil moisture zone
+        - stR (float): [] water content at which ET = PET in rock moisture zone
+        - stS (float): [] water content at which ET = PET in soil moisture zone
+        - zrR (float): [L] thickness of rock moisture zone
+        - zrS (float): [L] thickness of soil moisture zone
+        - f (float): [] fraction of roots in soil layer (i.e., fraction of PET apportioned to soil layer)
+        - storageR (float): [L] storage in rock moisture zone
+        - storageS (float): [L] storage in soil moisture zone
+    
+    """
+    def __init__(self, **kwargs):        
+    
+        args = ['nS','nR','s0R','s0S','stR','stS','zrR','zrS','f','storageR','storageS','storage']
+        for arg in args: setattr(self, arg, kwargs[arg])
+
+        # main external variables
+        self.leakage         = 0            # [cm/day]
+        self.ETR             = 0            # [cm/day]
+        self.ETS             = 0            # [cm/day]
+        self.ET              = 0            # [cm/day]
+
+    def update(self,dt,**kwargs):
+        """ Update vadose zone stocks and compute fluxes.
+    
+        Args:
+            - dt (float): time step
+            - ppt (float): precipitation flux [L / T]
+            - pet (float): potential evapotranspiration flux [L / T] -- if not specified, set to ::emax
+
+        Returns: 
+            - fluxes (dict): dictionary of fluxes, with keys [ET, leakage]
+         """
+        
+        ppt = kwargs['ppt']
+        pet = kwargs['pet']
+
+        #first compute soil moisture zone
+        sS = self.storageS/(self.nS*self.zrS)
+        if (sS <= self.s0S):
+            self.ETS = 0 
+        elif (sS <= self.stS):
+            self.ETS = (self.f)*pet*(sS-self.s0S)/(self.stS-self.s0S)
+        else: 
+            self.ETS = (self.f)*pet    
+
+        sS += ppt*dt/(self.nS*self.zrS) - self.ETS*dt/(self.nS*self.zrS)
+
+        #anything in excess of stS is drained to rock moisture
+        soilLeakage = np.max([sS - self.stS, 0])*self.nS*self.zrS/dt
+        sS = np.min([sS, self.stS])
+        self.storageS = sS*self.nS*self.zrS
+
+
+        #convert current storage to normalized relative value
+        sR = self.storageR/(self.nR*self.zrR)
+        if (sR <= self.s0R):
+            self.ETR = 0
+        elif (sR <= self.stR):
+            self.ETR = (1-self.f)*pet*(sR-self.s0R)/(self.stR-self.s0R)
+        else: 
+            self.ETR = (1-self.f)*pet
+
+        sR += soilLeakage*dt/(self.nR*self.zrR) - self.ETR*dt/(self.nR*self.zrR)
+
+        #anything in excess of stS is drained to rock moisture
+        self.leakage = np.max([sR - self.stR, 0])*self.nR*self.zrR/dt
+        sR = np.min([sR, self.stR])
+        self.storageR = sR*self.nR*self.zrR
+
+        self.ET = self.ETS + self.ETR
+
+        self.storage = self.storageS + self.storageR
+        
+        return {'ET':self.ET, 'leakage':self.leakage}
+
 

@@ -167,7 +167,7 @@ def main():
     # the forcing dictionary must have climate_group id's as keys. 
     # for the time being, we will merge REWs within each climate group
     # using the mean of the forcings for all REWs in the group. 
-    rew_config = pickle.load( open( os.path.joi[n(parent_dir,'model_data','rew_config.p'), "rb" ) )
+    rew_config = pickle.load( open( os.path.join(parent_dir,'model_data','rew_config.p'), "rb"))
     climate_group_forcing_dict = {}
     for group in set([x[i]['group'] for i in rew_config.keys()]):
         rew_ids_in_group = [i for i in rew_config.keys() if rew_config[i]['group']==group]
@@ -200,7 +200,14 @@ def get_rew_elevations(basins, parent_dir):
     #get mean rew elevation
     dem_file = os.listdir(os.path.join(parent_dir,'raw_data','dem'))
     dem_file = [x for x in dem_file if 'dem' in x]
+    
+    os.system('ls '+os.path.join(parent_dir,'raw_data','dem',dem_file[0]))
+    print(basins)
+    
+    
     elev_stats = zs.zonal_stats(basins, os.path.join(parent_dir,'raw_data','dem',dem_file[0]))
+    
+    
     
     rew_elevations = {}
     translated = translate_to_rew_id(parent_dir)
