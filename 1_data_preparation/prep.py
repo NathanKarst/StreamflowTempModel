@@ -241,9 +241,9 @@ def rew_params():
 
 
     #NONLINEAR GROUNDWATER RESERVOIR, Simple rock moisture vadose zone
-    parameter_group_params = {i:{'ET':0, 'emax':0.5, 'leakage':0, 'nR':0.05, 'nS':.3, 's0R':.2, 's0S':.3,'stR':.6,'stS':.5 ,'sfc':0.51, 'zrR':1000, 'zrS': 50, 'f':.7, 'storageR':0,'storageS':0, 'storage':0,'discharge':0, 'groundwater':0, 'a':0.0001064, 'b':3, 'vz':SimpleRockMoistureZone, 'gz':NonlinearReservoir} for i in parameter_groups}
+    parameter_group_params = {i:{'ET':0, 'emax':0.5, 'leakage':0, 'nR':0.05, 'nS':.5, 's0R':.2, 's0S':.3,'stR':.6,'stS':.5 ,'sfc':0.51, 'zrR':1000, 'zrS': 50, 'f':.7, 'storageR':0,'storageS':0, 'storage':0,'discharge':0, 'groundwater':0, 'a':0.0001064, 'b':3, 'vz':SimpleRockMoistureZone, 'gz':NonlinearReservoir} for i in parameter_groups}
 
-    parameter_ranges = {i:{'zrR':(500,2000), 'zrS':(20,100)} for i in parameter_groups}
+    parameter_ranges = {i:{'zrR':(500,3000), 'zrS':(20,100), 'a':(.0001, .001), 'nR':(.01, .1)} for i in parameter_groups}
     channel_params = {i:{'mannings_n':0.03, 'e':0.01, 'f':0.39, 'volume':0} for i in rews}
 
     # #NONLINEAR GROUNDWATER RESERVOIR, PORPORATO VADOSE ZONE
