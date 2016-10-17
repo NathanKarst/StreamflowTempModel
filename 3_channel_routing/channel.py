@@ -65,6 +65,7 @@ class SimpleChannel(Channel):
             self.volume -= _manning_u(h, self.mannings_n, self.gradient)*self.width*h*dt
             return 0
 
+
 def _manning_u(h, n, slope):
     #takes h in cm, uses SI mannings n values, returns u in cm/day
 	return 100*86400*(h/100.)**(2/3.)*slope**(0.5)*1/n

@@ -18,8 +18,12 @@ import geopandas as gp
 
 parent_dir = dirname(dirname(os.getcwd()))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','2_hillslope_discharge'))
+sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','3_channel_routing'))
+sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','4_temperature'))
 from vadoseZone import LaioVadoseZone, PorporatoVadoseZone, SimpleRockMoistureZone
 from groundwaterZone import GroundwaterZone, NonlinearReservoir, NonlinearReservoir, TwoLinearReservoir, TwoParallelLinearReservoir
+from temperature import SimpleTemperature
+from channel import SimpleChannel
   
 def model_config(outputFilename='model_config.p'): 
     """ Write model configuration file.
@@ -63,6 +67,12 @@ def model_config(outputFilename='model_config.p'):
     t_channel = np.linspace(0, Tmax, np.ceil(Tmax/dt_channel)+1)
     resample_freq_channel = str(int(dt_channel*24*60)) + 'T'
     timestamps_channel = pd.date_range(start_date, stop_date, freq=resample_freq_channel)
+
+    #temperature timestep information
+    dt_temperature = 1/1440.
+    t_temperature = np.linspace(0, Tmax, np.ceil(Tmax/dt_temperature)+1)
+    resample_freq_temperature = str(int(dt_temperature*24*60)) + 'T'
+    timestamps_temperature = pd.date_range(start_date, stop_date, freq=resample_freq_temperature)
     
     parent_dir = dirname(dirname(os.getcwd()))
 
@@ -77,7 +87,11 @@ def model_config(outputFilename='model_config.p'):
                     't_channel':t_channel,
                     'resample_freq_channel':resample_freq_channel, 
                     'timestamps_channel':timestamps_channel, 
-                    'timestamps_hillslope':timestamps_hillslope}
+                    'timestamps_hillslope':timestamps_hillslope,
+                    'dt_temperature':dt_temperature,
+                    't_temperature':t_temperature,
+                    'resample_freq_temperature':resample_freq_temperature,
+                    'timestamps_temperature':timestamps_temperature}
 
     pickle.dump( model_config, open( os.path.join(parent_dir,'model_data',outputFilename), "wb" ) )
 
@@ -235,45 +249,19 @@ def rew_params():
     parent_dir = dirname(dirname(os.getcwd()))
     rew_config = pickle.load( open( os.path.join(parent_dir,'model_data','rew_config.p'), "rb" ) )
     
-    
     rews = rew_config.keys()
     parameter_groups = set([rew_config[i]['parameter_group'] for i in rews])
 
-
     #NONLINEAR GROUNDWATER RESERVOIR, Simple rock moisture vadose zone
-    parameter_group_params = {i:{'ET':0, 'emax':0.5, 'leakage':0, 'nR':0.05, 'nS':.5, 's0R':.2, 's0S':.3,'stR':.6,'stS':.5 ,'sfc':0.51, 'zrR':1000, 'zrS': 50, 'f':.7, 'storageR':0,'storageS':0, 'storage':0,'discharge':0, 'groundwater':0, 'a':0.0001064, 'b':3, 'vz':SimpleRockMoistureZone, 'gz':NonlinearReservoir} for i in parameter_groups}
-
+    parameter_group_params = {i:{'ET':0, 'emax':0.5, 'leakage':0, 'nR':0.05, 'nS':.5, 's0R':.2, 's0S':.3,'stR':.6,'stS':.5 ,'sfc':0.51, 'zrR':1000, 'zrS': 50, 'f':.7, 'storageR':0,'storageS':0, 'storageVZ':0,'storageGZ':0,'discharge':0,'a':0.0001064, 'b':3, 'vz':SimpleRockMoistureZone, 'gz':NonlinearReservoir} for i in parameter_groups}
     parameter_ranges = {i:{'zrR':(500,3000), 'zrS':(20,100), 'a':(.0001, .001), 'nR':(.01, .1)} for i in parameter_groups}
-    channel_params = {i:{'mannings_n':0.03, 'e':0.01, 'f':0.39, 'volume':0} for i in rews}
-
-    # #NONLINEAR GROUNDWATER RESERVOIR, PORPORATO VADOSE ZONE
-    # parameter_group_params = {i:{'ET':0, 'emax':0.5, 'leakage':0, 'n':0.29, 'sfc':0.51, 'storage':0, 'sw':0.30, 'zr':76.4, 
-    #                 'discharge':0, 'groundwater':0, 'a':0.0001064, 'b':3, 'vz':PorporatoVadoseZone, 'gz':NonlinearReservoir} for i in parameter_groups}
-
-    # parameter_ranges = {i:{'zr':(50,300), 'sw':(.1,.4), 'a':(.0001,.01), 'sfc':(.4,.9),'n':(.2,.8)} for i in parameter_groups}
-    # channel_params = {i:{'mannings_n':0.03, 'e':0.01, 'f':0.39, 'volume':0} for i in rews}
-
-    # SINGLE LINEAR RESERVOIR MODEL, PORPORATO VADOSE ZONE
-    # group_params = {i:{'ET':.1, 'emax':0.5, 'leakage':0.1, 'n':0.43, 'sfc':0.5, 'storage':0.1, 'sw':0.19, 'zr':46, 
-    #                 'discharge':0.1, 'groundwater':0.1, 'k':0.5, 'groundwaterMax':200} for i in set(rew_config['group'])}
-    # param_ranges = {i:{'zr':(0,200), 'sw':(.1,.4), 'k':(.1,2), 'sfc':(.4,.9),'n':(.2,.8)} for i in set(rew_config['group'])}
-
-
-    #TWO RESERVOIR GROUNDWATER, PORPORATO VADOSE ZONE
-    # group_params = {i:{'ET':0, 'emax':0.5, 'leakage':0.0, 'n':0.29, 'sfc':0.4, 'storage':0.0, 'sw':0.18, 'zr':95, 
-    #                 'discharge':0.0, 'groundwater':0.0, 'k1':0.35, 'k2':0.038, 'k12':.99, 'res1':0.0, 'res2':0.0} for i in set(rew_config['group'])}
-    # param_ranges = {i:{'zr':(50,300), 'sw':(.1,.4), 'k1':(.1,1), 'k2':(0.01,1), 'k12':(.1,1), 'sfc':(.4,.9),'n':(.2,.8)} for i in set(rew_config['group'])}
-
-
-    #TWO PARALLEL LINEAR RESERVOIR, PORPORATOR VADOSE ZONE
-    # group_params = {i:{'ET':0, 'emax':0.5, 'res1':0, 'res2':0, 'leakage':0, 'n':0.29, 'sfc':0.51, 'storage':0, 'sw':0.30, 'zr':76.4, 
-    #                 'discharge':0, 'groundwater':0, 'k1':0.5, 'k2':0.05, 'f1':0.5, 'vz':PorporatoVadoseZone, 'gz':TwoParallelLinearReservoir} for i in set(rew_config['group'])}
-    # param_ranges = {i:{'zr':(50,300), 'sw':(.1,.4), 'k1':(.1,1), 'sfc':(.4,.9),'n':(.2,.8), 'k2':(0.01,0.4), 'f1':(.01,.99)} for i in set(rew_config['group'])}
-
+    channel_params = {i:{'mannings_n':0.03, 'e':0.01, 'f':0.39, 'volume':0, 'model':SimpleChannel} for i in rews}
+    temperature_params = {i:{'cp':4186.0, 'eps':1.0, 'Tgw':14.0, 'alphaw':0.15, 'rho':1000.0, 'kh':20.0,'sigma':5.67e-8, 'temperature':15.0, 'model':SimpleTemperature} for i in rews}
 
 
     pickle.dump( parameter_group_params, open( os.path.join(parent_dir,'model_data','parameter_group_params.p'), "wb" ) )
     pickle.dump( channel_params, open( os.path.join(parent_dir,'model_data','channel_params.p'), "wb" ) )
+    pickle.dump( temperature_params, open( os.path.join(parent_dir,'model_data','temperature_params.p'), "wb" ) )
     pickle.dump( parameter_ranges, open( os.path.join(parent_dir,'model_data','parameter_ranges.p'), "wb" ) )
     
     

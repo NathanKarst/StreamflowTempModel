@@ -16,7 +16,7 @@ class LaioVadoseZone(VadoseZone):
     """ Vadose zone model based on Laio et al (doi:10.1016/S0309-1708(01)00005-7)
 
     Public attributes:
-         - storage [cm]: vadose zone storage stock
+         - storageVZ [cm]: vadose zone storage stock
          - vi [cm/d]: rainfall intercepted by vegetation
          - zr [cm]: root zone depth
          - n []: porosity
@@ -37,7 +37,7 @@ class LaioVadoseZone(VadoseZone):
     #also, in your groundwater zone, i think your output discharge is in units of depth; to get in cm/day (like in your plot)
     #you'd need to divide those outputs by dt? 
     def __init__(self, **kwargs):
-        args = ['storage','vi','zr','n','sh','sw','sfc','sstar','ew','emax','ks','b']
+        args = ['storageVZ','vi','zr','n','sh','sw','sfc','sstar','ew','emax','ks','b']
         for arg in args: setattr(self, arg, kwargs[arg])
 
         # main external variables
@@ -73,7 +73,7 @@ class LaioVadoseZone(VadoseZone):
         self.interceptedRainfall = np.min((self.vi,ppt))    # [cm/d]    
         R = np.max((ppt - self.vi,0))                       # [cm/d]
         
-        s = self.storage/self.asd                           # []
+        s = self.storageVZ/self.asd                           # []
         
         # et and lkg: [1/d]
         if s < self.sh: 
@@ -90,9 +90,9 @@ class LaioVadoseZone(VadoseZone):
   
         self.ET             = et*self.asd                               # [cm/d]
         self.leakage        = lkg*self.asd                              # [cm/d]
-        self.storage        += (R - self.ET - self.leakage)*dt          # [cm]
-        self.overlandFlow   = np.max((self.storage - self.asd,0))/dt    # [cm/d]
-        self.storage        = np.min((self.storage,self.asd))           # [cm]
+        self.storageVZ        += (R - self.ET - self.leakage)*dt          # [cm]
+        self.overlandFlow   = np.max((self.storageVZ - self.asd,0))/dt    # [cm/d]
+        self.storageVZ        = np.min((self.storageVZ,self.asd))           # [cm]
 
         return {'ET':self.ET, 'leakage':self.leakage, 'overlandFlow':self.overlandFlow,'interceptedRainfall':self.interceptedRainfall}
         
@@ -114,7 +114,7 @@ class PorporatoVadoseZone(VadoseZone):
     """ Vadose zone model based on Porporato 
     
     Public attributes:
-        - storage (float): [L] current vadose zone storage stock
+        - storageVZ (float): [L] current vadose zone storage stock
         - zr (float): [L] rooting zone depth
         - sw (float): [] wilting point
         - emax (float): [L/T] maximum ET
@@ -124,7 +124,7 @@ class PorporatoVadoseZone(VadoseZone):
     """
     def __init__(self, **kwargs):        
     
-        args = ['storage','zr','sw','emax','sfc','n']
+        args = ['storageVZ','zr','sw','emax','sfc','n']
         for arg in args: setattr(self, arg, kwargs[arg])
 
         # main external variables
@@ -148,7 +148,7 @@ class PorporatoVadoseZone(VadoseZone):
         pet = kwargs.get('pet',self.emax)
 
         #convert current storage to normalized relative soil moisture
-        s = self.storage/(self.n*self.zr)
+        s = self.storageVZ/(self.n*self.zr)
         self.ET = 0 if (s <= self.sw) else pet*(s-self.sw)/(self.sfc-self.sw)
 
         s += ppt*dt/(self.n*self.zr) - self.ET*dt/(self.n*self.zr)
@@ -156,7 +156,7 @@ class PorporatoVadoseZone(VadoseZone):
         #anything in excess of field capacity is drained
         self.leakage = np.max([s - self.sfc, 0])*self.n*self.zr/dt
         s = np.min([s, self.sfc])
-        self.storage = s*self.n*self.zr
+        self.storageVZ = s*self.n*self.zr
 
         return {'ET':self.ET, 'leakage':self.leakage}
 
@@ -180,7 +180,7 @@ class SimpleRockMoistureZone(VadoseZone):
     """
     def __init__(self, **kwargs):        
     
-        args = ['nS','nR','s0R','s0S','stR','stS','zrR','zrS','f','storageR','storageS','storage']
+        args = ['nS','nR','s0R','s0S','stR','stS','zrR','zrS','f','storageR','storageS','storageVZ']
         for arg in args: setattr(self, arg, kwargs[arg])
 
         # main external variables
@@ -239,7 +239,7 @@ class SimpleRockMoistureZone(VadoseZone):
 
         self.ET = self.ETS + self.ETR
 
-        self.storage = self.storageS + self.storageR
+        self.storageVZ = self.storageS + self.storageR
         
         return {'ET':self.ET, 'leakage':self.leakage}
 
