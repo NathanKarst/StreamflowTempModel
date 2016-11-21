@@ -23,6 +23,7 @@ class LinearReservoir(GroundwaterZone):
     def __init__(self,**kwargs):
         args = ['storageGZ','k','discharge']
         for arg in args: setattr(self, arg, kwargs[arg])
+        self.overlandFlow = 0        
         
     def update(self,dt,**kwargs):
         """ Update state of groundwater zone stocks.
@@ -41,7 +42,7 @@ class LinearReservoir(GroundwaterZone):
         self.discharge = self.k*self.storageGZ                # [cm/d]
         self.storageGZ += (-self.discharge + leakage)*dt      # [cm]
         
-        return {'discharge':self.discharge}
+        return {'discharge':self.discharge, 'overlandFlow':self.overlandFlow}
         
 class NonlinearReservoir(GroundwaterZone):
     """ Nonlinear reservoir model.
@@ -60,6 +61,7 @@ class NonlinearReservoir(GroundwaterZone):
         for arg in args: setattr(self, arg, kwargs[arg])
 
         self.discharge = self.a*self.storageGZ**self.b
+        self.overlandFlow = 0        
         
     def update(self,dt,**kwargs):
         """ Update state of groundwater zone stocks.
@@ -93,7 +95,7 @@ class NonlinearReservoir(GroundwaterZone):
         self.storageGZ += (-self.discharge + leakage)*dt
 #         self.overlandFlow = np.max((self.storage - self.storageMax,0))
 #         self.storage = np.min((self.storage,self.storageMax))
-        return {'discharge':self.discharge}
+        return {'discharge':self.discharge, 'overlandFlow':self.overlandFlow}
 
 class TwoLinearReservoir(GroundwaterZone):
     """ Two linear reservoir model.
@@ -113,6 +115,7 @@ class TwoLinearReservoir(GroundwaterZone):
         args = ['storageGZ','k1','k2','res1','res2','k12','discharge']
         for arg in args: setattr(self, arg, kwargs[arg])
         self.storageGZ = self.res1 + self.res2
+        self.overlandFlow = 0        
         
     def update(self,dt, **kwargs):
         """ Update state of groundwater zone stocks.
@@ -135,7 +138,7 @@ class TwoLinearReservoir(GroundwaterZone):
         self.res2 += self.k12*self.res1*dt - self.k2*self.res2*dt
         self.res1 += leakage*dt - self.k12*self.res1*dt - self.k1*self.res1*dt
         
-        return {'discharge':self.discharge}
+        return {'discharge':self.discharge, 'overlandFlow':self.overlandFlow}
 
 class TwoParallelLinearReservoir(GroundwaterZone):
     """ Two linear reservoir model.
@@ -155,6 +158,7 @@ class TwoParallelLinearReservoir(GroundwaterZone):
         args = ['storageGZ','k1','k2','res1','res2','f1','discharge']
         for arg in args: setattr(self, arg, kwargs[arg])
         self.storageGZ = self.res1 + self.res2
+        self.overlandFlow = 0
         
     def update(self,dt,**kwargs):
         """ Update state of groundwater zone stocks.
@@ -177,7 +181,71 @@ class TwoParallelLinearReservoir(GroundwaterZone):
         self.res2 += (1-self.f1)*leakage*dt-self.k2*self.res2*dt
         self.res1 += self.f1*leakage*dt - self.k1*self.res1*dt
         
-        return {'discharge':self.discharge}
+        return {'discharge':self.discharge, 'overlandFlow':self.overlandFlow}
 
-
+class LinearToNonlinearReservoir(GroundwaterZone):
+    """ Two linear reservoir model.
+    
+        a, b, k12, k1, res1, res2      
+    """
+    def __init__(self, **kwargs):
+        args = ['storageGZ','k1','k12','res1','res2','a','b','discharge']
+        for arg in args: setattr(self, arg, kwargs[arg])
+        self.storageGZ = self.res1 + self.res2
+        self.overlandFlow = 0
+        
+    def update(self,dt, **kwargs):
+        """ Update state of groundwater zone stocks.
+        
+        Res. 1 drains to both the stream and res. 2; res. 2 drains only to stream.
+        
+        Args:
+            - dt (float): [T] time step
+            
+        Kwargs (dict) has keys:
+            - leakage (float): i[L/T] incoming leakage flux from vadose zone
+        
+        Returns:
+            - fluxes (dict): dictionary of fluxes [L/T], with keys [discharge]
+        """
+        leakage = kwargs['leakage']
+        
+        self.discharge = self.k1*self.res1 + self.a*(self.res2)**self.b
+        self.storageGZ += (leakage - self.discharge)*dt
+        self.res2 += self.k12*self.res1*dt - self.a*(self.res2)**self.b*dt
+        self.res1 += leakage*dt - self.k12*self.res1*dt - self.k1*self.res1*dt
+        
+        return {'discharge':self.discharge, 'overlandFlow':self.overlandFlow}
+        
+        
+        
+class Melange(GroundwaterZone):
+    def __init__(self, **kwargs):
+        args = ['storageGZ', 'a', 'b', 'capacity']
+        for arg in args: setattr(self, arg, kwargs[arg])        
+        
+        self.discharge = 0
+        self.overlandFlow = 0
+        
+    def update(self, dt, **kwargs):
+        
+        leakage = kwargs['leakage']
+        self.storageGZ += (leakage - self.discharge)*dt
+        self.overlandFlow = 0
+        
+        if self.storageGZ > self.capacity:
+            self.overlandFlow = (self.storageGZ - self.capacity)/dt
+            self.storageGZ = self.capacity
+        
+        self.discharge = self.a*self.storageGZ**self.b
+            
+        return {'discharge':self.discharge, 'overlandFlow':self.overlandFlow}
+         
+        
+        
+        
+        
+        
+        
+        
         

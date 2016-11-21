@@ -23,6 +23,19 @@ Git to computer, install file to generate model directory.
 * [Nathan Karst](www.nathankarst.com)
 * [David Dralle](www.daviddralle.com)
 
-## License
+## Requirements for running the model
+
+To succesfully run the model, a number of files must be present in a folder titled `model_data`, which should be located in the parent directory of `StreamflowTempModel`. Many of the notebooks in `StreamflowTempModel/notebooks` demonstrate how these required files can be generated, however, the files can be prepared independently. Each file is stored as a pickled object. 
+
+* `channel_params.p` : 
+* `channel_params_ranges.p` : 
+* `climate_group_forcing.p` : 
+* `model_config.p` : 
+* `parameter_group_params.p` : 
+* `paramter_ranges.p` : 
+* `rew_config.p` : 
+* `rew_forcing.p` : 
+* `temperature_params` : 
+* `temperature_param_ranges` : 
 
 

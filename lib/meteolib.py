@@ -614,6 +614,22 @@ def vpd_calc(airtemp= scipy.array([]),\
     return vpd # in hPa
 
 
+def airpress_calc(elevation):
+    '''
+    Function to calculate air pressure.
+
+    Parameters:
+        - elevation: elevation in meters
+        
+    Returns:
+        - airpress: (array of) pressure [Pa].
+
+        
+    '''
+    
+    airpress = 101325.0*( (293.0 - 0.0065*elevation)/293.0)**5.26
+    return airpress
+
 def windvec(u= scipy.array([]),\
             D=scipy.array([])):
     '''

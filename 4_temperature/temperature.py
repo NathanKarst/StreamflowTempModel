@@ -34,44 +34,57 @@ class SimpleTemperature(Temperature):
         for arg in args: setattr(self, arg, kwargs[arg])        
 
 
-    def update(self, 
-        dt, 
-        upstream_volumetric_discharge_1, 
-        upstream_temperature_1,
-        upstream_volumetric_discharge_2,
-        upstream_temperature_2,
-        hillslope_volumetric_discharge, 
-        volumetric_discharge, 
-        width,
-        length,
-        volume,
-        Ta,
-        Lin, 
-        Sin, 
-        ppt, 
-        LPI
-        ):
+    def update(self, dt, **kwargs):
         """ Update channel temperature
         
         Args:
-            - 
+            - kwargs (dict) : dictionary of inputs required to integrate time step
+                - vol_1 : upstream volumetric discharge from stream 1
+                - temp_1 : upstream temperature from stream 1
+                - vol_2 : upstream volumetric discharge from stream 2
+                - temp_2 : upstream temperature from stream 2
+                - hillslope_volumetric_discharge : discharge to stream from REW groundwaterZone
+                - hillslope_volumetric_overlandFlow : overland flow from REW to stream
+                - volumetric_discharge : discharge leaving stream link in current timestep
+                - width : channel width
+                - length : channel length
+                - Ta : air temperature 
+                - Lin : longwave incoming radiation
+                - Sin : shortwave incoming radiation
+                - ppt : incoming precipitation
+
         
         Returns: 
            
         """
+        vol_1 = kwargs['vol_1']
+        temp_1 = kwargs['temp_1']
+        vol_2 = kwargs['vol_2']
+        temp_2 = kwargs['temp_2']
+        hillslope_volumetric_discharge = kwargs['hillslope_volumetric_discharge']
+        hillslope_volumetric_overlandFlow = kwargs['hillslope_volumetric_overlandFlow']
+        volumetric_discharge = kwargs['volumetric_discharge']
+        width = kwargs['width']
+        length = kwargs['length']
+        volume = kwargs['volume']
+        Ta = kwargs['Ta']
+        Lin = kwargs['Lin']
+        Sin = kwargs['Sin']
+        ppt = kwargs['ppt']
+        
         dt = dt*86400
         Ta = Ta + 273.15
-        upstream_temperature_1 = upstream_temperature_1 + 273.15
-        upstream_temperature_2 = upstream_temperature_2 + 273.15
+        temp_1 = temp_1 + 273.15
+        temp_2 = temp_2 + 273.15
         temp_curr = self.temperature + 273.15
         Lout = self.sigma*(temp_curr)**4
 
-
-        self.temperature += dt*(ppt*length*width*Ta + upstream_volumetric_discharge_1*upstream_temperature_1 + upstream_volumetric_discharge_2*upstream_temperature_2 + hillslope_volumetric_discharge*(self.Tgw + 273.15) - volumetric_discharge*temp_curr)/volume 
+ 
+        self.temperature += dt*(ppt*length*width*Ta + vol_1*temp_1 + vol_2*temp_2 + hillslope_volumetric_discharge*(self.Tgw + 273.15) + hillslope_volumetric_overlandFlow*(Ta) - volumetric_discharge*temp_curr)/volume 
         self.temperature -= dt*self.kh*(temp_curr - Ta)/(self.rho*self.cp*volume/(length*width))
-        self.temperature += LPI*dt*(1-self.alphaw)*Sin/(self.rho*self.cp*volume/(length*width))
-        self.temperature += LPI*dt*Lin/(self.rho*self.cp*volume/(length*width))
-        self.temperature -= LPI*dt*Lout/(self.rho*self.cp*volume/(length*width))
+        self.temperature += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*volume/(length*width))
+        self.temperature += dt*Lin/(self.rho*self.cp*volume/(length*width))
+        self.temperature -= dt*Lout/(self.rho*self.cp*volume/(length*width))
 
 
 
