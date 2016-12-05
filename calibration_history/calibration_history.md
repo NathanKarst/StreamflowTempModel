@@ -12,3 +12,9 @@ With an objective function value of 0.92, the best parameter set is:
 
 ## DAYMET for everything; use PT for PET
 
+
+
+## daymet for atmospheric, PPT from angelo, hargreaves; logNSE
+
+With an objective function value of 0.89, the best parameter set is:
+{1: {'storageGZ': 5.0, 'zrS': 57.74393001374801, 'zrR': 1372.2182666452704, 'res2': 1.0, 'emax': 0.5, 'res1': 1.0, 'gz': <class groundwaterZone.LinearToNonlinearReservoir at 0x10990f188>, 'nR': 0.13617780612840905, 'b': 2.295110155667068, 'discharge': 0, 'stR': 0.3911982013174157, 'stS': 0.12949360749513367, 'ET': 0, 'storageS': 0.0, 'nS': 0.47414146531251344, 'leakage': 0, 'a': 0.0009462232606012327, 'k12': 0.3612363491015279, 'storageR': 0.0, 'f': 0.7440394596033618, 's0R': 0.20462290476562736, 's0S': 0.11493787496312394, 'sfc': 0.51, 'storageVZ': 0, 'k1': 0.29682228520661014, 'vz': <class vadoseZone.SimpleRockMoistureZone at 0x1098e0db8>}}

@@ -51,7 +51,7 @@ def model_config(outputFilename='model_config.p'):
     #start/stop dates for running model
     spinup_date = date(2011, 07, 01)             
     start_date = date(2009, 01, 01)
-    stop_date = date(2013, 12, 31)
+    stop_date = date(2014, 12, 31)
     
     Tmax = 1.0*(stop_date - start_date).days
 
@@ -359,15 +359,16 @@ def rew_params():
     # parameter_ranges = {i:{'rsat':(1000, 10000.0),'c':(10.0,50.0),'zrR':(500.,2000.),'zrS':(20.,200.),'nS':(0,0.7),'f':(.1,.9),'s0R':(0,.4),'nR':(.01,.2),'s0S':(0,.4),'stR':(0.1,0.9),'stS':(0.1,0.9),'a':(.0001,.1),'b':(1.5,2.5)} for i in parameter_groups}
     # channel_params = {i:{'mannings_n':0.03, 'e':0.01, 'f':0.39, 'volume':0, 'model':SimpleChannel} for i in rews}
     # temperature_params = {i:{'cp':4186.0, 'eps':1.0, 'Tgw':14.0, 'alphaw':0.15, 'rho':1000.0, 'kh':20.0,'sigma':5.67e-8, 'temperature':15.0, 'model':SimpleTemperature} for i in rews}
-    # temperature_param_ranges = {i:{'alphaw':(0.1,0.5), 'kh':(5.0,20.0)} for i in rews}
+    # temperature_params_ranges = {i:{'alphaw':(0.1,0.5), 'kh':(5.0,20.0)} for i in rews}
 
 
     # #Porporato into linear -> nonlinear reservoir  args = ['storageVZ','zr','sw','emax','sfc','n']
     # parameter_group_params = {i:{'ET':0, 'emax':0.5, 'leakage':0,'sw':.2,'sfc':0.8,'zr':1000,'storageVZ':0,'n':0.5,'storageGZ':1.0,'discharge':0,'k12':.2,'k1':.3,'b':2.0,'a':.01,'res1':1.0,'res2':1.0, 'vz':PorporatoVadoseZone, 'gz':LinearToNonlinearReservoir} for i in parameter_groups}
-    # parameter_ranges = {i:{'n':(.05,.7),'k12':(.05,.5),'k1':(.05,.5),'a':(.0001,.1),'b':(1.5,2.5),'sfc':(.4,.9),'sw':(.05,.4),'zr':(100,2000)} for i in parameter_groups}
+    # parameter_ranges = {i:{'n':(.05,.7),'k12':(.05,.5),'k1':(.05,.5),'a':(.0001,.1),'b':(1.5,3.0),'sfc':(.4,.9),'sw':(.05,.4),'zr':(100,2000)} for i in parameter_groups}
     # channel_params = {i:{'mannings_n':0.03, 'e':0.01, 'f':0.39, 'volume':0, 'model':SimpleChannel} for i in rews}
+    # channel_params_ranges = {i:{'mannings_n':(.01,.05)} for i in rews}
     # temperature_params = {i:{'cp':4186.0, 'eps':1.0, 'Tgw':14.0, 'alphaw':0.15, 'rho':1000.0, 'kh':20.0,'sigma':5.67e-8, 'temperature':15.0, 'model':SimpleTemperature} for i in rews}
-    # temperature_param_ranges = {i:{'alphaw':(0.1,0.5), 'kh':(5.0,20.0)} for i in rews}
+    # temperature_params_ranges = {i:{'alphaw':(0.1,0.5), 'kh':(5.0,20.0)} for i in rews}
 
 
     # #Linear into nonlinear reservoir, zanardo vadose zone

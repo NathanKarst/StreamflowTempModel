@@ -24,7 +24,6 @@ from tqdm import tnrange, tqdm_notebook
 import sys
 import shapely
 import fiona
-from pyDOE import *
 import folium
 from multiprocessing import Process, Queue, current_process, freeze_support
 from ast import literal_eval as make_tuple
@@ -77,13 +76,13 @@ def get_groups_to_calibrate(subwatershed_name):
         with fiona.open(basins) as fiona_collection:
             for shapefile_record in fiona_collection:
                 shape    = shapely.geometry.Polygon(shapefile_record['geometry']['coordinates'][0])
-    if shape.contains(subwatershed_shape['geometry'].loc[0].centroid):
-        ids_in_subwatershed.append(shapefile_record['properties']['cat'])
+        if shape.contains(subwatershed_shape['geometry'].loc[0].centroid):
+            ids_in_subwatershed.append(shapefile_record['properties']['cat'])
 
 
-groups_to_calibrate = []
-for rew_id in ids_in_subwatershed:
-    groups_to_calibrate.append(rew_config[rew_id]['group'])
+    groups_to_calibrate = []
+    for rew_id in ids_in_subwatershed:
+        groups_to_calibrate.append(rew_config[rew_id]['group'])
 
     print('REWs %s are located within the calibration sub-watershed' % str(ids_in_subwatershed))
     print('The groups %s will be run for calibration purposes' % str(groups_to_calibrate))
