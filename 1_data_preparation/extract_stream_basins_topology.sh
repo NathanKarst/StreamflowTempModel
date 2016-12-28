@@ -44,8 +44,8 @@ r.watershed -a --overwrite elevation=$M accumulation=$ACCUMSTRING
 r.stream.extract --overwrite elevation=$M threshold=$THRESH stream_length=5 stream_raster=$STREAMSTRING stream_vector=stream_vector_temp direction=$DIRSTRING
 
 #uncomment and install r extensions, which are not pre-installed with grass 7.0.x
-#g.extension r.stream.order
-#g.extension r.stream.basins
+g.extension r.stream.order
+g.extension r.stream.basins
 
 #get the maximum accumulation point and use as watershed outlet for rest of analysis
 #r.watershed

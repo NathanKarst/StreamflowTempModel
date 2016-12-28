@@ -124,7 +124,7 @@ class PorporatoVadoseZone(VadoseZone):
     """
     def __init__(self, **kwargs):        
     
-        args = ['storageVZ','zr','sw','emax','sfc','n']
+        args = ['storageVZ','zr','sw','sfc','n']
         for arg in args: setattr(self, arg, kwargs[arg])
 
         # main external variables
@@ -145,7 +145,7 @@ class PorporatoVadoseZone(VadoseZone):
          """
         
         ppt = kwargs['ppt']
-        pet = kwargs.get('pet',self.emax)
+        pet = kwargs['pet']
 
         #convert current storage to normalized relative soil moisture
         s = self.storageVZ/(self.n*self.zr)
@@ -244,14 +244,28 @@ class SimpleRockMoistureZone(VadoseZone):
         
         return {'ET':self.ET, 'leakage':self.leakage, 'overlandFlow':self.overlandFlow}
 
-class DrainingRockMoistureZone(VadoseZone): 
-    """ Two layer vadose zone model. First layer is treated as a porporato type vadose zone. 
-    Second layer represents rock moisture zone. 
 
+class NimmoRockMoistureZone(VadoseZone): 
+    """ Two layer vadose zone model. In this simplestimple
+        that enters 
+    
+    Public attributes:
+        - n1 (float): [] porosity of soil layer
+        - n2 (float): [] porosity of rock moisture layer
+        - sh2 (float): [] water content at which ET = 0 in rock moisture zone
+        - sh1 (float): [] water content at which ET = 0 in soil moisture zone
+        - sfc2 (float): [] water content at which ET = PET in rock moisture zone
+        - sfc1 (float): [] water content at which ET = PET in soil moisture zone
+        - Zr1 (float): [L] thickness of rock moisture zone
+        - zr2 (float): [L] thickness of soil moisture zone
+        - f (float): [] fraction of roots in soil layer (i.e., fraction of PET apportioned to soil layer)
+        - storageR (float): [L] storage in rock moisture zone
+        - storageS (float): [L] storage in soil moisture zone
+    
     """
     def __init__(self, **kwargs):        
     
-        args = ['rsat', 'c', 'nS','nR','s0R','s0S','stR','stS','zrR','zrS','f','storageR','storageS','storageVZ']
+        args = ['storageR','storageS','storageVZ', 'n1', 'n2', 'Zr1', 'Zr2', 'Ks1', 'Ks2', 'sfc1', 'sfc2', 'sh1', 'sh2', 'f', 'qSlim', 'alpha']
         for arg in args: setattr(self, arg, kwargs[arg])
 
         # main external variables
@@ -272,44 +286,57 @@ class DrainingRockMoistureZone(VadoseZone):
         Returns: 
             - fluxes (dict): dictionary of fluxes, with keys [ET, leakage]
          """
-        
+
         ppt = kwargs['ppt']
         pet = kwargs['pet']
+        h = dt*ppt/(self.n1*self.Zr1); s01 = self.storageS/(self.n1*self.Zr1); s02 = self.storageR/(self.n2*self.Zr2)
 
-        #first compute soil moisture zone
-        sS = self.storageS/(self.nS*self.zrS)
-        if (sS <= self.s0S):
-            self.ETS = 0 
-        elif (sS <= self.stS):
-            self.ETS = (self.f)*pet*(sS-self.s0S)/(self.stS-self.s0S)
-        else: 
-            self.ETS = (self.f)*pet    
+        Leak1 = _Leak(s01, self.sfc1, self.Ks1)
+        Leak2 = _Leak(s02, self.sfc2, self.Ks2)
+        ET1 = _ET(pet, s01)*self.f
+        ET2 = _ET(pet, s02)*(1-self.f)
 
-        sS += ppt*dt/(self.nS*self.zrS) - self.ETS*dt/(self.nS*self.zrS)
+        self.ETR = ET2
+        self.ETS = ET1
+        self.ET = ET1 + ET2
 
-        #anything in excess of stS is drained to rock moisture
-        soilLeakage = np.max([sS - self.stS, 0])*self.nS*self.zrS/dt
-        sS = np.min([sS, self.stS])
-        self.storageS = sS*self.nS*self.zrS
+        # soil bucket
+        if h > (1.0 - s01): 
+            s1 = 1.0 - dt*(ET1 + Leak1)/(self.n1*self.Zr1)
+            self.overlandFlow = self.n1*self.Zr1*(h - (1.0 - s01))/dt
+        else:
+            s1 = max(self.sh1, s01 + h - dt*(ET1 + Leak1)/(self.n1*self.Zr1))
+            self.overlandFlow = 0
 
-
-        #convert current storage to normalized relative value
-        sR = self.storageR/(self.nR*self.zrR)
-        if (sR <= self.s0R):
-            self.ETR = 0
-        elif (sR <= self.stR):
-            self.ETR = (1-self.f)*pet*(sR-self.s0R)/(self.stR-self.s0R)
-        else: 
-            self.ETR = (1-self.f)*pet
-
-        rockLeakage = self.rsat*(sR/(1-sR))**self.c
-
-        sR += soilLeakage*dt/(self.nR*self.zrR) - self.ETR*dt/(self.nR*self.zrR) - rockLeakage*dt/(self.nR*self.zrR)
-        extraLeakage = np.max([(sR - self.stR)*self.nR*self.zrR/dt, 0])
-        sR = np.min([sR, self.stR])
-        self.leakage = rockLeakage + extraLeakage
-        self.storageR = sR*self.nR*self.zrR
-        self.ET = self.ETS + self.ETR
-        self.storageVZ = self.storageS + self.storageR
+        # !!!!!!!! NOTE TO XUE; why the ratio of storages??? !!!!!!!!!
+        # ET doesn't go to zero at s = sh? 
+        # Is the divying up mass conserving? 
+        L2in = (1-self.alpha)*dt*Leak1/(self.n2*self.Zr2) #amount not siphoned to preferential flow
         
-        return {'ET':self.ET, 'leakage':self.leakage, 'ETR':self.ETR, 'ETS':self.ETS, 'overlandFlow':self.overlandFlow}
+        if L2in > (1.0 - s02): 
+            s2 = self.sfc2 - dt*(ET2 + Leak2)/(self.n2*self.Zr2)
+            Q2 = (L2in - (1.0-s02))*self.n2*self.Zr2/dt   # matrix discharge from saprolite 
+        else: 
+            s2 = max(self.sh2, s02 + L2in - dt*(ET2 - Leak2)/(self.n2*self.Zr2))
+            Q2 = 0
+
+        #infiltration into fractured layer
+        qin = self.alpha*Leak1 + Q2
+
+        if qin > self.qSlim: #saturating all conducting areas
+            frac = 1.0
+        else: #not quite saturating all conducting areas
+            frac = qin/self.qSlim
+
+        self.leakage = self.qSlim*frac + Leak2
+        self.storageS = s1*self.n1*self.Zr1
+        self.storageR = s2*self.n2*self.Zr2
+        self.storageVZ = self.storageS + self.storageR
+
+def _Leak(s,sfc,Ks): 
+    return max(0,Ks*(s - sfc)/(1.0 - sfc))
+
+def _ET(Emax, s): 
+    return Emax*s
+
+
