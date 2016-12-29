@@ -18,7 +18,6 @@ from datetime import date
 import pandas as pd
 import numpy as np
 import geopandas as gp
-import mpld3
 import time
 from tqdm import tnrange, tqdm_notebook
 import sys
