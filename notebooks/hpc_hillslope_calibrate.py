@@ -1,5 +1,3 @@
-
-
 import os
 import sys
 from os.path import dirname
@@ -7,16 +5,14 @@ parent_dir = dirname(dirname(os.getcwd()))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','2_hillslope_discharge'))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','3_channel_routing'))
 import random
-random.seed()
 from vadoseZone import *
 import glob
 from groundwaterZone import *
 from REW import REW
-from matplotlib import pyplot as plt
 import numpy as np
-import seaborn as sns
 import pickle
 from datetime import date
+from datetime import datetime
 import pandas as pd
 import numpy as np
 import geopandas as gp
@@ -27,10 +23,8 @@ import shapely
 import fiona
 from ast import literal_eval as make_tuple
 import multiprocessing as mp
-
 parent_dir = os.path.dirname(os.path.dirname(os.getcwd()))
 sys.path.append(os.path.join(parent_dir, 'StreamflowTempModel', '1_data_preparation'))
-
 rew_config = pickle.load( open( os.path.join(parent_dir,'model_data','rew_config.p'), "rb" ) )
 climate_group_forcing = pickle.load( open( os.path.join(parent_dir,'model_data','climate_group_forcing.p'), "rb" ) )
 parameter_group_params = pickle.load( open( os.path.join(parent_dir,'model_data','parameter_group_params.p'), "rb" ))
@@ -43,53 +37,49 @@ Tmax = model_config['Tmax']
 dt = model_config['dt_hillslope']
 t = model_config['t_hillslope']
 resample_freq_hillslope = model_config['resample_freq_hillslope']
-timestamps_hillslope = model_config['timestamps_hillslope']
+timestamps_hillslope = pd.date_range(start_date, stop_date, freq=resample_freq_hillslope)
 
 def main(argv):
-	if argv[0]=='False':
-		minimize_objective_function = False
-	else: 
-		minimize_objective_function = True
-		
-	N = int(argv[1])
-	subwatershed_calibration_name = argv[2]
-	subwatershed_name = argv[3]
+    if argv[0]=='False':
+        minimize_objective_function = False
+    else: 
+        minimize_objective_function = True
 
-	groups_to_calibrate, ids_in_subwatershed = get_groups_to_calibrate(subwatershed_name)
-	#specify the number of parameter sets to generate
+    N = int(argv[1])
+    subwatershed_calibration_name = argv[2]
+    subwatershed_name = argv[3]
 
-	cores = mp.cpu_count()
-	print('There are %s cores on this machine, \n%s model runs will be performed on each core'%(str(cores), str(N)))
+    groups_to_calibrate, ids_in_subwatershed = get_groups_to_calibrate(subwatershed_name)
+    #specify the number of parameter sets to generat
 
-	calibration_data = pickle.load( open(os.path.join(parent_dir,'calibration_data',subwatershed_calibration_name)))
-	calibration_data = calibration_data[spinup_date:stop_date]
+    cores = mp.cpu_count()
+    print('There are %s cores on this machine, \n%s model runs will be performed on each core'%(str(cores), str(N)))
+    calibration_data = pickle.load( open(os.path.join(parent_dir,'calibration_data',subwatershed_calibration_name)))
+    calibration_data = calibration_data[spinup_date:stop_date]
 
-	parameters_per_core = {}
-	arguments = []
-	for cpu in range(0,cores):
-	    parameters_per_core[cpu] = generate_parameter_sets(N, parameter_group_params, parameter_ranges)
-	    arguments.append((subwatershed_calibration_name, groups_to_calibrate, ids_in_subwatershed, parameters_per_core[cpu], objective_function, minimize_objective_function, cpu))
+    arguments = []
+    for cpu in range(0,cores):
+        arguments.append((subwatershed_calibration_name, groups_to_calibrate, ids_in_subwatershed, N, objective_function, minimize_objective_function, cpu))
 
-	pool = mp.Pool()
+    pool = mp.Pool()
 
-	# results is a list of 3-tuples. Each 3-tuple includes, in order, 
-	# the best fit model run time series
-	# the objective function value of the best run, and the index of the best run 
-	# parameter set
-	results = pool.map(calibrate, arguments)
-	cpu_objs = [results[i][1] for i in range(cores)]
-	if minimize_objective_function:
-	    cpu_best = np.argmin(cpu_objs)
-	else:
-	    cpu_best = np.argmax(cpu_objs)
+    # results is a list of 3-tuples. Each 3-tuple includes, in order, 
+    # the best fit model run time series
+    # the objective function value of the best run, and the index of the best run 
+    # parameter set
+    results = pool.map(calibrate, arguments)
+    cpu_objs = [results[i][1] for i in range(cores)]
+    if minimize_objective_function:
+        cpu_best = np.argmin(cpu_objs)
+    else:
+        cpu_best = np.argmax(cpu_objs)
 
-	best_index = results[cpu_best][2]
-	best_fit = results[cpu_best][0]
-	best_objective = results[cpu_best][1]
+    best_fit = results[cpu_best][0]
+    best_objective = results[cpu_best][1]
+    best_params = copy.deepcopy(results[cpu_best][2])
 
-	print('With an objective function value of %0.2f, the best parameter set is:' % (best_objective))
-	print(parameters_per_core[cpu_best][best_index])
-
+    print('With an objective function value of %0.2f, the best parameter set is:' % (best_objective))
+    print(best_params)
 
 # Nash sutcliffe efficiency. Should be maximized for best fit. 
 def objective_function(modeled, observed):
@@ -145,55 +135,48 @@ def get_groups_to_calibrate(subwatershed_name):
     print('The groups %s will be run for calibration purposes' % str(groups_to_calibrate))
     return groups_to_calibrate, ids_in_subwatershed
 
-def generate_parameter_sets(N, parameter_group_params, parameter_ranges):
-    parameter_realz = []
-    for i in range(N):
-        parameter_group_params_current = {}
-        for w in parameter_group_params.keys():
-            parameter_group_params_current[w] = parameter_group_params[w].copy()
+def generate_parameter_set(parameter_group_params, parameter_ranges):
+    parameter_group_params_current = {}
+    for w in parameter_group_params.keys():
+        parameter_group_params_current[w] = parameter_group_params[w].copy()
 
-        for j, parameter_group in enumerate(parameter_ranges.keys()):
-                for k, parameter in enumerate(parameter_ranges[parameter_group].keys()):
-                    new_value = random.random()*(parameter_ranges[parameter_group][parameter][1] - parameter_ranges[parameter_group][parameter][0]) + parameter_ranges[parameter_group][parameter][0]
-                    parameter_group_params_current[parameter_group][parameter] = new_value
-        parameter_realz.append(parameter_group_params_current)
+    for j, parameter_group in enumerate(parameter_ranges.keys()):
+            for k, parameter in enumerate(parameter_ranges[parameter_group].keys()):
+                new_value = random.random()*(parameter_ranges[parameter_group][parameter][1] - parameter_ranges[parameter_group][parameter][0]) + parameter_ranges[parameter_group][parameter][0]
+                parameter_group_params_current[parameter_group][parameter] = new_value
+    return parameter_group_params_current
 
-    return parameter_realz
-    
-    
-    
+  
 def calibrate(arguments):
-    calibration_data_filename, groups_to_calibrate, ids_in_subwatershed, parameter_realz, objective_function, minimize_objective_function, cpu = arguments
+    calibration_data_filename, groups_to_calibrate, ids_in_subwatershed, N, objective_function, minimize_objective_function, cpu = arguments
     
     # Load calibration data
     calibration_data = pickle.load( open(os.path.join(parent_dir,'calibration_data',calibration_data_filename)))
     calibration_data = calibration_data[spinup_date:stop_date]
     
-    N = len(parameter_realz)
-
-    # for each parameter realization
-    objs = []
+    # for each parameter realization 
     best_fit = pd.DataFrame({'modeled':np.zeros(len(timestamps_hillslope))}, index=timestamps_hillslope).resample('D').mean()
+    best_parameter_set = {}
     if minimize_objective_function: 
         objs_curr = np.inf
+        best_obj = np.inf
     else:
         objs_curr = -np.inf
+        best_obj = -np.inf
 
     best_index = -1
     desc = "Core #%s"%(cpu)
     for i in range(N):
         solved_groups = {}
-        parameter_group_params = {}
-        parameter_group_params = parameter_realz[i]
-
+        parameter_group_params_curr = generate_parameter_set(parameter_group_params, parameter_ranges)
         solved_group_hillslopes_dict = {}
         for group_id in groups_to_calibrate:
 
             parameter_group_id = group_id[0]
             climate_group_id = group_id[1]
 
-            vz = parameter_group_params[parameter_group_id]['vz'](**parameter_group_params[parameter_group_id])
-            gz = parameter_group_params[parameter_group_id]['gz'](**parameter_group_params[parameter_group_id])    
+            vz = parameter_group_params_curr[parameter_group_id]['vz'](**parameter_group_params_curr[parameter_group_id])
+            gz = parameter_group_params_curr[parameter_group_id]['gz'](**parameter_group_params_curr[parameter_group_id])    
 
             rew = REW(vz, gz,  **{'pet':climate_group_forcing[climate_group_id].pet, 'ppt':climate_group_forcing[climate_group_id].ppt, 'aspect':90})
 
@@ -232,24 +215,24 @@ def calibrate(arguments):
             solved_subwatershed_array += rew_config[rew_id]['area_sqkm']/total_area*solved_groups[rew_config[rew_id]['group']]['discharge']
 
         solved_subwatershed[name] = solved_subwatershed_array
-        objs.append(objective_function(solved_subwatershed[name][spinup_date:stop_date],calibration_data['runoff'][spinup_date:stop_date]))
+        objs_curr = objective_function(solved_subwatershed[name][spinup_date:stop_date],calibration_data['runoff'][spinup_date:stop_date])
 
         if minimize_objective_function:
-            if objs[i]<objs_curr:
-                objs_curr = objs[i]
-                best_index = i
+            if objs_curr<best_obj:
+                best_obj = objs_curr
                 best_fit = solved_subwatershed[name].copy()
+                best_parameter_set = copy.deepcopy(parameter_group_params_curr)
         else:
-            if objs[i]>objs_curr:
-                objs_curr = objs[i]
-                best_index = i
+            if objs_curr>best_obj:
+                best_obj = objs_curr
                 best_fit = solved_subwatershed[name].copy()
-    return (best_fit, objs_curr, best_index)
+                best_parameter_set = copy.deepcopy(parameter_group_params_curr)
 
+    return (best_fit, best_obj, best_parameter_set)
 
 
 if __name__ == '__main__':
-	main(sys.argv[1:])
+    main(sys.argv[1:])
 
 
 

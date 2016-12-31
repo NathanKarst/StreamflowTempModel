@@ -59,19 +59,19 @@ def model_config(outputFilename='model_config.p'):
     dt_hillslope = 1/4.
     t_hillslope = np.linspace(0,Tmax,np.ceil(Tmax/dt_hillslope)+1)
     resample_freq_hillslope = str(int(dt_hillslope*24*60)) + 'T'
-    timestamps_hillslope = pd.date_range(start_date, stop_date, freq=resample_freq_hillslope)
+    # timestamps_hillslope = pd.date_range(start_date, stop_date, freq=resample_freq_hillslope)
 
     #channel timestep information
     dt_channel = 1/1440.
     t_channel = np.linspace(0, Tmax, np.ceil(Tmax/dt_channel)+1)
     resample_freq_channel = str(int(dt_channel*24*60)) + 'T'
-    timestamps_channel = pd.date_range(start_date, stop_date, freq=resample_freq_channel)
+    # timestamps_channel = pd.date_range(start_date, stop_date, freq=resample_freq_channel)
 
     #temperature timestep information
     dt_temperature = 1/1440.
     t_temperature = np.linspace(0, Tmax, np.ceil(Tmax/dt_temperature)+1)
     resample_freq_temperature = str(int(dt_temperature*24*60)) + 'T'
-    timestamps_temperature = pd.date_range(start_date, stop_date, freq=resample_freq_temperature)
+    # timestamps_temperature = pd.date_range(start_date, stop_date, freq=resample_freq_temperature)
     
     parent_dir = dirname(dirname(os.getcwd()))
 
@@ -85,12 +85,13 @@ def model_config(outputFilename='model_config.p'):
                     'dt_channel':dt_channel, 
                     't_channel':t_channel,
                     'resample_freq_channel':resample_freq_channel, 
-                    'timestamps_channel':timestamps_channel, 
-                    'timestamps_hillslope':timestamps_hillslope,
+                    # 'timestamps_channel':timestamps_channel, 
+                    # 'timestamps_hillslope':timestamps_hillslope,
                     'dt_temperature':dt_temperature,
                     't_temperature':t_temperature,
                     'resample_freq_temperature':resample_freq_temperature,
-                    'timestamps_temperature':timestamps_temperature}
+                    # 'timestamps_temperature':timestamps_temperature
+                    }
 
     pickle.dump( model_config, open( os.path.join(parent_dir,'model_data',outputFilename), "wb" ) )
 
@@ -356,7 +357,7 @@ def rew_params():
 
     # FOR ELDER CREEK: Nimmo rock moisture into nonlinear reservoir
     parameter_group_params = {i:{'res1':1.0, 'res2':1.0, 'k1': 0.2, 'k12':0.2, 'alpha':0.5, 'Ks1':100.0, 'Ks2':50.0 , 'qSlim':5.0, 'storageGZ': 5.0, 'Zr1': 174.763974358385, 'Zr2': 205.808539545927, 'emax': 0.5, 'gz': LinearToNonlinearReservoir , 'n2': 0.080053100177366355, 'b': 2.1859657517168203, 'storageVZ': 0, 'discharge': 0, 'storageS': 0.0, 'n1': 0.3052791871968346, 'leakage': 0, 'a': 0.0013003260388739675, 'storageR': 0.0, 'f': 0.8999229131878287, 'sh2': 0.02565871639398041, 'sh1': 0.08019635427189753, 'sfc1': 0.51, 'sfc2': 0.5764115141116821, 'vz': NimmoRockMoistureZone } for i in parameter_groups}          
-    parameter_ranges = {i:{'k12':(0.05,0.5), 'k1':(0.05,0.8),'qSlim':(1.0, 50.0), 'alpha':(0.2,0.8), 'Ks2':(10.0,100.0), 'Zr2':(200.,2000.),'Zr1':(20.,200.),'n1':(0.3,0.7),'f':(.1,.9),'sh2':(0,.4),'n2':(.01,.2),'sh1':(0,.4),'sfc2':(0.1,0.9),'sfc1':(0.1,0.9),'a':(.0001,.1),'b':(1.5,2.5), } for i in parameter_groups}
+    parameter_ranges = {i:{'k12':(0.05,0.5), 'k1':(0.05,0.8),'qSlim':(1.0, 50.0), 'alpha':(0.2,0.8), 'Ks2':(10.0,100.0), 'Zr2':(200.,2000.),'Zr1':(20.,200.),'n1':(0.3,0.7),'f':(.1,.9),'sh2':(0,.4),'n2':(.01,.2),'sh1':(0,.4),'sfc2':(0.1,0.9),'sfc1':(0.1,0.9),'a':(.0001,.1),'b':(1.5,2.5), 'Ks1':(10.0,200.0) } for i in parameter_groups}
     channel_params = {i:{'mannings_n':0.03, 'e':0.01, 'f':0.39, 'volume':0, 'model':SimpleChannel} for i in rews}
     channel_params_ranges = {i:{'mannings_n':(.01,.05)} for i in rews}
     temperature_params = {i:{'cp':4186.0, 'eps':1.0, 'Tgw':14.0, 'alphaw':0.15, 'rho':1000.0, 'kh':20.0,'sigma':5.67e-8, 'temperature':15.0, 'model':SimpleTemperature} for i in rews}
