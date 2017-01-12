@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<kml xmlns="http://www.opengis.net/kml/2.2"><Document><open>1</open>
+<snippet><![CDATA[Created by <a href="http://kml4earth.appspot.com/">Kml4Earth</a>]]></snippet>
+<description><![CDATA[Bounding Boxes KML Service<P>Powered by <a href="http://kml4earth.appspot.com/">Kml4Earth</a>]]></description>
+<Style id="s"><LineStyle><width>2</width>
+</LineStyle></Style><Style id="cp"><IconStyle><scale>0.5</scale>
+<Icon><href>http://maps.google.com/mapfiles/kml/shapes/cross-hairs.png</href>
+</Icon></IconStyle></Style><Style id="ts"><LineStyle><color>ffffffff</color>
+<width>2</width>
+</LineStyle><PolyStyle><color>40ff2234</color>
+<fill>1</fill>
+<outline>1</outline>
+</PolyStyle></Style><Folder><name>Untitled Polygon</name>
+<snippet><![CDATA[(124° 31' 25" W, 38° 57' 30" N) .. (122° 20' 8" W, 40° 54' 58" N)]]></snippet>
+<description><![CDATA[bounds:
+<table>
+<tr><td>north:<td>40.916135
+<tr><td>south:<td>38.958226
+<tr><td>east:<td>-122.335654
+<tr><td>west:<td>-124.523572
+</table>]]></description>
+<Placemark><name>original</name>
+<visibility>0</visibility>
+<Polygon><tessellate>1</tessellate>
+<outerBoundaryIs><LinearRing><coordinates>-124.5235724124,40.9161350895,0 -124.388888309,39.0289259313,0 -122.3356539261,38.9582255934,0 -122.5248994555,40.8607008207,0 -124.5235724124,40.9161350895,0</coordinates>
+</LinearRing></outerBoundaryIs></Polygon></Placemark>
+<Placemark><name>bbox</name>
+<styleUrl>#s</styleUrl>
+<LineString><tessellate>1</tessellate>
+<coordinates>-124.5235724124,38.9582255934,0 -124.5235724124,40.9161350895,0 -122.3356539261,40.9161350895,0 -122.3356539261,38.9582255934,0 -124.5235724124,38.9582255934,0</coordinates>
+</LineString></Placemark>
+<Placemark><description>center</description>
+<styleUrl>#cp</styleUrl>
+<Point><coordinates>-123.4296131693,39.9371803415,0</coordinates>
+</Point></Placemark>
+</Folder></Document></kml>
