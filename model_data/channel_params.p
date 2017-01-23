@@ -28,7 +28,7 @@ p12
 F0.1
 sS'volume'
 p13
-I0
+F1.0
 sS'model'
 p14
 cchannel
@@ -50,7 +50,7 @@ Rp20
 g12
 F0.1
 sg13
-I0
+F1.0
 sg14
 g15
 sg16
@@ -67,7 +67,7 @@ Rp24
 g12
 F0.1
 sg13
-I0
+F1.0
 sg14
 g15
 sg16

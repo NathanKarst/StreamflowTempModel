@@ -25,8 +25,8 @@ Rp10
 (dp11
 S'mannings_n'
 p12
-(F0.01
-F0.05
+(F0.03
+F0.15
 tp13
 ssg1
 (g5

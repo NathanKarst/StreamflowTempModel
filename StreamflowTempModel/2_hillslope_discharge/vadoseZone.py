@@ -189,6 +189,7 @@ class SimpleRockMoistureZone(VadoseZone):
         self.ETS             = 0            # [cm/day]
         self.ET              = 0            # [cm/day]
         self.overlandFlow    = 0 
+        self.storageVZ       = self.storageS + self.storageR
 
     def update(self,dt,**kwargs):
         """ Update vadose zone stocks and compute fluxes.
@@ -207,6 +208,7 @@ class SimpleRockMoistureZone(VadoseZone):
 
         #first compute soil moisture zone
         sS = self.storageS/(self.nS*self.zrS)
+
         if (sS <= self.s0S):
             self.ETS = 0 
         elif (sS <= self.stS):
@@ -333,6 +335,9 @@ class NimmoRockMoistureZone(VadoseZone):
         self.storageS = s1*self.n1*self.Zr1
         self.storageR = s2*self.n2*self.Zr2
         self.storageVZ = self.storageS + self.storageR
+
+
+        return {'ET':self.ET, 'leakage':self.leakage, 'overlandFlow':self.overlandFlow}        
 
 def _Leak(s,sfc,Ks): 
     return max(0,Ks*(s - sfc)/(1.0 - sfc))

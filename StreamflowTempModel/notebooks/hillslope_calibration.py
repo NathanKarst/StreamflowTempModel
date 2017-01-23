@@ -39,10 +39,9 @@ stop_date = model_config['stop_date']
 spinup_date = model_config['spinup_date']
 Tmax = model_config['Tmax']
 dt = model_config['dt_hillslope']
-t = model_config['t_hillslope']
 resample_freq_hillslope = model_config['resample_freq_hillslope']
-timestamps_hillslope = model_config['timestamps_hillslope']
-
+timestamps_hillslope = pd.date_range(start_date, stop_date, freq=resample_freq_hillslope)
+t = np.linspace(0,Tmax,np.ceil(Tmax/dt)+1)
 
 def get_groups_to_calibrate(subwatershed_name):
     shapefile_path = os.path.join(parent_dir, 'raw_data','watershed_poly', subwatershed_name)
@@ -82,6 +81,8 @@ def get_groups_to_calibrate(subwatershed_name):
     groups_to_calibrate = []
     for rew_id in ids_in_subwatershed:
         groups_to_calibrate.append(rew_config[rew_id]['group'])
+        
+        groups_to_calibrate = list(set(groups_to_calibrate))
 
     print('REWs %s are located within the calibration sub-watershed' % str(ids_in_subwatershed))
     print('The groups %s will be run for calibration purposes' % str(groups_to_calibrate))

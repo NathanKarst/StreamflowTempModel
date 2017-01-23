@@ -68,9 +68,9 @@ def main():
     spinup_date = model_config['spinup_date']
     Tmax = model_config['Tmax']
     dt = model_config['dt_hillslope']
-    t = model_config['t_hillslope']
+    t = np.linspace(0,Tmax,np.ceil(Tmax/dt)+1)
     resample_freq_hillslope = model_config['resample_freq_hillslope']
-    timestamps_hillslope = model_config['timestamps_hillslope']
+    timestamps_hillslope = pd.date_range(start_date, stop_date, freq=resample_freq_hillslope)
 
 
     # With the forcing data, REW parameterizations, and overarching model description in hand, we're finally ready to run the model. We assume that in terms of hillslope discharge, no REW depends on any other, and so we can simply simulate discharge sequentially along the list of REWs. For each REW, we
@@ -98,11 +98,12 @@ def main():
     
         rew = REW(vz, gz,  **{'pet':climate_group_forcing[climate_group_id].pet, 'ppt':climate_group_forcing[climate_group_id].ppt, 'aspect':90})
 
-        storage    = np.zeros(np.size(t))
-        groundwater     = np.zeros(np.size(t))
+        storageVZ    = np.zeros(np.size(t))
+        storageGZ     = np.zeros(np.size(t))
         discharge       = np.zeros(np.size(t))
         leakage         = np.zeros(np.size(t))
         ET              = np.zeros(np.size(t))
+        overlandFlow = np.zeros(np.size(t))
 
         # Resample pet and ppt to integration timestep
         ppt = np.array(rew.ppt[start_date:stop_date].resample(resample_freq_hillslope).ffill())
@@ -111,16 +112,31 @@ def main():
         # Solve group hillslope
         for i in range(len(t)):
             rew.vz.update(dt,**{'ppt':ppt[i],'pet':pet[i]})
-            storage[i] = rew.vz.storage
+            storageVZ[i] = rew.vz.storageVZ
             leakage[i]      = rew.vz.leakage
             ET[i]           = rew.vz.ET   
             rew.gz.update(dt,**{'leakage':leakage[i]})
-            groundwater[i] = rew.gz.storage
+            storageGZ[i] = rew.gz.storageGZ
             discharge[i] = rew.gz.discharge
+            overlandFlow[i] = rew.vz.overlandFlow
+            
+        totalIn = ppt.cumsum()*dt + storageVZ[0] + storageGZ[0] + discharge[0]*dt + ET[0]*dt
+        totalPresent = storageVZ + storageGZ
+        totalOut = discharge.cumsum()*dt + ET.cumsum()*dt
+        
+        balance = (totalOut + totalPresent)/totalIn 
+        print(max(balance))
+        print(min(balance))
+
 
         # Save all results as daily data. 
-        solved_hillslope = pd.DataFrame({'storage':storage, 'leakage':leakage, 'ET':ET, 'groundwater':groundwater, 'discharge':discharge}, index=timestamps_hillslope)
-        solved_group_hillslopes_dict[group_id] = solved_hillslope.resample('D').mean()
+        solved_hillslope = pd.DataFrame({'storageVZ':storageVZ, 'leakage':leakage, 'ET':ET, 'storageGZ':storageGZ, 'discharge':discharge, 'overlandFlow':overlandFlow}, index=timestamps_hillslope)
+        solved_group_hillslopes_dict[group_id] = solved_hillslope.resample('D').last()
+        
+    
+
+    
+    
 
     pickle.dump( solved_group_hillslopes_dict, open( os.path.join(parent_dir,'model_data','solved_hillslope_discharge.p'), "wb" ) )
     

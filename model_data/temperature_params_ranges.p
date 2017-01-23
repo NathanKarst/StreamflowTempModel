@@ -26,12 +26,12 @@ Rp10
 S'kh'
 p12
 (F1.0
-F200.0
+F20.0
 tp13
 sS'alphaw'
 p14
-(F0.1
-F1.0
+(F0.05
+F0.5
 tp15
 ssg1
 (g5

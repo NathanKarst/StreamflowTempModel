@@ -62,7 +62,7 @@ class SimpleChannel(Channel):
             self.volume += ppt*dt*self.width*self.length
             self.volume += upstream_volumetric_discharge*dt
             self.volume += hillslope_volumetric_discharge*dt
-            self.volume -= _manning_u(h, self.mannings_n, self.gradient)*self.width*h*dt
+            self.volume -= self.volumetric_discharge*dt
             return 0
 
 

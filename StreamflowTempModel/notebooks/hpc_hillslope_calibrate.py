@@ -131,6 +131,8 @@ def get_groups_to_calibrate(subwatershed_name):
     for rew_id in ids_in_subwatershed:
         groups_to_calibrate.append(rew_config[rew_id]['group'])
 
+    groups_to_calibrate = list(set(groups_to_calibrate))
+
     print('REWs %s are located within the calibration sub-watershed' % str(ids_in_subwatershed))
     print('The groups %s will be run for calibration purposes' % str(groups_to_calibrate))
     return groups_to_calibrate, ids_in_subwatershed
@@ -200,7 +202,7 @@ def calibrate(arguments):
                 discharge[l] = rew.gz.discharge
 
             # resample as daily data
-            solved_groups[group_id] = pd.DataFrame({'discharge':discharge}, index=timestamps_hillslope).resample('D').mean()
+            solved_groups[group_id] = pd.DataFrame({'discharge':discharge}, index=timestamps_hillslope).resample('D').apply(sum)*dt
 
         total_area = 0
         for rew_id in ids_in_subwatershed:

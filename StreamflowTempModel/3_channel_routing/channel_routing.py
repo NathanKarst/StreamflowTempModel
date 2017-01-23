@@ -124,8 +124,8 @@ def main():
         if approx==1: 
             print '\nWarning: Numerical instability encountered. Consider decreasing timestep size. \nDischarge for REW ' + str(rew_id) + ' had to be approximated for some timesteps. \n'
 
-        network_volumetric_discharges[rew_id]=pd.DataFrame({'volumetric_discharge':volumetric_discharge}, index=timestamps_channel).resample('D').mean()
-        network_volumes[rew_id] = pd.DataFrame({'volumes':volumes}, index=timestamps_channel).resample('D').mean()
+        network_volumetric_discharges[rew_id]=pd.DataFrame({'volumetric_discharge':volumetric_discharge}, index=timestamps_channel).resample('D').first()
+        network_volumes[rew_id] = pd.DataFrame({'volumes':volumes}, index=timestamps_channel).resample('D').first()
                 
     pickle.dump( network_volumetric_discharges, open( os.path.join(parent_dir,'model_data','solved_channel_routing.p'), "wb" ) )
     pickle.dump( network_volumes, open( os.path.join(parent_dir,'model_data','network_volumes.p'), "wb" ) )

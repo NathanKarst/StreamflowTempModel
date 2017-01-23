@@ -57,34 +57,48 @@ class SimpleTemperature(Temperature):
         Returns: 
            
         """
-        vol_1 = kwargs['vol_1']
-        temp_1 = kwargs['temp_1']
-        vol_2 = kwargs['vol_2']
-        temp_2 = kwargs['temp_2']
-        hillslope_volumetric_discharge = kwargs['hillslope_volumetric_discharge']
-        hillslope_volumetric_overlandFlow = kwargs['hillslope_volumetric_overlandFlow']
-        volumetric_discharge = kwargs['volumetric_discharge']
-        width = kwargs['width']
-        length = kwargs['length']
-        volume = kwargs['volume']
-        Ta = kwargs['Ta']
+        # volumetric fluxes
+        vol_1 = 1.15741e-11*kwargs['vol_1']
+        vol_2 = 1.15741e-11*kwargs['vol_2']
+        hillslope_volumetric_discharge = 1.15741e-11*kwargs['hillslope_volumetric_discharge']
+        hillslope_volumetric_overlandFlow = 1.15741e-11*kwargs['hillslope_volumetric_overlandFlow']
+        volumetric_discharge = 1.15741e-11*kwargs['volumetric_discharge']
+
+        # linear fluxes
+        ppt = 1.15741e-7*kwargs['ppt']
+
+        # temperatures 
+        temp_1 = kwargs['temp_1'] + 273.15
+        temp_2 = kwargs['temp_2'] + 273.15
+        Ta = kwargs['ta'] + 273.15
+        temp_curr = self.temperature + 273.15
+
+        # lengths
+        width = 0.01*kwargs['width']
+        length = 0.01*kwargs['length']
+
+        # volumes
+        volume = 1e-6*kwargs['volume']
+
+        # atmospheric data (water vapor pressure in kPa)
+        ea = kwargs['ea']
+        
+        # energy fluxes
         Lin = kwargs['Lin']
         Sin = kwargs['Sin']
-        ppt = kwargs['ppt']
+        Lout = self.eps*self.sigma*(temp_curr)**4
+        esat = 0.611*np.exp(2.5*10**6/461.0*(1/273.2 - 1/temp_curr)) # saturation vapor pressure in kPa
+        u = 0.5 # windspeed in m/s; assume 0.5 m/s, Allen 1998
         
-        dt = dt*86400
-        Ta = Ta + 273.15
-        temp_1 = temp_1 + 273.15
-        temp_2 = temp_2 + 273.15
-        temp_curr = self.temperature + 273.15
-        Lout = self.sigma*(temp_curr)**4
 
- 
-        self.temperature += dt*(ppt*length*width*Ta + vol_1*temp_1 + vol_2*temp_2 + hillslope_volumetric_discharge*(self.Tgw + 273.15) + hillslope_volumetric_overlandFlow*(Ta) - volumetric_discharge*temp_curr)/volume 
+        dt = dt*86400
+        self.temperature += dt*(ppt*length*width*Ta + vol_1*temp_1 + vol_2*temp_2 + hillslope_volumetric_discharge*(self.Tgw + 273.15) + hillslope_volumetric_overlandFlow*Ta - volumetric_discharge*temp_curr)/volume 
         self.temperature -= dt*self.kh*(temp_curr - Ta)/(self.rho*self.cp*volume/(length*width))
         self.temperature += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*volume/(length*width))
         self.temperature += dt*Lin/(self.rho*self.cp*volume/(length*width))
         self.temperature -= dt*Lout/(self.rho*self.cp*volume/(length*width))
+        self.temperature += dt*285.9*(0.132 + 0.143*0.5)*(ea - esat)/(self.rho*self .cp*volume/(length*width))
+
 
 
 

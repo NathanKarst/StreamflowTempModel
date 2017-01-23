@@ -89,10 +89,10 @@ class NonlinearReservoir(GroundwaterZone):
         #     return discharge, groundwater
 
         leakage = kwargs['leakage']
-
+        discharge = self.discharge
         # else:
         self.discharge = self.a*self.storageGZ**self.b
-        self.storageGZ += (-self.discharge + leakage)*dt
+        self.storageGZ += (-discharge + leakage)*dt
 #         self.overlandFlow = np.max((self.storage - self.storageMax,0))
 #         self.storage = np.min((self.storage,self.storageMax))
         return {'discharge':self.discharge, 'overlandFlow':self.overlandFlow}
@@ -175,7 +175,7 @@ class TwoParallelLinearReservoir(GroundwaterZone):
             - fluxes (dict): dictionary of fluxes [L/T], with keys [discharge]
         """
         leakage = kwargs['leakage']
-        
+
         self.discharge = self.k2*self.res2 + self.k1*self.res1
         self.storageGZ += (leakage - self.discharge)*dt
         self.res2 += (1-self.f1)*leakage*dt-self.k2*self.res2*dt
@@ -209,12 +209,14 @@ class LinearToNonlinearReservoir(GroundwaterZone):
             - fluxes (dict): dictionary of fluxes [L/T], with keys [discharge]
         """
         leakage = kwargs['leakage']
-        
-        self.discharge = self.k1*self.res1 + self.a*(self.res2)**self.b
-        self.storageGZ += (leakage - self.discharge)*dt
+        discharge = self.k1*self.res1 + self.a*(self.res2)**self.b
+
         self.res2 += self.k12*self.res1*dt - self.a*(self.res2)**self.b*dt
         self.res1 += leakage*dt - self.k12*self.res1*dt - self.k1*self.res1*dt
-        
+
+        self.discharge = discharge
+        self.storageGZ = self.res1 + self.res2
+
         return {'discharge':self.discharge, 'overlandFlow':self.overlandFlow}
         
         
@@ -230,6 +232,8 @@ class Melange(GroundwaterZone):
     def update(self, dt, **kwargs):
         
         leakage = kwargs['leakage']
+        self.discharge = self.a*self.storageGZ**self.b
+
         self.storageGZ += (leakage - self.discharge)*dt
         self.overlandFlow = 0
         
@@ -237,7 +241,6 @@ class Melange(GroundwaterZone):
             self.overlandFlow = (self.storageGZ - self.capacity)/dt
             self.storageGZ = self.capacity
         
-        self.discharge = self.a*self.storageGZ**self.b
             
         return {'discharge':self.discharge, 'overlandFlow':self.overlandFlow}
          

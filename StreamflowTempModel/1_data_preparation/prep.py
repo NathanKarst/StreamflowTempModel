@@ -68,7 +68,7 @@ def model_config(outputFilename='model_config.p'):
     # timestamps_channel = pd.date_range(start_date, stop_date, freq=resample_freq_channel)
 
     #temperature timestep information
-    dt_temperature = 2/1440.
+    dt_temperature = 1/1440.
     # t_temperature = np.linspace(0, Tmax, np.ceil(Tmax/dt_temperature)+1)
     resample_freq_temperature = str(int(dt_temperature*24*60)) + 'T'
     # timestamps_temperature = pd.date_range(start_date, stop_date, freq=resample_freq_temperature)
@@ -266,8 +266,9 @@ def _get_elevations(rew_config, parent_dir):
     return rew_config
 
 def _get_climate_groups(rew_config):
-    #For now, each REW is in its own climate group
-    return range(len(rew_config))
+    #For now, all REWs are in the same climate group
+    # return range(len(rew_config))
+    return [0 for i in range(len(rew_config))]
 
 def _get_interception_factor(rew_config):
     return [0.2]*len(rew_config)
@@ -355,24 +356,24 @@ def rew_params():
     # temperature_params_ranges = {i:{'alphaw':(0.1,0.5), 'kh':(5.0,20.0)} for i in rews}
 
 
-
-
     # FOR ELDER CREEK: Nimmo rock moisture into nonlinear reservoir
-    parameter_group_params = {i:{'emax': 0.5, 'gz': LinearToNonlinearReservoir, 'discharge': 0, 'storageS': 0.0, 'storageR': 0.0, 'leakage': 0, 'k12': 0.4943673250769943, 'sh2': 0.1666079566278251, 'sfc2': 0.702378309458718, 'sfc1': 0.8619626033659412, 'k1': 0.4710700286889746, 'storageGZ': 5.0, 'Ks1': 65.61540297456219, 'Zr2': 818.2544760694539, 'Zr1': 169.35236834999844, 'Ks2': 59.52779856810265, 'res2': 1.0, 'res1': 1.0, 'storageVZ': 0, 'alpha': 0.7880309629740647, 'a': 0.013323166787737175, 'b': 1.6705501581180178, 'f': 0.8962038022824387, 'qSlim': 38.60640858249493, 'n1': 0.6363088514735844, 'n2': 0.09878190604933881, 'vz': NimmoRockMoistureZone, 'sh1': 0.09679077357740416} for i in parameter_groups}          
-    parameter_ranges = {i:{'k12':(0.05,0.5), 'k1':(0.05,0.8),'qSlim':(1.0, 50.0), 'alpha':(0.2,0.8), 'Ks2':(10.0,100.0), 'Zr2':(200.,2000.),'Zr1':(20.,200.),'n1':(0.3,0.7),'f':(.1,.9),'sh2':(0,.4),'n2':(.01,.2),'sh1':(0,.4),'sfc2':(0.1,0.9),'sfc1':(0.1,0.9),'a':(.0001,.1),'b':(1.5,2.5), 'Ks1':(10.0,200.0) } for i in parameter_groups}
-    channel_params = {i:{'mannings_n':0.1, 'e':0.008, 'f':0.39, 'volume':0, 'model':SimpleChannel} for i in rews}
-    channel_params_ranges = {i:{'mannings_n':(.01,.05)} for i in rews}
-    temperature_params = {i:{'cp':4186.0, 'eps':1.0, 'Tgw':12.0, 'alphaw':0.7781, 'rho':1000.0, 'kh':20.0,'sigma':5.67e-8, 'temperature':15.0, 'model':SimpleTemperature} for i in rews}
-    temperature_params_ranges = {i:{'alphaw':(0.1,1.0), 'kh':(1.0,200.0)} for i in rews}
+#     parameter_group_params = {i:{'emax': 0.5, 'gz': LinearToNonlinearReservoir, 'discharge': 0, 'storageS': 0.0, 'storageR': 0.0, 'leakage': 0, 'k12': 0.4943673250769943, 'sh2': 0.1666079566278251, 'sfc2': 0.702378309458718, 'sfc1': 0.8619626033659412, 'k1': 0.4710700286889746, 'storageGZ': 5.0, 'Ks1': 65.61540297456219, 'Zr2': 818.2544760694539, 'Zr1': 169.35236834999844, 'Ks2': 59.52779856810265, 'res2': 1.0, 'res1': 1.0, 'storageVZ': 0, 'alpha': 0.7880309629740647, 'a': 0.013323166787737175, 'b': 1.6705501581180178, 'f': 0.8962038022824387, 'qSlim': 38.60640858249493, 'n1': 0.6363088514735844, 'n2': 0.09878190604933881, 'vz': NimmoRockMoistureZone, 'sh1': 0.09679077357740416} for i in parameter_groups}          
+#     parameter_ranges = {i:{'k12':(0.05,0.5), 'k1':(0.05,0.8),'qSlim':(1.0, 50.0), 'alpha':(0.2,0.8), 'Ks2':(10.0,100.0), 'Zr2':(200.,2000.),'Zr1':(20.,200.),'n1':(0.3,0.7),'f':(.1,.9),'sh2':(0,.4),'n2':(.01,.2),'sh1':(0,.4),'sfc2':(0.1,0.9),'sfc1':(0.1,0.9),'a':(.0001,.1),'b':(1.5,2.5), 'Ks1':(10.0,200.0) } for i in parameter_groups}
+#     channel_params = {i:{'mannings_n':0.1, 'e':0.008, 'f':0.39, 'volume':0, 'model':SimpleChannel} for i in rews}
+#     channel_params_ranges = {i:{'mannings_n':(.01,.05)} for i in rews}
+#     temperature_params = {i:{'cp':4186.0, 'eps':1.0, 'Tgw':12.0, 'alphaw':0.7781, 'rho':1000.0, 'kh':20.0,'sigma':5.67e-8, 'temperature':15.0, 'model':SimpleTemperature} for i in rews}
+#     temperature_params_ranges = {i:{'alphaw':(0.1,1.0), 'kh':(1.0,200.0)} for i in rews}
+
+
 
 
     # # FOR ELDER CREEK: Linear into nonlinear reservoir, Simple rock moisture vadose zone
-    # parameter_group_params = {i:{'storageGZ': 5.0, 'zrS': 174.763974358385, 'zrR': 205.808539545927, 'res2': 1.0, 'emax': 0.5, 'ET': 0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.020053100177366355, 'b': 2.1859657517168203, 'storageVZ': 0, 'stS': 0.611219490142334, 'discharge': 0, 'storageS': 0.0, 'nS': 0.3052791871968346, 'leakage': 0, 'a': 0.0013003260388739675, 'k12': 0.4647887808001386, 'storageR': 0.0, 'f': 0.8999229131878287, 's0R': 0.02565871639398041, 's0S': 0.08019635427189753, 'sfc': 0.51, 'k1': 0.4150042656994396, 'stR': 0.5764115141116821, 'vz': SimpleRockMoistureZone } for i in parameter_groups}          
-    # parameter_ranges = {i:{'zrR':(200.,2000.),'zrS':(20.,200.),'nS':(0.3,0.7),'f':(.1,.9),'s0R':(0,.4),'k12':(.05,.5),'k1':(.05,.5),'nR':(.01,.2),'s0S':(0,.4),'stR':(0.1,0.9),'stS':(0.1,0.9),'a':(.0001,.1),'b':(1.5,2.5)} for i in parameter_groups}
-    # channel_params = {i:{'mannings_n':0.03, 'e':0.01, 'f':0.39, 'volume':0, 'model':SimpleChannel} for i in rews}
-    # channel_params_ranges = {i:{'mannings_n':(.01,.05)} for i in rews}
-    # temperature_params = {i:{'cp':4186.0, 'eps':1.0, 'Tgw':14.0, 'alphaw':0.15, 'rho':1000.0, 'kh':20.0,'sigma':5.67e-8, 'temperature':15.0, 'model':SimpleTemperature} for i in rews}
-    # temperature_params_ranges = {i:{'alphaw':(0.1,0.5), 'kh':(5.0,20.0)} for i in rews}
+    parameter_group_params = {i:{'storageGZ': 0.0, 'zrS': 100.36, 'zrR': 1000.10, 'res2': 1.0, 'emax': 0.5, 'ET': 0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.051053100177366355, 'b': 1.659, 'storageVZ': 0, 'stS': 0.643, 'discharge': 0, 'storageS': 0.0, 'nS': 0.4482791871968346, 'leakage': 0, 'a': 0.0256, 'k12': 0.4787887808001386, 'storageR': 0.0, 'f': 0.632, 's0R': 0.0077, 's0S': 0.3499, 'sfc': 0.51, 'k1': 0.425, 'stR': 0.738, 'vz': SimpleRockMoistureZone } for i in parameter_groups}          
+    parameter_ranges = {i:{'nS':(0.3,0.7),'f':(.1,.9),'s0R':(0,.4),'k12':(.05,.5),'k1':(.05,.5),'nR':(.01,.2),'s0S':(0,.4),'stR':(0.1,0.9),'stS':(0.1,0.9),'a':(.0001,.1),'b':(1.5,2.5)} for i in parameter_groups}
+    channel_params = {i:{'mannings_n':0.1, 'e':0.008, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
+    channel_params_ranges = {i:{'mannings_n':(.03,.15)} for i in rews}
+    temperature_params = {i:{'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':5.0,'sigma':5.67e-8, 'temperature':10.0, 'model':SimpleTemperature} for i in rews}
+    temperature_params_ranges = {i:{'alphaw':(0.05,0.5), 'kh':(1.0,20.0)} for i in rews}
 
     # #nonlinear reservoir, Draining rock moisture
     # parameter_group_params = {i:{'rsat':1000.0,'c':20.0,'ET':0, 'emax':0.5, 'leakage':0, 'nR':0.1,'nS':.5, 'zrR':1500.0, 'zrS':100, 's0R':.2, 's0S':.3,'stR':.6,'stS':.5 , 'f':.7, 'storageR':0,'storageS':0, 'storageVZ':0,'storageGZ':1.0,'discharge':0,'b':2.0,'a':.01, 'vz':DrainingRockMoistureZone, 'gz':NonlinearReservoir} for i in parameter_groups}
