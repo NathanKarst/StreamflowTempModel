@@ -40,6 +40,11 @@ t = np.linspace(0,Tmax,np.ceil(Tmax/dt)+1)
 timestamps_hillslope = pd.date_range(start_date, stop_date, freq=resample_freq_hillslope)
 
 def main(argv):
+    sys.stdout.write('\r\n')
+    sys.stdout.write('\r...')
+    sys.stdout.write('\r...hillslope calibration...')
+    sys.stdout.write('\r...')
+    sys.stdout.write('\r\n')
     if argv[0]=='False':
         minimize_objective_function = False
     else: 
@@ -54,6 +59,7 @@ def main(argv):
 
     cores = mp.cpu_count()
     print('There are %s cores on this machine, \n%s model runs will be performed on each core'%(str(cores), str(N)))
+    sys.stdout.write('\r\n')
     calibration_data = pickle.load( open(os.path.join(parent_dir,'calibration_data',subwatershed_calibration_name)))
     calibration_data = calibration_data[spinup_date:stop_date]
 
@@ -80,6 +86,8 @@ def main(argv):
 
     print('With an objective function value of %0.2f, the best parameter set is:' % (best_objective))
     print(best_params)
+    sys.stdout.write('\r\n')
+    sys.stdout.write('\r\n')
 
 # Nash sutcliffe efficiency. Should be maximized for best fit. 
 def objective_function(modeled, observed):
@@ -169,6 +177,8 @@ def calibrate(arguments):
     best_index = -1
     desc = "Core #%s"%(cpu)
     for i in range(N):
+	sys.stdout.write('\rWorking on iteration %d out of %d' % (i,N))
+	sys.stdout.flush()
         solved_groups = {}
         parameter_group_params_curr = generate_parameter_set(parameter_group_params, parameter_ranges)
         for group_id in groups_to_calibrate:
@@ -204,6 +214,7 @@ def calibrate(arguments):
             # resample as daily data
             solved_groups[group_id] = pd.DataFrame({'discharge':discharge}, index=timestamps_hillslope).resample('D').apply(sum)*dt
 
+	
         total_area = 0
         for rew_id in ids_in_subwatershed:
             total_area += rew_config[rew_id]['area_sqkm']
@@ -229,6 +240,7 @@ def calibrate(arguments):
                 best_fit = solved_subwatershed[name].copy()
                 best_parameter_set = copy.deepcopy(parameter_group_params_curr)
 
+    sys.stdout.write('\r\n')
     return (best_fit, best_obj, best_parameter_set)
 
 

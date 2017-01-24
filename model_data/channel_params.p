@@ -25,7 +25,7 @@ Rp10
 (dp11
 S'mannings_n'
 p12
-F0.1
+F0.2
 sS'volume'
 p13
 F1.0
@@ -48,7 +48,7 @@ tp19
 Rp20
 (dp21
 g12
-F0.1
+F0.2
 sg13
 F1.0
 sg14
@@ -65,7 +65,7 @@ tp23
 Rp24
 (dp25
 g12
-F0.1
+F0.2
 sg13
 F1.0
 sg14

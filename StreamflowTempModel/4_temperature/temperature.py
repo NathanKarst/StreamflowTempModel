@@ -88,16 +88,41 @@ class SimpleTemperature(Temperature):
         Sin = kwargs['Sin']
         Lout = self.eps*self.sigma*(temp_curr)**4
         esat = 0.611*np.exp(2.5*10**6/461.0*(1/273.2 - 1/temp_curr)) # saturation vapor pressure in kPa
-        u = 0.5 # windspeed in m/s; assume 0.5 m/s, Allen 1998
+        u = 1.0 # windspeed in m/s; assume 0.5 m/s, Allen 1998
         
 
         dt = dt*86400
-        self.temperature += dt*(ppt*length*width*Ta + vol_1*temp_1 + vol_2*temp_2 + hillslope_volumetric_discharge*(self.Tgw + 273.15) + hillslope_volumetric_overlandFlow*Ta - volumetric_discharge*temp_curr)/volume 
-        self.temperature -= dt*self.kh*(temp_curr - Ta)/(self.rho*self.cp*volume/(length*width))
-        self.temperature += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*volume/(length*width))
-        self.temperature += dt*Lin/(self.rho*self.cp*volume/(length*width))
-        self.temperature -= dt*Lout/(self.rho*self.cp*volume/(length*width))
-        self.temperature += dt*285.9*(0.132 + 0.143*0.5)*(ea - esat)/(self.rho*self .cp*volume/(length*width))
+
+        #need volumetric update back in here...
+        flux = dt*ppt*length*width + vol_1*dt + vol_2*dt + hillslope_volumetric_discharge*dt  \
+            + hillslope_volumetric_overlandFlow*dt - volumetric_discharge*dt
+        vold = volume - flux
+        # Using equations from Westhoff et al. 2007, HESS
+        upstream_in = vol_1*temp_1 + vol_2*temp_2
+        lateral_in = ppt*length*width*Ta + hillslope_volumetric_discharge*(self.Tgw+273.15) + hillslope_volumetric_overlandFlow*(Ta)
+        downstream_out = volumetric_discharge*temp_curr
+        depth = volume/(length*width)
+        tnew = (vold*temp_curr + dt*(upstream_in + lateral_in - downstream_out ))/volume
+        tnew -= 2.0*dt*self.kh*(temp_curr - Ta)/(self.rho*self.cp*depth)
+        tnew += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*depth)
+        tnew += dt*Lin/(self.rho*self.cp*depth)
+        tnew -= dt*Lout/(self.rho*self.cp*depth)
+        tnew += dt*285.9*(0.132 + 0.143*u)*(ea - esat)/(self.rho*self.cp*depth)
+        self.temperature = tnew - 273.15
+        
+        
+
+        # temp_next -= dt*self.kh*(temp_curr - Ta)/(self.rho*self.cp*volume/(length*width))
+        # temp_next += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*volume/(length*width))
+        # temp_next += dt*Lin/(self.rho*self.cp*volume/(length*width))
+        # temp_next -= dt*Lout/(self.rho*self.cp*volume/(length*width))
+        # new_energy -= dt*self.kh*(temp_curr - Ta)*length*width
+        # new_energy += dt*(1-self.alphaw)*Sin*length*width
+        # new_energy -= dt*Lin*length*width
+        # new_energy -= dt*Lout*length*width
+
+
+        # self.temperature += dt*285.9*(0.132 + 0.143*0.5)*(ea - esat)/(self.rho*self .cp*volume/(length*width))
 
 
 
