@@ -49,8 +49,8 @@ def model_config(outputFilename='model_config.p'):
     
     """
     #start/stop dates for running model
-    spinup_date = date(2014, 10, 01)             
-    start_date = date(2012, 07, 01)
+    spinup_date = date(2013, 10, 01)             
+    start_date = date(2008, 07, 01)
     stop_date = date(2015, 9, 1)
     
     Tmax = 1.0*(stop_date - start_date).days
@@ -375,8 +375,11 @@ def rew_params():
     # temperature_params = {i:{'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':5.0,'sigma':5.67e-8, 'temperature':10.0, 'model':SimpleTemperature} for i in rews}
     # temperature_params_ranges = {i:{'alphaw':(0.05,0.5), 'kh':(1.0,20.0)} for i in rews}
 
+
+
+
     # # FOR ELDER CREEK: Linear into nonlinear reservoir, preferential rock moisture vadose zone
-    parameter_group_params = {i:{'storageGZ': 0.0, 'zrS': 100.36, 'zrR': 1000.10, 'alpha':0.1, 'res2': 1.0, 'emax': 0.5, 'ET': 0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.181, 'b': 2.35, 'storageVZ': 0, 'stS': 0.8845, 'discharge': 0, 'storageS': 0.0, 'nS': 0.4626, 'leakage': 0, 'a': 0.002778, 'k12': 0.4637, 'storageR': 0.0, 'f': 0.481, 's0R': 0.1747, 's0S': 0.3612, 'sfc': 0.51, 'k1': 0.3419, 'stR': 0.2898, 'vz': PreferentialRockMoistureZone } for i in parameter_groups}          
+    parameter_group_params = {i:{'storageGZ': 0.0, 'zrS': 100.36, 'zrR': 1000.10, 'alpha':0.3517, 'res2': 1.0, 'emax': 0.5, 'ET': 0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.0509, 'b': 2.35, 'storageVZ': 0, 'stS': 0.5819, 'discharge': 0, 'storageS': 0.0, 'nS': 0.6636, 'leakage': 0, 'a': 0.002311, 'k12': 0.483, 'storageR': 0.0, 'f': 0.718, 's0R': 0.106, 's0S': 0.294, 'sfc': 0.51, 'k1': 0.3769, 'stR': 0.524, 'vz': PreferentialRockMoistureZone } for i in parameter_groups}          
     parameter_ranges = {i:{'alpha':(.05,0.5),'nS':(0.3,0.7),'f':(.1,.9),'s0R':(0,.4),'k12':(.05,.5),'k1':(.05,.5),'nR':(.01,.2),'s0S':(0,.4),'stR':(0.1,0.9),'stS':(0.1,0.9),'a':(.0001,.1),'b':(1.5,2.5)} for i in parameter_groups}
     channel_params = {i:{'mannings_n':0.2, 'e':0.008, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
     channel_params_ranges = {i:{'mannings_n':(.03,.15)} for i in rews}

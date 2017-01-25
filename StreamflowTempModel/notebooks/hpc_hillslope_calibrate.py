@@ -97,7 +97,7 @@ def objective_function(modeled, observed):
     elif np.isnan(np.sum(modeled)):
         return -9999.0
     else:
-        return 1-np.sum((observed.loc[inds]-modeled.loc[inds])**2)/np.sum((observed.loc[inds]-np.mean(observed.loc[inds]))**2)
+        return 1-np.sum((np.log(observed.loc[inds])-np.log(modeled.loc[inds]))**2)/np.sum((np.log(observed.loc[inds])-np.mean(np.log(observed.loc[inds])))**2)
 
 
 def get_groups_to_calibrate(subwatershed_name):
