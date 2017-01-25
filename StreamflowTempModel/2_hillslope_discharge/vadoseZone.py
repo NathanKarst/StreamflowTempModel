@@ -180,7 +180,7 @@ class SimpleRockMoistureZone(VadoseZone):
     """
     def __init__(self, **kwargs):        
     
-        args = ['nS','nR','s0R','s0S','stR','stS','zrR','zrS','f','storageR','storageS','storageVZ']
+        args = ['nS','nR','s0R','s0S','stR','stS','zrR','zrS','f','storageR','storageS']
         for arg in args: setattr(self, arg, kwargs[arg])
 
         # main external variables
@@ -267,7 +267,7 @@ class PreferentialRockMoistureZone(VadoseZone):
     """
     def __init__(self, **kwargs):        
     
-        args = ['nS','nR','s0R','s0S','stR','stS','zrR','zrS','f','alpha','storageR','storageS','storageVZ']
+        args = ['nS','nR','s0R','s0S','stR','stS','zrR','zrS','f','alpha','storageR','storageS']
         for arg in args: setattr(self, arg, kwargs[arg])
 
         # main external variables

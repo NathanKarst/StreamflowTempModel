@@ -21,9 +21,10 @@ class LinearReservoir(GroundwaterZone):
         - discharge (float): [L/T] current discharge flux
     """
     def __init__(self,**kwargs):
-        args = ['storageGZ','k','discharge']
+        args = ['storageGZ','k']
         for arg in args: setattr(self, arg, kwargs[arg])
-        self.overlandFlow = 0        
+        self.overlandFlow = 0   
+        self.discharge = self.k*self.storageGZ      
         
     def update(self,dt,**kwargs):
         """ Update state of groundwater zone stocks.
@@ -60,7 +61,7 @@ class NonlinearReservoir(GroundwaterZone):
         args = ['storageGZ','a','b']
         for arg in args: setattr(self, arg, kwargs[arg])
 
-        self.discharge = self.a*self.storageGZ**self.b
+        self.discharge = 0
         self.overlandFlow = 0        
         
     def update(self,dt,**kwargs):
@@ -112,10 +113,11 @@ class TwoLinearReservoir(GroundwaterZone):
         - discharge (float): [L/T] rate of discharge from groundwater zone to stream         
     """
     def __init__(self, **kwargs):
-        args = ['storageGZ','k1','k2','res1','res2','k12','discharge']
+        args = ['storageGZ','k1','k2','res1','res2','k12']
         for arg in args: setattr(self, arg, kwargs[arg])
         self.storageGZ = self.res1 + self.res2
-        self.overlandFlow = 0        
+        self.overlandFlow = 0      
+        self.discharge = 0  
         
     def update(self,dt, **kwargs):
         """ Update state of groundwater zone stocks.
@@ -155,9 +157,10 @@ class TwoParallelLinearReservoir(GroundwaterZone):
         - discharge (float): [L/T] rate of discharge from groundwater zone to stream        
     """
     def __init__(self, **kwargs):
-        args = ['storageGZ','k1','k2','res1','res2','f1','discharge']
+        args = ['storageGZ','k1','k2','res1','res2','f1']
         for arg in args: setattr(self, arg, kwargs[arg])
         self.storageGZ = self.res1 + self.res2
+        self.discharge = 0
         self.overlandFlow = 0
         
     def update(self,dt,**kwargs):
@@ -189,9 +192,10 @@ class LinearToNonlinearReservoir(GroundwaterZone):
         a, b, k12, k1, res1, res2      
     """
     def __init__(self, **kwargs):
-        args = ['storageGZ','k1','k12','res1','res2','a','b','discharge']
+        args = ['k1','k12','res1','res2','a','b']
         for arg in args: setattr(self, arg, kwargs[arg])
         self.storageGZ = self.res1 + self.res2
+        self.discharge = 0
         self.overlandFlow = 0
         
     def update(self,dt, **kwargs):
