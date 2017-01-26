@@ -41,9 +41,14 @@ p16
 (F0.3
 F0.7
 tp17
-sS'stS'
+sS'b'
 p18
+(F2.0
+F2.5
+tp19
+sS'stS'
+p20
 (F0.2
 F0.9
-tp19
+tp21
 ss.

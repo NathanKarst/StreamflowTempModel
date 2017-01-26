@@ -49,8 +49,8 @@ def model_config(outputFilename='model_config.p'):
     
     """
     #start/stop dates for running model
-    spinup_date = date(2014, 10, 01)             
-    start_date = date(2011, 07, 01)
+    spinup_date = date(2012, 10, 01)             
+    start_date = date(2008, 07, 01)
     stop_date = date(2015, 9, 1)
     
     Tmax = 1.0*(stop_date - start_date).days
@@ -388,8 +388,8 @@ def rew_params():
 
     # daymet_angeloPPT, calibrated with logNSE on Savio
     # # FOR ELDER CREEK: Linear into nonlinear reservoir, preferential rock moisture vadose zone
-    parameter_group_params = {i:{'zrS': 50.0, 'zrR': 1000.10, 'alpha':0.119, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.4, 'b': 2.167, 'stS': 0.3435, 'storageS': 1.0, 'nS': 0.477, 'a': 0.00277, 'k12': 0.44666, 'storageR': 0.0, 'f': 0.114, 's0R': 0.3458, 's0S': 0.3623, 'k1': 0.1952, 'stR': 0.698, 'vz': PreferentialRockMoistureZone } for i in parameter_groups}          
-    parameter_ranges = {i:{'alpha':(.05,0.5),'nS':(0.3,0.7),'f':(.1,.9),'s0R':(0,.4),'k12':(.05,.5),'k1':(.05,.5),'s0S':(0,.4),'stR':(0.1,0.9),'stS':(0.2,0.9)} for i in parameter_groups}
+    parameter_group_params = {i:{'zrS': 50.0, 'zrR': 1000.10, 'alpha':0.1431, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.4, 'b': 2.167, 'stS': 0.3, 'storageS': 1.0, 'nS': 0.458, 'a': 0.00277, 'k12': 0.4235, 'storageR': 100.0, 'f': 0.6313, 's0R': 0.052, 's0S': 0.2686, 'k1': 0.1952, 'stR': 0.6343, 'vz': PreferentialRockMoistureZone } for i in parameter_groups}          
+    parameter_ranges = {i:{'alpha':(.05,0.5),'nS':(0.3,0.7),'f':(.1,.9),'s0R':(0,.4),'k12':(.05,.5),'k1':(.05,.5),'s0S':(0,.4),'stR':(0.1,0.9),'stS':(0.2,0.9), 'b':(2.0,2.5)} for i in parameter_groups}
     channel_params = {i:{'mannings_n':0.2, 'e':0.008, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
     channel_params_ranges = {i:{'mannings_n':(.03,.15)} for i in rews}
     temperature_params = {i:{'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':5.0,'sigma':5.67e-8, 'temperature':10.0, 'model':SimpleTemperature} for i in rews}
