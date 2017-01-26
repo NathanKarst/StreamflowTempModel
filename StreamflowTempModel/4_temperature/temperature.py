@@ -1,6 +1,6 @@
 import numpy as np
-from matplotlib import pyplot as plt
 import time
+import copy
 class Temperature:
     """ Abstract base class for all temperature  models. (Test) 
     
@@ -88,7 +88,7 @@ class SimpleTemperature(Temperature):
         Sin = kwargs['Sin']
         Lout = self.eps*self.sigma*(temp_curr)**4
         esat = 0.611*np.exp(2.5*10**6/461.0*(1/273.2 - 1/temp_curr)) # saturation vapor pressure in kPa
-        u = 1.0 # windspeed in m/s; assume 0.5 m/s, Allen 1998
+        u = 0.5 # windspeed in m/s; assume 0.5 m/s, Allen 1998
         
 
         dt = dt*86400
@@ -96,18 +96,23 @@ class SimpleTemperature(Temperature):
         #need volumetric update back in here...
         flux = dt*ppt*length*width + vol_1*dt + vol_2*dt + hillslope_volumetric_discharge*dt  \
             + hillslope_volumetric_overlandFlow*dt - volumetric_discharge*dt
-        vold = volume - flux
+        volume_next = volume + flux
+        leftover_stream_volume = volume - volumetric_discharge*dt
+
+        tnew = (temp_curr*leftover_stream_volume 
+            + Ta*dt*ppt*length*width
+            + temp_2*vol_2*dt + temp_1*vol_1*dt
+            + (self.Tgw + 273.15)*hillslope_volumetric_discharge*dt
+            + Ta*hillslope_volumetric_overlandFlow*dt
+            )/(volume_next)
         # Using equations from Westhoff et al. 2007, HESS
-        upstream_in = vol_1*temp_1 + vol_2*temp_2
-        lateral_in = ppt*length*width*Ta + hillslope_volumetric_discharge*(self.Tgw+273.15) + hillslope_volumetric_overlandFlow*(Ta)
-        downstream_out = volumetric_discharge*temp_curr
         depth = volume/(length*width)
-        tnew = (vold*temp_curr + dt*(upstream_in + lateral_in - downstream_out ))/volume
-        tnew -= 2.0*dt*self.kh*(temp_curr - Ta)/(self.rho*self.cp*depth)
-        tnew += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*depth)
-        tnew += dt*Lin/(self.rho*self.cp*depth)
-        tnew -= dt*Lout/(self.rho*self.cp*depth)
-        tnew += dt*285.9*(0.132 + 0.143*u)*(ea - esat)/(self.rho*self.cp*depth)
+        tnew -= dt*self.kh*(temp_curr - Ta)/(self.rho*self.cp*depth)
+        # tnew += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*depth)
+        # tnew += Lin/(self.rho*self.cp*depth)
+        # tnew -= dt*Lout/(self.rho*self.cp*depth)
+        # tnew += dt*285.9*(0.132 + 0.143*u)*(ea - esat)/(self.rho*self.cp*depth)
+
         self.temperature = tnew - 273.15
         
         

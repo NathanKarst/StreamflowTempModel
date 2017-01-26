@@ -1,33 +1,33 @@
-import os
-import sys
-from os.path import dirname
-parent_dir = dirname(dirname(os.getcwd()))
-sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','2_hillslope_discharge'))
-sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','3_channel_routing'))
-import random
-from vadoseZone import *
-import glob
-from groundwaterZone import *
-from REW import REW
-import numpy as np
-import pickle
-from datetime import date
-from datetime import datetime
+
+
 import pandas as pd
+import gdal
+import os
+import datetime
+from datetime import timedelta
 import numpy as np
-import geopandas as gp
-import time
-import sys
-import copy
-import shapely
 import fiona
-from ast import literal_eval as make_tuple
-import multiprocessing as mp
-parent_dir = os.path.dirname(os.path.dirname(os.getcwd()))
-sys.path.append(os.path.join(parent_dir, 'StreamflowTempModel', '1_data_preparation'))
+import shapely
+from shapely import geometry
+from os.path import dirname
+import glob
+import sys
+import pickle
+import copy
+import random
+from functools import partial
+parent_dir = dirname(dirname(os.getcwd()))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','lib'))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','4_temperature'))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','3_channel_routing'))
+from temperature import SimpleTemperature
+from channel import SimpleChannel
+import zonal_stats as zs
+import meteolib as meteo
+import evaplib as evap
+from ast import literal_eval as make_tuple
+import multiprocessing as mp
+
 
 rew_config = pickle.load( open( os.path.join(parent_dir,'model_data','rew_config.p'), "rb" ) )
 climate_group_forcing = pickle.load( open( os.path.join(parent_dir,'model_data','climate_group_forcing.p'), "rb" ) )
@@ -39,8 +39,6 @@ solved_channel_routing = pickle.load( open( os.path.join(parent_dir,'model_data'
 channel_params = pickle.load( open( os.path.join(parent_dir,'model_data','channel_params.p'), "rb" ))
 radiation = pickle.load( open(os.path.join(parent_dir, 'raw_data', 'radiation', 'radiation.p'),'rb') )
 ta_ea = pickle.load( open(os.path.join(parent_dir, 'raw_data', 'ta_ea', 'ta_ea.p'),'rb') )
-# mean_rew_lpis = pickle.load( open(os.path.join(parent_dir, 'raw_data', 'mean_rew_lpis', 'mean_rew_lpis.p'),'rb') )
-mean_rew_lpis = {1:.1,2:.1,3:.1}
 
 #start/stop dates for running model  
 #spinup date is the date after start_date for which we assume model is finished spinning up         
@@ -66,6 +64,8 @@ def main(argv):
     N = int(argv[1])
     subwatershed_calibration_name = argv[2]
     subwatershed_name = argv[3]
+
+    print(subwatershed_calibration_name)
 
     ids_in_subwatershed = get_rews_to_calibrate(subwatershed_name)
 
@@ -184,7 +184,8 @@ def calibrate(arguments):
 
     desc = "Core #%s"%(cpu)
     for i in range(N):
-
+        sys.stdout.write('\rWorking on iteration %d out of %d' % (i,N))
+        sys.stdout.flush()
         channel_network = {}
         for rew_id in ids_in_subwatershed: 
             args = rew_config[rew_id].copy()
@@ -196,40 +197,43 @@ def calibrate(arguments):
         rewQueue = [rew_id for (shreve,rew_id) in sorted(zip(shreves,ids_in_subwatershed))]
         network_temps = {}        
         parameters_current = generate_parameter_set(temperature_params, temperature_params_ranges, outlet_id)
-
         temperature_network = {}
         for rew_id in ids_in_subwatershed: 
             args = rew_config[rew_id].copy()
             args.update(parameters_current[rew_id])
             temperature_network[rew_id] = args['model'](rew_id=rew_id, **args)
 
+
         for rew_id in rewQueue:
-            
             shreve  = rew_config[rew_id]['shreve']
             group_id = rew_config[rew_id]['group']
             climate_group_id = group_id[1]
             rew_df = climate_group_forcing[climate_group_id]
+            width = channel_network[rew_id].width
+            length = channel_network[rew_id].length
             
             Lin = np.array(radiation[rew_id]['Lin'][start_date:stop_date].resample(resample_freq_temperature).ffill())
             Sin = np.array(radiation[rew_id]['Sin'][start_date:stop_date].resample(resample_freq_temperature).ffill())
-            
-            # Get other forcing data, re-sample to current timestamps
-            # everything converted to meters/seconds/kelvin/kg
-            temp_ea = ta_ea[rew_id].resample(resample_freq_temperature).ffill()
-            ppt = 1.15741e-7*np.array(climate_group_forcing[climate_group_id][start_date:stop_date].ppt.resample(resample_freq_temperature).ffill())
-            Ta = np.array(temp_ea['ta'][start_date:stop_date])
+
+            temp_ea = ta_ea[rew_id].resample(resample_freq_temperature).interpolate()
+            ppt_daily = climate_group_forcing[climate_group_id][start_date:stop_date].ppt
+            ppt = np.array(climate_group_forcing[climate_group_id][start_date:stop_date].ppt.resample(resample_freq_temperature).ffill())
+            ta = np.array(temp_ea['ta'][start_date:stop_date])
+            ea = np.array(temp_ea['ea'][start_date:stop_date])
             hillslope_discharge = pd.DataFrame({'discharge':hill_groups[group_id]['discharge']}, index=hill_groups[group_id].index)
             hillslope_overlandFlow = pd.DataFrame({'overlandFlow':hill_groups[group_id]['overlandFlow']}, index=hill_groups[group_id].index)
-            hillslope_volumetric_overlandFlow = 1.15741e-11*np.array(hillslope_overlandFlow[start_date:stop_date].overlandFlow.resample(resample_freq_temperature).ffill())*rew_config[rew_id]['area_sqcm']
-            hillslope_volumetric_discharge = 1.15741e-11*np.array(hillslope_discharge[start_date:stop_date].discharge.resample(resample_freq_temperature).ffill())*rew_config[rew_id]['area_sqcm']
-            volume = 1e-6*np.array(solved_channel_routing[rew_id][start_date:stop_date].volumes.resample(resample_freq_temperature).ffill())
-            volumetric_discharge = 1.15741e-11*np.array(solved_channel_routing[rew_id][start_date:stop_date].volumetric_discharge.resample(resample_freq_temperature).ffill())
-            width = 0.01*channel_network[rew_id].width
-            length = 0.01*channel_network[rew_id].length
-
+            
+            hillslope_volumetric_overlandFlow = np.array(hillslope_overlandFlow[start_date:stop_date].overlandFlow.resample(resample_freq_temperature).ffill())*rew_config[rew_id]['area_sqcm']
+            hillslope_volumetric_discharge = np.array(hillslope_discharge[start_date:stop_date].discharge.resample(resample_freq_temperature).ffill())*rew_config[rew_id]['area_sqcm']
+            hillslope_volumetric_discharge_daily = hillslope_discharge[start_date:stop_date].discharge*rew_config[rew_id]['area_sqcm']
+            
+            volumetric_discharge = np.array(solved_channel_routing[rew_id][start_date:stop_date].volumetric_discharge.resample(resample_freq_temperature).ffill())
+            volumetric_discharge_daily = solved_channel_routing[rew_id][start_date:stop_date].volumetric_discharge
             temp = np.zeros(np.shape(t))
             
-             #get upstream discharges, upstream temperatures
+            #get upstream discharges, upstream temperatures
+            vol_1_daily = 0
+            vol_2_daily = 0
             if shreve == 1:
                 vol_1 = np.zeros(np.shape(t))
                 vol_2 = np.zeros(np.shape(t))
@@ -240,21 +244,31 @@ def calibrate(arguments):
                 upstream_1 = rew_config[rew_id]['prev_str01']
                 upstream_2 = rew_config[rew_id]['prev_str02']
 
-                vol_1 = 1.15741e-11*np.array(solved_channel_routing[upstream_1][start_date:stop_date].volumetric_discharge.resample(resample_freq_temperature).ffill())
-                vol_2 = 1.15741e-11*np.array(solved_channel_routing[upstream_2][start_date:stop_date].volumetric_discharge.resample(resample_freq_temperature).ffill())
+                vol_1 = np.array(solved_channel_routing[upstream_1][start_date:stop_date].volumetric_discharge.resample(resample_freq_temperature).ffill())
+                vol_2 = np.array(solved_channel_routing[upstream_2][start_date:stop_date].volumetric_discharge.resample(resample_freq_temperature).ffill())
 
-                temp_1 = np.array(network_temps[upstream_1].reindex(index=timestamps_temperature,fill_value=np.nan).interpolate(method='linear'))
-                temp_2 = np.array(network_temps[upstream_2].reindex(index=timestamps_temperature,fill_value=np.nan).interpolate(method='linear'))
+                vol_1_daily = solved_channel_routing[upstream_1][start_date:stop_date].volumetric_discharge[0]
+                vol_2_daily = solved_channel_routing[upstream_2][start_date:stop_date].volumetric_discharge[0]
+                
+                temp_1 = np.array(network_temps[upstream_1].temperature)
+                temp_2 = np.array(network_temps[upstream_2].temperature)
 
-
+            # Now get volumes in channel link. 
+            volume = np.array(solved_channel_routing[rew_id][start_date:stop_date].volumes.resample(resample_freq_temperature).interpolate())
+            start_temp_model = int(1/dt*(len(pd.date_range(start_date,spinup_date))-365))
+            w = 0
             for l in range(len(t)):
-                tempArgs = {'vol_1':vol_1[l],'temp_1':temp_1[l],'vol_2':vol_2[l],'temp_2':vol_2[l],
-                            'hillslope_volumetric_discharge':hillslope_volumetric_discharge[l], 'hillslope_volumetric_overlandFlow':hillslope_volumetric_overlandFlow[l], 
-                            'volumetric_discharge':volumetric_discharge[l], 'volume':volume[l], 'Ta':Ta[l], 'Lin':Lin[l], 'Sin':Sin[l], 
-                            'ppt':ppt[l], 'width':width,'length':length}
-            
-                temperature_network[rew_id].update(dt, **tempArgs)
-                temp[l]=temperature_network[rew_id].temperature
+                if l<start_temp_model:
+                    temp[l] = temperature_network[rew_id].temperature
+                else:  
+                    varyArgs = ['vol_1','temp_1','vol_2','temp_2','hillslope_volumetric_discharge', 'hillslope_volumetric_overlandFlow', 'volumetric_discharge', 'volume', 'ta', 'Lin', 'Sin', 'ppt', 'ea']
+                    constArgs = ['width','length']
+                    tempArgs = {}
+                    for arg in varyArgs: tempArgs[arg] = copy.copy(locals()[arg][l])
+                    for arg in constArgs: tempArgs[arg] = copy.copy(locals()[arg])
+                    
+                    temperature_network[rew_id].update(dt, **tempArgs)
+                    temp[l]=temperature_network[rew_id].temperature
 
             network_temps[rew_id] = pd.DataFrame(temp,index=timestamps_temperature,columns=['temperature'])
 
@@ -263,7 +277,7 @@ def calibrate(arguments):
         solved_outlet = network_temps[outlet_id].temperature.reindex(rng, method='nearest')
 
         objs_curr = objective_function(solved_outlet[spinup_date:stop_date],calibration_data['temperature'][spinup_date:stop_date])
-
+        print objs_curr
         if minimize_objective_function:
             if objs_curr<best_obj:
                 best_obj = objs_curr

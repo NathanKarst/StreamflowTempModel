@@ -177,7 +177,7 @@ def calibrate(arguments):
     best_index = -1
     desc = "Core #%s"%(cpu)
     for i in range(N):
-	sys.stdout.write('\rWorking on iteration %d out of %d' % (i,N))
+	sys.stdout.write('\rWorking on iteration %d out of %d \n' % (i,N))
 	sys.stdout.flush()
         solved_groups = {}
         parameter_group_params_curr = generate_parameter_set(parameter_group_params, parameter_ranges)
@@ -228,7 +228,7 @@ def calibrate(arguments):
 
         solved_subwatershed[name] = solved_subwatershed_array
         objs_curr = objective_function(solved_subwatershed[name][spinup_date:stop_date],calibration_data['runoff'][spinup_date:stop_date])
-
+        print objs_curr
         if minimize_objective_function:
             if objs_curr<best_obj:
                 best_obj = objs_curr

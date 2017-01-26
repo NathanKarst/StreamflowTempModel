@@ -49,8 +49,8 @@ def model_config(outputFilename='model_config.p'):
     
     """
     #start/stop dates for running model
-    spinup_date = date(2012, 10, 01)             
-    start_date = date(2008, 07, 01)
+    spinup_date = date(2014, 10, 01)             
+    start_date = date(2011, 07, 01)
     stop_date = date(2015, 9, 1)
     
     Tmax = 1.0*(stop_date - start_date).days
@@ -393,7 +393,7 @@ def rew_params():
     channel_params = {i:{'mannings_n':0.2, 'e':0.008, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
     channel_params_ranges = {i:{'mannings_n':(.03,.15)} for i in rews}
     temperature_params = {i:{'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':5.0,'sigma':5.67e-8, 'temperature':10.0, 'model':SimpleTemperature} for i in rews}
-    temperature_params_ranges = {i:{'alphaw':(0.05,0.5), 'kh':(1.0,20.0)} for i in rews}
+    temperature_params_ranges = {i:{'alphaw':(0.05,0.5), 'kh':(1.0,20.0), 'Tgw':(8.0,14.0)} for i in rews}
 
 
 

@@ -32,8 +32,7 @@ class SimpleChannel(Channel):
         for arg in args: setattr(self, arg, kwargs[arg])        
 
         self.width = self.e*self.upstream_area**self.f
-        h = self.volume/(self.length*self.width)
-        self.volumetric_discharge = _manning_u(h, self.mannings_n, self.gradient)*self.width*h
+        self.volumetric_discharge = 0
 
     def update(self, dt, upstream_volumetric_discharge, hillslope_volumetric_discharge, ppt):
         """ Update channel storage stock and volumetric discharge
