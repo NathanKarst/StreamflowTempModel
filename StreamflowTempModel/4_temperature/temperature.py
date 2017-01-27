@@ -86,7 +86,7 @@ class SimpleTemperature(Temperature):
         # energy fluxes
         Lin = kwargs['Lin']
         Sin = kwargs['Sin']
-        Lout = self.eps*self.sigma*(temp_curr)**4
+        Lout = 0.97*self.eps*self.sigma*(temp_curr)**4
         esat = 0.611*np.exp(2.5*10**6/461.0*(1/273.2 - 1/temp_curr)) # saturation vapor pressure in kPa
         u = 2.0 # windspeed in m/s; assume 0.5 m/s, Allen 1998
         
@@ -108,10 +108,10 @@ class SimpleTemperature(Temperature):
         # Using equations from Westhoff et al. 2007, HESS
         depth = volume/(length*width)
         tnew -= dt*self.kh*(temp_curr - Ta)/(self.rho*self.cp*depth)
-        # tnew += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*depth)
-        # tnew += Lin/(self.rho*self.cp*depth)
-        # tnew -= dt*Lout/(self.rho*self.cp*depth)*0.2
-        # tnew += dt*285.9*(0.132 + 0.143*u)*(ea - esat)/(self.rho*self.cp*depth)
+        tnew += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*depth)
+        tnew += Lin/(self.rho*self.cp*depth)
+        tnew -= dt*Lout/(self.rho*self.cp*depth)*0.2
+        tnew += dt*285.9*(0.132 + 0.143*u)*(ea - esat)/(self.rho*self.cp*depth)
 
         self.temperature = tnew - 273.15
         
