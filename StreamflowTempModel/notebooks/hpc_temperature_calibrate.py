@@ -184,8 +184,8 @@ def calibrate(arguments):
 
     desc = "Core #%s"%(cpu)
     for i in range(N):
-        sys.stdout.write('\rWorking on iteration %d out of %d' % (i,N))
-        sys.stdout.flush()
+        # sys.stdout.write('\rWorking on iteration %d out of %d \n' % (i+1,N))
+        # sys.stdout.flush()
         channel_network = {}
         for rew_id in ids_in_subwatershed: 
             args = rew_config[rew_id].copy()
@@ -275,9 +275,9 @@ def calibrate(arguments):
 
         rng = calibration_data.index
         solved_outlet = network_temps[outlet_id].temperature.reindex(rng, method='nearest')
-
         objs_curr = objective_function(solved_outlet[spinup_date:stop_date],calibration_data['temperature'][spinup_date:stop_date])
-        print objs_curr
+        print(objs_curr)
+        print('\n')
         if minimize_objective_function:
             if objs_curr<best_obj:
                 best_obj = objs_curr

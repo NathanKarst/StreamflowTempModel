@@ -53,10 +53,10 @@ p18
 F0.1431
 sS'nR'
 p19
-F0.4
+F0.2
 sS'nS'
 p20
-F0.458
+F0.4
 sS'storageS'
 p21
 F1.0
