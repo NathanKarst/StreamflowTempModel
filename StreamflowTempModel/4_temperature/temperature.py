@@ -108,10 +108,115 @@ class SimpleTemperature(Temperature):
         # Using equations from Westhoff et al. 2007, HESS
         depth = volume/(length*width)
         tnew -= dt*self.kh*(temp_curr - Ta)/(self.rho*self.cp*depth)
-        tnew += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*depth)
-        tnew += Lin/(self.rho*self.cp*depth)
-        tnew -= dt*Lout/(self.rho*self.cp*depth)*0.2
-        tnew += dt*285.9*(0.132 + 0.143*u)*(ea - esat)/(self.rho*self.cp*depth)
+        # tnew += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*depth)
+        # tnew += Lin/(self.rho*self.cp*depth)
+        # tnew -= dt*Lout/(self.rho*self.cp*depth)*0.2
+        # tnew += dt*285.9*(0.132 + 0.143*u)*(ea - esat)/(self.rho*self.cp*depth)
+
+        self.temperature = tnew - 273.15
+        
+        
+
+        # temp_next -= dt*self.kh*(temp_curr - Ta)/(self.rho*self.cp*volume/(length*width))
+        # temp_next += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*volume/(length*width))
+        # temp_next += dt*Lin/(self.rho*self.cp*volume/(length*width))
+        # temp_next -= dt*Lout/(self.rho*self.cp*volume/(length*width))
+        # new_energy -= dt*self.kh*(temp_curr - Ta)*length*width
+        # new_energy += dt*(1-self.alphaw)*Sin*length*width
+        # new_energy -= dt*Lin*length*width
+        # new_energy -= dt*Lout*length*width
+
+
+        # self.temperature += dt*285.9*(0.132 + 0.143*0.5)*(ea - esat)/(self.rho*self .cp*volume/(length*width))
+
+
+class AllenTemperature(Temperature):
+    """ Temperature model styled after Allen 2008; only temperature and shortwave solar 
+ 
+    """
+    def __init__(self, rew_id, **kwargs):
+        Temperature.__init__(self, rew_id)
+        
+        args = ['alpha','eps','rho','cp','kh','sigma','Tgw','temperature']
+        for arg in args: setattr(self, arg, kwargs[arg])        
+
+
+    def update(self, dt, **kwargs):
+        """ Update channel temperature
+        
+        Args:
+            - kwargs (dict) : dictionary of inputs required to integrate time step
+                - vol_1 : upstream volumetric discharge from stream 1
+                - temp_1 : upstream temperature from stream 1
+                - vol_2 : upstream volumetric discharge from stream 2
+                - temp_2 : upstream temperature from stream 2
+                - hillslope_volumetric_discharge : discharge to stream from REW groundwaterZone
+                - hillslope_volumetric_overlandFlow : overland flow from REW to stream
+                - volumetric_discharge : discharge leaving stream link in current timestep
+                - width : channel width
+                - length : channel length
+                - Ta : air temperature 
+                - Lin : longwave incoming radiation
+                - Sin : shortwave incoming radiation
+                - ppt : incoming precipitation
+
+        
+        Returns: 
+           
+        """
+        # volumetric fluxes
+        vol_1 = 1.15741e-11*kwargs['vol_1']
+        vol_2 = 1.15741e-11*kwargs['vol_2']
+        hillslope_volumetric_discharge = 1.15741e-11*kwargs['hillslope_volumetric_discharge']
+        hillslope_volumetric_overlandFlow = 1.15741e-11*kwargs['hillslope_volumetric_overlandFlow']
+        volumetric_discharge = 1.15741e-11*kwargs['volumetric_discharge']
+
+        # linear fluxes
+        ppt = 1.15741e-7*kwargs['ppt']
+
+        # temperatures 
+        temp_1 = kwargs['temp_1'] + 273.15
+        temp_2 = kwargs['temp_2'] + 273.15
+        Ta = kwargs['ta'] + 273.15
+        temp_curr = self.temperature + 273.15
+
+        # lengths
+        width = 0.01*kwargs['width']
+        length = 0.01*kwargs['length']
+
+        # volumes
+        volume = 1e-6*kwargs['volume']
+
+        # atmospheric data (water vapor pressure in kPa)
+        ea = kwargs['ea']
+        
+        # energy fluxes
+        Lin = kwargs['Lin']
+        Sin = kwargs['Sin']
+        Lout = self.eps*self.sigma*(temp_curr)**4
+        esat = 0.611*np.exp(2.5*10**6/461.0*(1/273.2 - 1/temp_curr)) # saturation vapor pressure in kPa
+        u = 2.0 # windspeed in m/s; assume 0.5 m/s, Allen 1998
+        
+
+        dt = dt*86400
+
+        #need volumetric update back in here...
+        flux = dt*ppt*length*width + vol_1*dt + vol_2*dt + hillslope_volumetric_discharge*dt  \
+            + hillslope_volumetric_overlandFlow*dt - volumetric_discharge*dt
+        volume_next = volume + flux
+        leftover_stream_volume = volume - volumetric_discharge*dt
+
+        tnew = (temp_curr*leftover_stream_volume 
+            + Ta*dt*ppt*length*width
+            + temp_2*vol_2*dt + temp_1*vol_1*dt
+            + (self.Tgw + 273.15)*hillslope_volumetric_discharge*dt
+            + Ta*hillslope_volumetric_overlandFlow*dt
+            )/(volume_next)
+        
+        # Using equations from Westhoff et al. 2007, HESS
+        depth = volume/(length*width)
+        tnew -= dt*self.kh*(temp_curr - Ta)/(self.rho*self.cp*depth)
+ 
 
         self.temperature = tnew - 273.15
         
