@@ -177,8 +177,8 @@ def calibrate(arguments):
     best_index = -1
     desc = "Core #%s"%(cpu)
     for i in range(N):
-	sys.stdout.write('\rWorking on iteration %d out of %d \n' % (i,N))
-	sys.stdout.flush()
+	# sys.stdout.write('\rWorking on iteration %d out of %d \n' % (i,N))
+	# sys.stdout.flush()
         solved_groups = {}
         parameter_group_params_curr = generate_parameter_set(parameter_group_params, parameter_ranges)
         for group_id in groups_to_calibrate:
