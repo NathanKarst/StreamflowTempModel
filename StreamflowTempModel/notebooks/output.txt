@@ -1,0 +1,3215 @@
+
+......hillslope calibration......
+REWs [1, 2, 3] are located within the calibration sub-watershed
+The groups [(1, 0)] will be run for calibration purposes
+There are 4 cores on this machine, 
+400 model runs will be performed on each core
+
+Working on iteration 0 out of 400 
+Working on iteration 0 out of 400 
+Working on iteration 0 out of 400 
+Working on iteration 0 out of 400 
+0.677791504127
+Working on iteration 1 out of 400 
+0.77812966139
+Working on iteration 1 out of 400 
+0.863647632466
+Working on iteration 1 out of 400 
+0.832071923044
+Working on iteration 1 out of 400 
+0.874149091477
+Working on iteration 2 out of 400 
+0.776002382485
+Working on iteration 2 out of 400 
+0.537235693671
+Working on iteration 2 out of 400 
+0.840129843367
+Working on iteration 2 out of 400 
+0.799017729334
+Working on iteration 3 out of 400 
+0.691909318213
+Working on iteration 3 out of 400 
+0.838637331623
+Working on iteration 3 out of 400 
+0.823673256103
+Working on iteration 3 out of 400 
+0.883393405193
+Working on iteration 4 out of 400 
+0.908159156138
+Working on iteration 4 out of 400 
+0.554811143288
+Working on iteration 4 out of 400 
+0.815188840024
+Working on iteration 4 out of 400 
+0.872269573274
+Working on iteration 5 out of 400 
+0.777018505913
+Working on iteration 5 out of 400 
+0.629292721434
+Working on iteration 5 out of 400 
+0.834417159301
+Working on iteration 5 out of 400 
+0.688102832323
+Working on iteration 6 out of 400 
+0.870846540134
+Working on iteration 6 out of 400 
+0.65373911667
+Working on iteration 6 out of 400 
+0.884906515287
+Working on iteration 6 out of 400 
+0.852074138801
+Working on iteration 7 out of 400 
+0.874413581059
+Working on iteration 7 out of 400 
+0.857454240279
+Working on iteration 7 out of 400 
+0.36005520909
+Working on iteration 7 out of 400 
+0.737032575318
+Working on iteration 8 out of 400 
+0.882436339403
+Working on iteration 8 out of 400 
+0.796786861174
+Working on iteration 8 out of 400 
+0.925477597711
+Working on iteration 8 out of 400 
+0.786177485248
+Working on iteration 9 out of 400 
+0.906522623162
+Working on iteration 9 out of 400 
+0.697076667849
+Working on iteration 9 out of 400 
+0.792819527127
+Working on iteration 9 out of 400 
+0.877492806542
+Working on iteration 10 out of 400 
+0.872013670733
+Working on iteration 10 out of 400 
+0.778384498953
+Working on iteration 10 out of 400 
+0.905847483898
+Working on iteration 10 out of 400 
+0.893541120433
+Working on iteration 11 out of 400 
+0.749228439532
+Working on iteration 11 out of 400 
+0.919297323875
+Working on iteration 11 out of 400 
+0.664393902989
+Working on iteration 11 out of 400 
+0.8282685093
+Working on iteration 12 out of 400 
+0.676814478961
+Working on iteration 12 out of 400 
+0.757983702726
+Working on iteration 12 out of 400 
+0.566930172943
+Working on iteration 12 out of 400 
+0.834601306629
+Working on iteration 13 out of 400 
+0.772892917265
+Working on iteration 13 out of 400 
+0.642617633004
+Working on iteration 13 out of 400 
+0.797133744411
+Working on iteration 13 out of 400 
+0.884258725964
+Working on iteration 14 out of 400 
+0.857934960771
+Working on iteration 14 out of 400 
+0.733161747837
+Working on iteration 14 out of 400 
+0.897404713149
+Working on iteration 14 out of 400 
+0.785087253148
+Working on iteration 15 out of 400 
+0.697229099299
+Working on iteration 15 out of 400 
+0.856748845006
+Working on iteration 15 out of 400 
+0.648492172482
+Working on iteration 15 out of 400 
+0.876199291046
+Working on iteration 16 out of 400 
+0.757251170161
+Working on iteration 16 out of 400 
+0.864575603718
+Working on iteration 16 out of 400 
+0.786860596587
+Working on iteration 16 out of 400 
+0.501364295319
+Working on iteration 17 out of 400 
+0.854504687441
+Working on iteration 17 out of 400 
+0.856185472585
+Working on iteration 17 out of 400 
+0.808922313135
+Working on iteration 17 out of 400 
+0.653336927943
+Working on iteration 18 out of 400 
+0.541882599261
+Working on iteration 18 out of 400 
+0.165593264992
+Working on iteration 18 out of 400 
+0.807714179444
+Working on iteration 18 out of 400 
+0.766995040466
+Working on iteration 19 out of 400 
+0.723421017587
+Working on iteration 19 out of 400 
+0.75094784162
+Working on iteration 19 out of 400 
+0.841017367531
+Working on iteration 19 out of 400 
+0.668894326095
+Working on iteration 20 out of 400 
+0.609523916739
+Working on iteration 20 out of 400 
+0.725919201419
+Working on iteration 20 out of 400 
+0.836399351843
+Working on iteration 20 out of 400 
+0.781341968914
+Working on iteration 21 out of 400 
+0.918988973389
+Working on iteration 21 out of 400 
+0.833598793468
+Working on iteration 21 out of 400 
+0.871500004567
+Working on iteration 21 out of 400 
+0.870777148896
+Working on iteration 22 out of 400 
+0.888251749497
+Working on iteration 22 out of 400 
+0.870239619127
+Working on iteration 22 out of 400 
+0.886420785571
+Working on iteration 22 out of 400 
+0.627388040412
+Working on iteration 23 out of 400 
+0.686056882188
+Working on iteration 23 out of 400 
+0.789460909214
+Working on iteration 23 out of 400 
+0.719934044088
+Working on iteration 23 out of 400 
+0.63148412117
+Working on iteration 24 out of 400 
+0.889853666942
+Working on iteration 24 out of 400 
+0.84891476862
+Working on iteration 24 out of 400 
+0.742806790252
+Working on iteration 24 out of 400 
+0.822662308725
+Working on iteration 25 out of 400 
+0.777733012065
+Working on iteration 25 out of 400 
+0.871809753204
+Working on iteration 25 out of 400 
+0.690609833953
+Working on iteration 25 out of 400 
+0.768134160002
+Working on iteration 26 out of 400 
+0.883307107181
+Working on iteration 26 out of 400 
+0.930214338037
+Working on iteration 26 out of 400 
+0.859201825928
+Working on iteration 26 out of 400 
+0.793876574623
+Working on iteration 27 out of 400 
+0.780425094066
+Working on iteration 27 out of 400 
+0.671791046082
+Working on iteration 27 out of 400 
+0.813959040964
+Working on iteration 27 out of 400 
+0.777939153841
+Working on iteration 28 out of 400 
+0.665922398188
+Working on iteration 28 out of 400 
+0.920407683602
+Working on iteration 28 out of 400 
+0.860145296724
+Working on iteration 28 out of 400 
+0.770964369739
+Working on iteration 29 out of 400 
+0.707119793251
+Working on iteration 29 out of 400 
+0.898235435119
+Working on iteration 29 out of 400 
+0.502750414664
+Working on iteration 29 out of 400 
+0.686038927343
+Working on iteration 30 out of 400 
+0.834023769779
+Working on iteration 30 out of 400 
+0.828002113953
+Working on iteration 30 out of 400 
+0.696112524496
+Working on iteration 30 out of 400 
+0.897014877401
+Working on iteration 31 out of 400 
+0.785686839215
+Working on iteration 31 out of 400 
+0.735783822208
+Working on iteration 31 out of 400 
+0.678026331763
+Working on iteration 31 out of 400 
+0.745244799658
+Working on iteration 32 out of 400 
+0.64777762272
+Working on iteration 32 out of 400 
+0.886434862201
+Working on iteration 32 out of 400 
+0.814171717029
+Working on iteration 32 out of 400 
+0.717293917047
+Working on iteration 33 out of 400 
+0.646249249627
+Working on iteration 33 out of 400 
+0.733354125895
+Working on iteration 33 out of 400 
+0.854083022313
+Working on iteration 33 out of 400 
+0.881099616882
+Working on iteration 34 out of 400 
+0.802262459396
+Working on iteration 34 out of 400 
+0.877449152468
+Working on iteration 34 out of 400 
+0.900757346622
+Working on iteration 34 out of 400 
+0.806037428883
+Working on iteration 35 out of 400 
+0.687172623395
+Working on iteration 35 out of 400 
+0.805248532338
+Working on iteration 35 out of 400 
+0.725268131503
+Working on iteration 35 out of 400 
+0.744546579756
+Working on iteration 36 out of 400 
+0.833768920495
+Working on iteration 36 out of 400 
+0.821973616333
+Working on iteration 36 out of 400 
+0.807816878721
+Working on iteration 36 out of 400 
+0.817636894161
+Working on iteration 37 out of 400 
+0.744096454722
+Working on iteration 37 out of 400 
+0.760141409369
+Working on iteration 37 out of 400 
+0.820818739059
+Working on iteration 37 out of 400 
+0.741037678748
+Working on iteration 38 out of 400 
+0.887373211321
+Working on iteration 38 out of 400 
+0.765865946435
+Working on iteration 38 out of 400 
+0.872507335438
+Working on iteration 38 out of 400 
+0.702818256482
+Working on iteration 39 out of 400 
+0.747384204387
+Working on iteration 39 out of 400 
+0.799228887313
+Working on iteration 39 out of 400 
+0.784527311933
+Working on iteration 39 out of 400 
+0.805224498536
+Working on iteration 40 out of 400 
+0.636371964671
+Working on iteration 40 out of 400 
+0.862682612513
+Working on iteration 40 out of 400 
+0.742701028879
+Working on iteration 40 out of 400 
+0.923213402583
+Working on iteration 41 out of 400 
+0.724901714525
+Working on iteration 41 out of 400 
+0.865682537209
+Working on iteration 41 out of 400 
+0.875908825588
+Working on iteration 41 out of 400 
+0.854360874574
+Working on iteration 42 out of 400 
+0.770791230413
+Working on iteration 42 out of 400 
+0.788112798836
+Working on iteration 42 out of 400 
+0.892256631039
+Working on iteration 42 out of 400 
+0.649439644765
+Working on iteration 43 out of 400 
+0.765555452529
+Working on iteration 43 out of 400 
+0.853493842717
+Working on iteration 43 out of 400 
+0.888248683313
+Working on iteration 43 out of 400 
+0.870626773612
+Working on iteration 44 out of 400 
+0.849287898363
+Working on iteration 44 out of 400 
+0.91210401391
+Working on iteration 44 out of 400 
+0.711033116038
+Working on iteration 44 out of 400 
+0.832715733187
+Working on iteration 45 out of 400 
+0.642495691315
+Working on iteration 45 out of 400 
+0.504927175076
+Working on iteration 45 out of 400 
+0.852029637688
+Working on iteration 45 out of 400 
+0.661674785193
+Working on iteration 46 out of 400 
+0.770226111858
+Working on iteration 46 out of 400 
+0.806129528868
+Working on iteration 46 out of 400 
+0.846694545445
+Working on iteration 46 out of 400 
+0.673478623034
+Working on iteration 47 out of 400 
+0.710821949393
+Working on iteration 47 out of 400 
+0.904356876663
+Working on iteration 47 out of 400 
+0.690911220828
+Working on iteration 47 out of 400 
+0.857087943176
+Working on iteration 48 out of 400 
+0.64542586894
+Working on iteration 48 out of 400 
+0.853224175653
+Working on iteration 48 out of 400 
+0.928277854701
+Working on iteration 48 out of 400 
+0.765077990615
+Working on iteration 49 out of 400 
+0.898460751521
+Working on iteration 49 out of 400 
+0.908688622207
+Working on iteration 49 out of 400 
+0.692261944629
+Working on iteration 49 out of 400 
+0.873767224752
+Working on iteration 50 out of 400 
+0.866528513836
+Working on iteration 50 out of 400 
+0.711673841088
+Working on iteration 50 out of 400 
+0.89392945905
+Working on iteration 50 out of 400 
+0.489498027311
+Working on iteration 51 out of 400 
+0.734502088632
+Working on iteration 51 out of 400 
+0.615720512173
+Working on iteration 51 out of 400 
+0.820091693008
+Working on iteration 51 out of 400 
+0.733971443355
+Working on iteration 52 out of 400 
+0.650866084883
+Working on iteration 52 out of 400 
+0.763886635545
+Working on iteration 52 out of 400 
+0.844172026496
+Working on iteration 52 out of 400 
+0.857352333079
+Working on iteration 53 out of 400 
+0.797036179711
+Working on iteration 53 out of 400 
+0.793552564343
+Working on iteration 53 out of 400 
+0.829206079946
+Working on iteration 53 out of 400 
+0.809895500781
+Working on iteration 54 out of 400 
+0.757357441638
+Working on iteration 54 out of 400 
+0.849364928035
+Working on iteration 54 out of 400 
+0.710071686003
+Working on iteration 54 out of 400 
+0.626363076682
+Working on iteration 55 out of 400 
+0.874953963194
+Working on iteration 55 out of 400 
+0.675914096295
+Working on iteration 55 out of 400 
+0.746094467288
+Working on iteration 55 out of 400 
+0.84929057851
+Working on iteration 56 out of 400 
+0.842780732829
+Working on iteration 56 out of 400 
+0.890026641389
+Working on iteration 56 out of 400 
+0.704664016022
+Working on iteration 56 out of 400 
+0.724419865359
+Working on iteration 57 out of 400 
+0.625609314125
+Working on iteration 57 out of 400 
+0.819378221423
+Working on iteration 57 out of 400 
+0.79334123131
+Working on iteration 57 out of 400 
+0.535108721114
+Working on iteration 58 out of 400 
+0.861656909175
+Working on iteration 58 out of 400 
+0.765407215655
+Working on iteration 58 out of 400 
+0.778999514465
+Working on iteration 58 out of 400 
+0.664633287388
+Working on iteration 59 out of 400 
+0.869830190658
+Working on iteration 59 out of 400 
+0.814800688733
+Working on iteration 59 out of 400 
+0.638072239743
+Working on iteration 59 out of 400 
+0.640572632868
+Working on iteration 60 out of 400 
+0.662836303806
+Working on iteration 60 out of 400 
+0.78227362442
+Working on iteration 60 out of 400 
+0.898752880523
+Working on iteration 60 out of 400 
+0.905163864422
+Working on iteration 61 out of 400 
+0.55127059742
+Working on iteration 61 out of 400 
+0.816857014321
+Working on iteration 61 out of 400 
+0.794973796544
+Working on iteration 61 out of 400 
+0.784714234949
+Working on iteration 62 out of 400 
+0.804106549764
+Working on iteration 62 out of 400 
+0.794743763329
+Working on iteration 62 out of 400 
+0.667366895494
+Working on iteration 62 out of 400 
+0.806648689271
+Working on iteration 63 out of 400 
+0.696819168414
+Working on iteration 63 out of 400 
+0.815300107435
+Working on iteration 63 out of 400 
+0.746794747777
+Working on iteration 63 out of 400 
+0.44318204422
+Working on iteration 64 out of 400 
+0.921224067388
+Working on iteration 64 out of 400 
+0.707840539931
+Working on iteration 64 out of 400 
+0.850776970621
+Working on iteration 64 out of 400 
+0.782919582462
+Working on iteration 65 out of 400 
+0.761544477399
+Working on iteration 65 out of 400 
+0.881372408661
+Working on iteration 65 out of 400 
+0.766879798604
+Working on iteration 65 out of 400 
+0.706469766131
+Working on iteration 66 out of 400 
+0.894515936411
+Working on iteration 66 out of 400 
+0.922693898923
+Working on iteration 66 out of 400 
+0.84052992038
+Working on iteration 66 out of 400 
+0.848282388976
+Working on iteration 67 out of 400 
+0.729217132189
+Working on iteration 67 out of 400 
+0.617488608632
+Working on iteration 67 out of 400 
+0.399097811558
+Working on iteration 67 out of 400 
+0.699423795245
+Working on iteration 68 out of 400 
+0.921768266346
+Working on iteration 68 out of 400 
+0.782903871036
+Working on iteration 68 out of 400 
+0.780812128323
+Working on iteration 68 out of 400 
+0.912298240184
+Working on iteration 69 out of 400 
+0.870698102762
+Working on iteration 69 out of 400 
+0.856486761309
+Working on iteration 69 out of 400 
+0.770038686542
+Working on iteration 69 out of 400 
+0.851288605218
+Working on iteration 70 out of 400 
+0.882426073124
+Working on iteration 70 out of 400 
+0.617607288715
+Working on iteration 70 out of 400 
+0.464805319365
+Working on iteration 70 out of 400 
+0.762558561724
+Working on iteration 71 out of 400 
+0.752316511786
+Working on iteration 71 out of 400 
+0.710151722162
+Working on iteration 71 out of 400 
+0.87274226076
+Working on iteration 71 out of 400 
+0.705314608638
+Working on iteration 72 out of 400 
+0.582818161074
+Working on iteration 72 out of 400 
+0.730267706636
+Working on iteration 72 out of 400 
+0.755616293601
+Working on iteration 72 out of 400 
+0.680040965302
+Working on iteration 73 out of 400 
+0.742952039928
+Working on iteration 73 out of 400 
+0.891430295073
+Working on iteration 73 out of 400 
+0.864810025827
+Working on iteration 74 out of 400 
+0.732995119807
+Working on iteration 73 out of 400 
+0.88978904499
+Working on iteration 74 out of 400 
+0.862389862042
+Working on iteration 74 out of 400 
+0.801204492473
+Working on iteration 74 out of 400 
+0.811703657926
+Working on iteration 75 out of 400 
+0.866759396108
+Working on iteration 75 out of 400 
+0.468774895173
+Working on iteration 75 out of 400 
+0.839296351647
+Working on iteration 75 out of 400 
+0.818207244349
+Working on iteration 76 out of 400 
+0.883411750696
+Working on iteration 76 out of 400 
+0.800862987164
+Working on iteration 76 out of 400 
+0.704198058862
+Working on iteration 76 out of 400 
+0.806756445487
+Working on iteration 77 out of 400 
+0.734568869076
+Working on iteration 77 out of 400 
+0.854410166724
+Working on iteration 77 out of 400 
+0.895860047302
+Working on iteration 78 out of 400 
+0.656170286872
+Working on iteration 77 out of 400 
+0.811180382535
+Working on iteration 78 out of 400 
+0.906033323406
+Working on iteration 78 out of 400 
+0.533573388244
+Working on iteration 78 out of 400 
+0.694890541411
+Working on iteration 79 out of 400 
+0.87191113121
+Working on iteration 79 out of 400 
+0.877898789516
+Working on iteration 80 out of 400 
+0.739198237632
+Working on iteration 79 out of 400 
+0.865218296234
+Working on iteration 79 out of 400 
+0.754738849366
+Working on iteration 80 out of 400 
+0.587831679947
+Working on iteration 80 out of 400 
+0.823494975706
+Working on iteration 81 out of 400 
+0.786670499325
+Working on iteration 80 out of 400 
+0.705365595856
+Working on iteration 81 out of 400 
+0.866535352059
+Working on iteration 81 out of 400 
+0.837226713299
+Working on iteration 82 out of 400 
+0.735544538279
+Working on iteration 81 out of 400 
+0.783468833082
+Working on iteration 82 out of 400 
+0.740460858581
+Working on iteration 82 out of 400 
+0.749399019753
+Working on iteration 83 out of 400 
+0.761343928721
+Working on iteration 82 out of 400 
+0.90836118715
+Working on iteration 83 out of 400 
+0.89614266479
+Working on iteration 83 out of 400 
+0.885386129569
+Working on iteration 84 out of 400 
+0.850217548222
+Working on iteration 83 out of 400 
+0.549733972595
+Working on iteration 84 out of 400 
+0.706667301523
+Working on iteration 84 out of 400 
+0.691713055265
+Working on iteration 84 out of 400 
+0.554051658595
+Working on iteration 85 out of 400 
+0.883602840669
+Working on iteration 85 out of 400 
+0.870801777454
+Working on iteration 85 out of 400 
+0.649671647436
+Working on iteration 86 out of 400 
+0.800956254643
+Working on iteration 85 out of 400 
+0.809523962323
+Working on iteration 86 out of 400 
+0.880458681727
+Working on iteration 86 out of 400 
+0.6901431213
+Working on iteration 87 out of 400 
+0.773328309657
+Working on iteration 86 out of 400 
+0.864766040276
+Working on iteration 87 out of 400 
+0.865258497461
+Working on iteration 87 out of 400 
+0.736534573626
+Working on iteration 88 out of 400 
+0.810903965679
+Working on iteration 87 out of 400 
+0.759472644963
+Working on iteration 88 out of 400 
+0.760606573413
+Working on iteration 88 out of 400 
+0.831675458948
+Working on iteration 89 out of 400 
+0.690882084594
+Working on iteration 88 out of 400 
+0.762888746474
+Working on iteration 89 out of 400 
+0.485971233082
+Working on iteration 89 out of 400 
+0.881300514669
+Working on iteration 90 out of 400 
+0.878342078987
+Working on iteration 89 out of 400 
+0.846258487921
+Working on iteration 90 out of 400 
+0.770392469034
+Working on iteration 90 out of 400 
+0.88200837961
+Working on iteration 90 out of 400 
+0.852603484423
+Working on iteration 91 out of 400 
+0.47786503217
+Working on iteration 91 out of 400 
+0.604982304928
+Working on iteration 91 out of 400 
+0.572081931483
+Working on iteration 91 out of 400 
+0.705392340709
+Working on iteration 92 out of 400 
+0.79166644235
+Working on iteration 92 out of 400 
+0.794328205823
+Working on iteration 92 out of 400 
+0.668649019043
+Working on iteration 92 out of 400 
+0.676988151625
+Working on iteration 93 out of 400 
+0.771634066502
+Working on iteration 93 out of 400 
+0.905314729392
+Working on iteration 93 out of 400 
+0.647249442381
+Working on iteration 93 out of 400 
+0.881977606275
+Working on iteration 94 out of 400 
+0.78381619157
+Working on iteration 94 out of 400 
+0.928224715974
+Working on iteration 94 out of 400 
+0.521143741189
+Working on iteration 94 out of 400 
+0.553853583919
+Working on iteration 95 out of 400 
+0.722209435326
+Working on iteration 95 out of 400 
+0.846855521516
+Working on iteration 95 out of 400 
+0.828096293004
+Working on iteration 95 out of 400 
+0.896527387092
+Working on iteration 96 out of 400 
+0.797330216344
+Working on iteration 96 out of 400 
+0.725643621513
+Working on iteration 96 out of 400 
+0.861734859547
+Working on iteration 96 out of 400 
+0.75036964316
+Working on iteration 97 out of 400 
+0.839291766237
+Working on iteration 97 out of 400 
+0.910491462679
+Working on iteration 97 out of 400 
+0.659394518726
+Working on iteration 97 out of 400 
+0.699296757922
+Working on iteration 98 out of 400 
+0.784147378262
+Working on iteration 98 out of 400 
+0.812576003536
+Working on iteration 98 out of 400 
+0.784951135432
+Working on iteration 98 out of 400 
+0.908506749833
+Working on iteration 99 out of 400 
+0.810173379597
+Working on iteration 99 out of 400 
+0.836944600435
+Working on iteration 99 out of 400 
+0.891791364056
+Working on iteration 99 out of 400 
+0.703550735168
+Working on iteration 100 out of 400 
+0.814857612307
+Working on iteration 100 out of 400 
+0.722536465912
+Working on iteration 100 out of 400 
+0.776232090212
+Working on iteration 100 out of 400 
+0.390895167776
+Working on iteration 101 out of 400 
+0.768770290099
+Working on iteration 101 out of 400 
+0.806416177902
+Working on iteration 101 out of 400 
+0.907545937583
+Working on iteration 101 out of 400 
+0.904246720318
+Working on iteration 102 out of 400 
+0.862161850183
+Working on iteration 102 out of 400 
+0.850062516042
+Working on iteration 102 out of 400 
+0.82038963763
+Working on iteration 102 out of 400 
+0.677595811544
+Working on iteration 103 out of 400 
+0.908511369564
+Working on iteration 103 out of 400 
+0.832545688882
+Working on iteration 103 out of 400 
+0.597504653243
+Working on iteration 103 out of 400 
+0.866480915939
+Working on iteration 104 out of 400 
+0.660608552481
+Working on iteration 104 out of 400 
+0.557578178697
+Working on iteration 104 out of 400 
+0.710409214282
+Working on iteration 104 out of 400 
+0.750151587694
+Working on iteration 105 out of 400 
+0.885797406512
+Working on iteration 105 out of 400 
+0.814437556675
+Working on iteration 105 out of 400 
+0.829407431514
+Working on iteration 105 out of 400 
+0.781129327451
+Working on iteration 106 out of 400 
+0.865544099613
+Working on iteration 106 out of 400 
+0.670707592093
+Working on iteration 106 out of 400 
+0.818741566219
+Working on iteration 106 out of 400 
+0.551846814137
+Working on iteration 107 out of 400 
+0.747966569155
+Working on iteration 107 out of 400 
+0.785047880236
+Working on iteration 107 out of 400 
+0.879939798231
+Working on iteration 107 out of 400 
+0.740635713432
+Working on iteration 108 out of 400 
+0.804503962922
+Working on iteration 108 out of 400 
+0.567903533584
+Working on iteration 108 out of 400 
+0.924242406454
+Working on iteration 108 out of 400 
+0.822855572759
+Working on iteration 109 out of 400 
+0.79215412707
+Working on iteration 109 out of 400 
+0.903625683185
+Working on iteration 109 out of 400 
+0.836695460954
+Working on iteration 109 out of 400 
+0.736976400783
+Working on iteration 110 out of 400 
+0.698157758685
+Working on iteration 110 out of 400 
+0.80339351053
+Working on iteration 110 out of 400 
+0.810607812971
+Working on iteration 110 out of 400 
+0.771432122221
+Working on iteration 111 out of 400 
+0.881004391753
+Working on iteration 111 out of 400 
+0.858706868718
+Working on iteration 111 out of 400 
+0.883493664155
+Working on iteration 111 out of 400 
+0.846791696096
+Working on iteration 112 out of 400 
+0.749692907495
+Working on iteration 112 out of 400 
+0.779069886672
+Working on iteration 112 out of 400 
+0.652124344592
+Working on iteration 112 out of 400 
+0.530093731725
+Working on iteration 113 out of 400 
+0.897282413685
+Working on iteration 113 out of 400 
+0.621105402013
+Working on iteration 113 out of 400 
+0.865103482015
+Working on iteration 113 out of 400 
+0.812535758934
+Working on iteration 114 out of 400 
+0.503943217731
+Working on iteration 114 out of 400 
+0.724228606026
+Working on iteration 114 out of 400 
+0.776259064081
+Working on iteration 115 out of 400 
+0.711995845259
+Working on iteration 114 out of 400 
+0.744782149693
+Working on iteration 115 out of 400 
+0.67234251007
+Working on iteration 115 out of 400 
+0.621806154232
+Working on iteration 115 out of 400 
+0.91894485355
+Working on iteration 116 out of 400 
+0.743463959891
+Working on iteration 116 out of 400 
+0.749611329351
+Working on iteration 116 out of 400 
+0.846103763647
+Working on iteration 116 out of 400 
+0.524923550543
+Working on iteration 117 out of 400 
+0.827490049705
+Working on iteration 117 out of 400 
+0.881353364341
+Working on iteration 117 out of 400 
+0.441470785164
+Working on iteration 117 out of 400 
+0.698853654264
+Working on iteration 118 out of 400 
+0.744879041964
+Working on iteration 118 out of 400 
+0.720512591536
+Working on iteration 118 out of 400 
+0.918842382367
+Working on iteration 118 out of 400 
+0.472483962374
+Working on iteration 119 out of 400 
+0.812104059162
+Working on iteration 119 out of 400 
+0.76018648675
+Working on iteration 119 out of 400 
+0.787390201917
+Working on iteration 119 out of 400 
+0.73988085158
+Working on iteration 120 out of 400 
+0.748931451714
+Working on iteration 120 out of 400 
+0.747619794721
+Working on iteration 120 out of 400 
+0.862884700926
+Working on iteration 120 out of 400 
+0.872846199591
+Working on iteration 121 out of 400 
+0.674098766634
+Working on iteration 121 out of 400 
+0.869606823613
+Working on iteration 121 out of 400 
+0.862176829008
+Working on iteration 121 out of 400 
+0.587067784345
+Working on iteration 122 out of 400 
+0.843999581696
+Working on iteration 122 out of 400 
+0.893773490256
+Working on iteration 122 out of 400 
+0.73520790784
+Working on iteration 122 out of 400 
+0.758469826649
+Working on iteration 123 out of 400 
+0.823783471768
+Working on iteration 123 out of 400 
+0.794598667007
+Working on iteration 123 out of 400 
+0.632008150442
+Working on iteration 123 out of 400 
+0.853403868285
+Working on iteration 124 out of 400 
+0.738667701378
+Working on iteration 124 out of 400 
+0.623797333656
+Working on iteration 124 out of 400 
+0.711472123886
+Working on iteration 124 out of 400 
+0.706002840892
+Working on iteration 125 out of 400 
+0.732336552046
+Working on iteration 125 out of 400 
+0.79296073404
+Working on iteration 125 out of 400 
+0.712536934211
+Working on iteration 125 out of 400 
+0.585883101699
+Working on iteration 126 out of 400 
+0.782120219872
+Working on iteration 126 out of 400 
+0.680027704694
+Working on iteration 126 out of 400 
+0.934540503204
+Working on iteration 126 out of 400 
+0.892433618037
+Working on iteration 127 out of 400 
+0.880908357476
+Working on iteration 127 out of 400 
+0.741073459313
+Working on iteration 127 out of 400 
+0.919033946815
+Working on iteration 127 out of 400 
+0.645108951855
+Working on iteration 128 out of 400 
+0.816688061505
+Working on iteration 128 out of 400 
+0.805318799644
+Working on iteration 128 out of 400 
+0.592348976875
+Working on iteration 128 out of 400 
+0.757242051597
+Working on iteration 129 out of 400 
+0.868554218329
+Working on iteration 129 out of 400 
+0.879767078622
+Working on iteration 129 out of 400 
+0.912701007669
+Working on iteration 129 out of 400 
+0.787941857847
+Working on iteration 130 out of 400 
+0.829813823352
+Working on iteration 130 out of 400 
+0.651933453313
+Working on iteration 130 out of 400 
+0.671099910953
+Working on iteration 130 out of 400 
+0.917633754985
+Working on iteration 131 out of 400 
+0.751374821483
+Working on iteration 131 out of 400 
+0.528007881977
+Working on iteration 131 out of 400 
+0.828121588517
+Working on iteration 131 out of 400 
+0.669726922178
+Working on iteration 132 out of 400 
+0.764422288221
+Working on iteration 132 out of 400 
+0.736606022474
+Working on iteration 132 out of 400 
+0.674447179881
+Working on iteration 132 out of 400 
+0.738694848218
+Working on iteration 133 out of 400 
+0.804733998846
+Working on iteration 133 out of 400 
+0.816145214062
+Working on iteration 133 out of 400 
+0.912673454613
+Working on iteration 133 out of 400 
+0.498108915349
+Working on iteration 134 out of 400 
+0.732817407049
+Working on iteration 134 out of 400 
+0.931879037382
+Working on iteration 134 out of 400 
+0.882451196329
+Working on iteration 134 out of 400 
+0.83782037519
+Working on iteration 135 out of 400 
+0.665321222098
+Working on iteration 135 out of 400 
+0.627708695758
+Working on iteration 135 out of 400 
+0.775806629296
+Working on iteration 135 out of 400 
+0.923314126931
+Working on iteration 136 out of 400 
+0.833483050728
+Working on iteration 136 out of 400 
+0.683061381846
+Working on iteration 136 out of 400 
+0.897794775786
+Working on iteration 136 out of 400 
+0.646149737492
+Working on iteration 137 out of 400 
+0.822009115693
+Working on iteration 137 out of 400 
+0.76237015515
+Working on iteration 137 out of 400 
+0.834796832956
+Working on iteration 137 out of 400 
+0.635858771439
+Working on iteration 138 out of 400 
+0.8196578143
+Working on iteration 138 out of 400 
+0.781189125929
+Working on iteration 138 out of 400 
+0.554262178266
+Working on iteration 138 out of 400 
+0.823030298531
+Working on iteration 139 out of 400 
+0.818781487302
+Working on iteration 139 out of 400 
+0.880665912438
+Working on iteration 139 out of 400 
+0.796689599411
+Working on iteration 139 out of 400 
+0.577497565344
+Working on iteration 140 out of 400 
+0.512259805106
+Working on iteration 140 out of 400 
+0.699829562537
+Working on iteration 140 out of 400 
+0.795743393056
+Working on iteration 140 out of 400 
+0.73138783103
+Working on iteration 141 out of 400 
+0.700945073483
+Working on iteration 141 out of 400 
+0.618200380136
+Working on iteration 141 out of 400 
+0.854150436512
+Working on iteration 141 out of 400 
+0.898515797837
+Working on iteration 142 out of 400 
+0.835053485232
+Working on iteration 142 out of 400 
+0.873112644508
+Working on iteration 142 out of 400 
+0.735959720917
+Working on iteration 142 out of 400 
+0.70572282882
+Working on iteration 143 out of 400 
+0.85355981217
+Working on iteration 143 out of 400 
+0.769508947717
+Working on iteration 143 out of 400 
+0.666849420757
+Working on iteration 143 out of 400 
+0.627837828832
+Working on iteration 144 out of 400 
+0.817769588024
+Working on iteration 144 out of 400 
+0.861024551538
+Working on iteration 144 out of 400 
+0.840799565767
+Working on iteration 144 out of 400 
+0.912694357718
+Working on iteration 145 out of 400 
+0.897344030998
+Working on iteration 145 out of 400 
+0.783168768672
+Working on iteration 145 out of 400 
+0.620697831725
+Working on iteration 145 out of 400 
+0.833112248561
+Working on iteration 146 out of 400 
+0.88956169674
+Working on iteration 146 out of 400 
+0.820740519978
+Working on iteration 146 out of 400 
+0.908043174523
+Working on iteration 146 out of 400 
+0.920936796438
+Working on iteration 147 out of 400 
+0.84503690863
+Working on iteration 147 out of 400 
+0.851059532212
+Working on iteration 147 out of 400 
+0.712673911866
+Working on iteration 147 out of 400 
+0.902901235237
+Working on iteration 148 out of 400 
+0.80561183168
+Working on iteration 148 out of 400 
+0.74197176758
+Working on iteration 148 out of 400 
+0.779102841074
+Working on iteration 148 out of 400 
+0.719591594517
+Working on iteration 149 out of 400 
+0.782775441667
+Working on iteration 149 out of 400 
+0.856032509001
+Working on iteration 149 out of 400 
+0.883076064118
+Working on iteration 149 out of 400 
+0.764544597123
+Working on iteration 150 out of 400 
+0.736809378166
+Working on iteration 150 out of 400 
+0.588889082196
+Working on iteration 150 out of 400 
+0.485992069511
+Working on iteration 150 out of 400 
+0.899813212912
+Working on iteration 151 out of 400 
+0.88056215582
+Working on iteration 151 out of 400 
+0.815137021938
+Working on iteration 151 out of 400 
+0.513110477883
+Working on iteration 151 out of 400 
+0.890216634295
+Working on iteration 152 out of 400 
+0.848864390984
+Working on iteration 152 out of 400 
+0.767360636111
+Working on iteration 152 out of 400 
+0.808522729198
+Working on iteration 152 out of 400 
+0.760627644914
+Working on iteration 153 out of 400 
+0.865385899641
+Working on iteration 153 out of 400 
+0.66681336863
+Working on iteration 153 out of 400 
+0.886872571799
+Working on iteration 153 out of 400 
+0.601570359168
+Working on iteration 154 out of 400 
+0.890118012654
+Working on iteration 154 out of 400 
+0.898056122339
+Working on iteration 154 out of 400 
+0.721343558995
+Working on iteration 154 out of 400 
+0.772524716865
+Working on iteration 155 out of 400 
+0.597467813519
+Working on iteration 155 out of 400 
+0.561537854413
+Working on iteration 155 out of 400 
+0.633901573291
+Working on iteration 155 out of 400 
+0.882973658483
+Working on iteration 156 out of 400 
+0.84484050591
+Working on iteration 156 out of 400 
+0.835580714603
+Working on iteration 156 out of 400 
+0.80312143883
+Working on iteration 156 out of 400 
+0.859466563856
+Working on iteration 157 out of 400 
+0.742599626077
+Working on iteration 157 out of 400 
+0.756562669013
+Working on iteration 157 out of 400 
+0.802607282763
+Working on iteration 157 out of 400 
+0.833988008067
+Working on iteration 158 out of 400 
+0.87140986486
+Working on iteration 158 out of 400 
+0.662302445984
+Working on iteration 158 out of 400 
+0.83704467874
+Working on iteration 158 out of 400 
+0.874646513232
+Working on iteration 159 out of 400 
+0.696839432756
+Working on iteration 159 out of 400 
+0.535375809267
+Working on iteration 159 out of 400 
+0.781589222728
+Working on iteration 159 out of 400 
+0.913607268193
+Working on iteration 160 out of 400 
+0.769528815369
+Working on iteration 160 out of 400 
+0.776482223606
+Working on iteration 160 out of 400 
+0.898138813004
+Working on iteration 160 out of 400 
+0.668233558634
+Working on iteration 161 out of 400 
+0.857949656782
+Working on iteration 161 out of 400 
+0.749904863979
+Working on iteration 161 out of 400 
+0.865951660761
+Working on iteration 161 out of 400 
+0.733014792187
+Working on iteration 162 out of 400 
+0.476236075899
+Working on iteration 162 out of 400 
+0.907967894377
+Working on iteration 162 out of 400 
+0.753068028945
+Working on iteration 162 out of 400 
+0.677110968921
+Working on iteration 163 out of 400 
+0.86553890075
+Working on iteration 163 out of 400 
+0.43327156104
+Working on iteration 163 out of 400 
+0.572719382201
+Working on iteration 163 out of 400 
+0.747406085952
+Working on iteration 164 out of 400 
+0.738922650229
+Working on iteration 164 out of 400 
+0.878103660467
+Working on iteration 164 out of 400 
+0.829837614205
+Working on iteration 164 out of 400 
+0.417290624399
+Working on iteration 165 out of 400 
+0.840367767015
+Working on iteration 165 out of 400 
+0.808047196308
+Working on iteration 165 out of 400 
+0.712820101764
+Working on iteration 165 out of 400 
+0.794360416525
+Working on iteration 166 out of 400 
+0.906430237564
+Working on iteration 166 out of 400 
+0.747596719566
+Working on iteration 166 out of 400 
+0.785435024376
+Working on iteration 166 out of 400 
+0.783259411891
+Working on iteration 167 out of 400 
+0.595026070755
+Working on iteration 167 out of 400 
+0.827767138856
+Working on iteration 167 out of 400 
+0.864805623055
+Working on iteration 167 out of 400 
+0.86683072356
+Working on iteration 168 out of 400 
+0.902271173878
+Working on iteration 168 out of 400 
+0.899083081565
+Working on iteration 168 out of 400 
+0.705754148381
+Working on iteration 168 out of 400 
+0.827252598705
+Working on iteration 169 out of 400 
+0.734559765225
+Working on iteration 169 out of 400 
+0.834370084072
+Working on iteration 169 out of 400 
+0.875251152044
+Working on iteration 169 out of 400 
+0.821553987919
+Working on iteration 170 out of 400 
+0.630490929076
+Working on iteration 170 out of 400 
+0.738870505616
+Working on iteration 170 out of 400 
+0.797460010647
+Working on iteration 170 out of 400 
+0.857695226484
+Working on iteration 171 out of 400 
+0.911022889957
+Working on iteration 171 out of 400 
+0.573384670832
+Working on iteration 171 out of 400 
+0.755284325957
+Working on iteration 171 out of 400 
+0.928378015378
+Working on iteration 172 out of 400 
+0.843907612719
+Working on iteration 172 out of 400 
+0.723396389508
+Working on iteration 172 out of 400 
+0.868056024714
+Working on iteration 172 out of 400 
+0.772564035647
+Working on iteration 173 out of 400 
+0.684714347687
+Working on iteration 173 out of 400 
+0.672093824513
+Working on iteration 173 out of 400 
+0.817376427946
+Working on iteration 173 out of 400 
+0.786371032222
+Working on iteration 174 out of 400 
+0.684099208575
+Working on iteration 174 out of 400 
+0.612545163177
+Working on iteration 174 out of 400 
+0.766606558659
+Working on iteration 174 out of 400 
+0.500209703032
+Working on iteration 175 out of 400 
+0.823932607311
+Working on iteration 175 out of 400 
+0.841201239278
+Working on iteration 175 out of 400 
+0.730040937735
+Working on iteration 175 out of 400 
+0.736120632833
+Working on iteration 176 out of 400 
+0.7343171283
+Working on iteration 176 out of 400 
+0.601939992015
+Working on iteration 176 out of 400 
+0.827266189064
+Working on iteration 176 out of 400 
+0.764055228088
+Working on iteration 177 out of 400 
+0.777883803451
+Working on iteration 177 out of 400 
+0.404250107078
+Working on iteration 177 out of 400 
+0.677040225732
+Working on iteration 177 out of 400 
+0.744435836004
+Working on iteration 178 out of 400 
+0.919931149174
+Working on iteration 178 out of 400 
+0.923774293955
+Working on iteration 178 out of 400 
+0.919216564091
+Working on iteration 178 out of 400 
+0.825297607705
+Working on iteration 179 out of 400 
+0.671197152766
+Working on iteration 179 out of 400 
+0.760166939231
+Working on iteration 179 out of 400 
+0.58243126667
+Working on iteration 179 out of 400 
+0.856193764377
+Working on iteration 180 out of 400 
+0.807345598292
+Working on iteration 180 out of 400 
+0.586766835772
+Working on iteration 180 out of 400 
+0.724866557651
+Working on iteration 180 out of 400 
+0.86036625159
+Working on iteration 181 out of 400 
+0.881032342803
+Working on iteration 181 out of 400 
+0.706728798882
+Working on iteration 181 out of 400 
+0.835195571524
+Working on iteration 181 out of 400 
+0.854080907877
+Working on iteration 182 out of 400 
+0.79117422931
+Working on iteration 182 out of 400 
+0.865344113811
+Working on iteration 182 out of 400 
+0.655607818226
+Working on iteration 182 out of 400 
+0.745981121803
+Working on iteration 183 out of 400 
+0.7120157129
+Working on iteration 183 out of 400 
+0.450163347656
+Working on iteration 183 out of 400 
+0.577136311139
+Working on iteration 183 out of 400 
+0.747689576343
+Working on iteration 184 out of 400 
+0.866413326814
+Working on iteration 184 out of 400 
+0.746119830308
+Working on iteration 184 out of 400 
+0.559531510798
+Working on iteration 184 out of 400 
+0.778879331966
+Working on iteration 185 out of 400 
+0.535938041697
+Working on iteration 185 out of 400 
+0.895459053057
+Working on iteration 185 out of 400 
+0.629566218029
+Working on iteration 185 out of 400 
+0.872814471589
+Working on iteration 186 out of 400 
+0.904844126892
+Working on iteration 186 out of 400 
+0.850144878919
+Working on iteration 186 out of 400 
+0.672047045128
+Working on iteration 186 out of 400 
+0.902385373422
+Working on iteration 187 out of 400 
+0.581858318288
+Working on iteration 187 out of 400 
+0.787239516528
+Working on iteration 187 out of 400 
+0.643799186974
+Working on iteration 187 out of 400 
+0.808184886392
+Working on iteration 188 out of 400 
+0.794798728708
+Working on iteration 188 out of 400 
+0.860067053779
+Working on iteration 188 out of 400 
+0.851638585562
+Working on iteration 188 out of 400 
+0.693582697925
+Working on iteration 189 out of 400 
+0.850751312176
+Working on iteration 189 out of 400 
+0.70239631056
+Working on iteration 189 out of 400 
+0.866622566213
+Working on iteration 189 out of 400 
+0.718215770788
+Working on iteration 190 out of 400 
+0.837904575075
+Working on iteration 190 out of 400 
+0.684260410511
+Working on iteration 190 out of 400 
+0.791037184552
+Working on iteration 190 out of 400 
+0.915123392624
+Working on iteration 191 out of 400 
+0.762486824243
+Working on iteration 191 out of 400 
+0.752910085632
+Working on iteration 191 out of 400 
+0.877042411125
+Working on iteration 191 out of 400 
+0.862508114308
+Working on iteration 192 out of 400 
+0.75466665404
+Working on iteration 192 out of 400 
+0.748793925791
+Working on iteration 192 out of 400 
+0.753415029224
+Working on iteration 192 out of 400 
+0.601868063944
+Working on iteration 193 out of 400 
+0.808083960523
+Working on iteration 193 out of 400 
+0.863986691321
+Working on iteration 193 out of 400 
+0.699009214801
+Working on iteration 193 out of 400 
+0.777466221004
+Working on iteration 194 out of 400 
+0.690499862006
+Working on iteration 194 out of 400 
+0.908491226786
+Working on iteration 194 out of 400 
+0.52450717714
+Working on iteration 194 out of 400 
+0.508881287616
+Working on iteration 195 out of 400 
+0.739696751793
+Working on iteration 195 out of 400 
+0.904146800101
+Working on iteration 195 out of 400 
+0.866380636565
+Working on iteration 195 out of 400 
+0.837812151281
+Working on iteration 196 out of 400 
+0.852121307073
+Working on iteration 196 out of 400 
+0.675275342422
+Working on iteration 196 out of 400 
+0.758943240565
+Working on iteration 196 out of 400 
+0.786426705286
+Working on iteration 197 out of 400 
+0.624929164905
+Working on iteration 197 out of 400 
+0.869475500772
+Working on iteration 197 out of 400 
+0.597853924495
+Working on iteration 197 out of 400 
+0.827352722353
+Working on iteration 198 out of 400 
+0.668220935229
+Working on iteration 198 out of 400 
+0.91678731022
+Working on iteration 198 out of 400 
+0.834286748842
+Working on iteration 198 out of 400 
+0.7467881766
+Working on iteration 199 out of 400 
+0.856416880939
+Working on iteration 199 out of 400 
+0.737961334391
+Working on iteration 199 out of 400 
+0.696245057088
+Working on iteration 199 out of 400 
+0.536483113277
+Working on iteration 200 out of 400 
+0.779305494981
+Working on iteration 200 out of 400 
+0.745184113419
+Working on iteration 200 out of 400 
+0.72948582876
+Working on iteration 200 out of 400 
+0.823617906258
+Working on iteration 201 out of 400 
+0.803861538833
+Working on iteration 201 out of 400 
+0.892649118652
+Working on iteration 201 out of 400 
+0.663950887823
+Working on iteration 201 out of 400 
+0.740934747236
+Working on iteration 202 out of 400 
+0.771190867031
+Working on iteration 202 out of 400 
+0.720033241206
+Working on iteration 202 out of 400 
+0.844739080484
+Working on iteration 202 out of 400 
+0.849674073809
+Working on iteration 203 out of 400 
+0.849552492959
+Working on iteration 203 out of 400 
+0.6034280525
+Working on iteration 203 out of 400 
+0.650098080907
+Working on iteration 203 out of 400 
+0.798028585506
+Working on iteration 204 out of 400 
+0.77966580167
+Working on iteration 204 out of 400 
+0.86929777879
+Working on iteration 204 out of 400 
+0.869975136083
+Working on iteration 204 out of 400 
+0.91472326721
+Working on iteration 205 out of 400 
+0.737212437158
+Working on iteration 205 out of 400 
+0.895127699699
+Working on iteration 205 out of 400 
+0.498185856461
+Working on iteration 205 out of 400 
+0.809217063464
+Working on iteration 206 out of 400 
+0.6889205993
+Working on iteration 206 out of 400 
+0.685479824483
+Working on iteration 206 out of 400 
+0.445473981764
+Working on iteration 206 out of 400 
+0.725082438091
+Working on iteration 207 out of 400 
+0.626232499842
+Working on iteration 207 out of 400 
+0.636752621518
+Working on iteration 207 out of 400 
+0.771705898816
+Working on iteration 207 out of 400 
+0.682738012197
+Working on iteration 208 out of 400 
+0.755625595466
+Working on iteration 208 out of 400 
+0.820160312324
+Working on iteration 208 out of 400 
+0.710493620545
+Working on iteration 208 out of 400 
+0.612447680243
+Working on iteration 209 out of 400 
+0.69695898259
+Working on iteration 209 out of 400 
+0.900744616399
+Working on iteration 209 out of 400 
+0.413900258925
+Working on iteration 209 out of 400 
+0.646499136264
+Working on iteration 210 out of 400 
+0.869065131593
+Working on iteration 210 out of 400 
+0.857371069858
+Working on iteration 210 out of 400 
+0.851873512204
+Working on iteration 210 out of 400 
+0.764792121319
+Working on iteration 211 out of 400 
+0.858083349086
+Working on iteration 211 out of 400 
+0.657845666258
+Working on iteration 211 out of 400 
+0.582241030295
+Working on iteration 211 out of 400 
+0.83119290548
+Working on iteration 212 out of 400 
+0.824213721462
+Working on iteration 212 out of 400 
+0.920042476818
+Working on iteration 212 out of 400 
+0.702085980266
+Working on iteration 212 out of 400 
+0.665758697914
+Working on iteration 213 out of 400 
+0.749829646387
+Working on iteration 213 out of 400 
+0.596225918555
+Working on iteration 213 out of 400 
+0.905963607156
+Working on iteration 213 out of 400 
+0.818363484566
+Working on iteration 214 out of 400 
+0.756190180281
+Working on iteration 214 out of 400 
+0.847975658545
+Working on iteration 214 out of 400 
+0.816580255779
+Working on iteration 214 out of 400 
+0.732585963959
+Working on iteration 215 out of 400 
+0.822268757435
+Working on iteration 215 out of 400 
+0.787421483473
+Working on iteration 215 out of 400 
+0.726122117301
+Working on iteration 215 out of 400 
+0.738078099722
+Working on iteration 216 out of 400 
+0.741774451221
+Working on iteration 216 out of 400 
+0.602762545735
+Working on iteration 216 out of 400 
+0.781237137226
+Working on iteration 216 out of 400 
+0.775604415862
+Working on iteration 217 out of 400 
+0.722664296627
+Working on iteration 217 out of 400 
+0.720260098375
+Working on iteration 217 out of 400 
+0.757228492216
+Working on iteration 217 out of 400 
+0.460876445107
+Working on iteration 218 out of 400 
+0.851730115429
+Working on iteration 218 out of 400 
+0.713084537596
+Working on iteration 218 out of 400 
+0.811119051256
+Working on iteration 218 out of 400 
+0.61625682289
+Working on iteration 219 out of 400 
+0.665375511556
+Working on iteration 219 out of 400 
+0.774249074283
+Working on iteration 219 out of 400 
+0.772952307728
+Working on iteration 219 out of 400 
+0.64526735986
+Working on iteration 220 out of 400 
+0.887126633681
+Working on iteration 220 out of 400 
+0.886050630269
+Working on iteration 220 out of 400 
+0.524941522168
+Working on iteration 220 out of 400 
+0.815762140895
+Working on iteration 221 out of 400 
+0.857862098043
+Working on iteration 221 out of 400 
+0.771142471438
+Working on iteration 221 out of 400 
+0.570339366353
+Working on iteration 221 out of 400 
+0.472573036363
+Working on iteration 222 out of 400 
+0.876290731176
+Working on iteration 222 out of 400 
+0.870598252215
+Working on iteration 222 out of 400 
+0.689117114591
+Working on iteration 222 out of 400 
+0.858778530207
+Working on iteration 223 out of 400 
+0.520333983672
+Working on iteration 223 out of 400 
+0.860614968135
+Working on iteration 223 out of 400 
+0.603584717289
+Working on iteration 224 out of 400 
+0.859680916965
+Working on iteration 223 out of 400 
+0.4349471045
+Working on iteration 224 out of 400 
+0.618756539102
+Working on iteration 224 out of 400 
+0.756137908834
+Working on iteration 225 out of 400 
+0.576200930645
+Working on iteration 224 out of 400 
+0.844891712492
+Working on iteration 225 out of 400 
+0.828674698318
+Working on iteration 225 out of 400 
+0.498175765515
+Working on iteration 226 out of 400 
+0.810486893567
+Working on iteration 225 out of 400 
+0.838676903887
+Working on iteration 226 out of 400 
+0.788388511873
+Working on iteration 226 out of 400 
+0.837087736443
+Working on iteration 227 out of 400 
+0.742646672721
+Working on iteration 226 out of 400 
+0.870557052314
+Working on iteration 227 out of 400 
+0.912889080172
+Working on iteration 227 out of 400 
+0.7647521073
+Working on iteration 228 out of 400 
+0.855061521898
+Working on iteration 227 out of 400 
+0.857788003395
+Working on iteration 228 out of 400 
+0.726534892236
+Working on iteration 228 out of 400 
+0.786318654174
+Working on iteration 229 out of 400 
+0.842286464695
+Working on iteration 228 out of 400 
+0.605211127137
+Working on iteration 229 out of 400 
+0.780202285421
+Working on iteration 229 out of 400 
+0.763801143197
+Working on iteration 230 out of 400 
+0.843526455103
+Working on iteration 229 out of 400 
+0.745422818716
+Working on iteration 230 out of 400 
+0.759341005924
+Working on iteration 230 out of 400 
+0.268248357403
+Working on iteration 230 out of 400 
+0.8668656501
+Working on iteration 231 out of 400 
+0.605051497446
+Working on iteration 231 out of 400 
+0.623833880142
+Working on iteration 231 out of 400 
+0.88463565329
+Working on iteration 232 out of 400 
+0.816177240249
+Working on iteration 231 out of 400 
+0.52555615317
+Working on iteration 232 out of 400 
+0.706135752382
+Working on iteration 232 out of 400 
+0.742111618743
+Working on iteration 233 out of 400 
+0.812621374979
+Working on iteration 232 out of 400 
+0.822793825997
+Working on iteration 233 out of 400 
+0.640531787326
+Working on iteration 233 out of 400 
+0.497152694582
+Working on iteration 234 out of 400 
+0.725976568221
+Working on iteration 233 out of 400 
+0.77639215445
+Working on iteration 234 out of 400 
+0.836704311236
+Working on iteration 234 out of 400 
+0.740834926946
+Working on iteration 235 out of 400 
+0.882957651415
+Working on iteration 234 out of 400 
+0.734228127869
+Working on iteration 235 out of 400 
+0.912743829813
+Working on iteration 235 out of 400 
+0.875768761405
+Working on iteration 236 out of 400 
+0.883312217054
+Working on iteration 235 out of 400 
+0.79869189539
+Working on iteration 236 out of 400 
+0.515737732255
+Working on iteration 236 out of 400 
+0.808018661601
+Working on iteration 237 out of 400 
+0.70195375335
+Working on iteration 236 out of 400 
+0.946014384513
+Working on iteration 237 out of 400 
+0.831366818336
+Working on iteration 237 out of 400 
+0.833126587652
+Working on iteration 237 out of 400 
+0.760280990691
+Working on iteration 238 out of 400 
+0.777720057433
+Working on iteration 238 out of 400 
+0.572401896896
+Working on iteration 238 out of 400 
+0.74775820042
+Working on iteration 238 out of 400 
+0.725625530447
+Working on iteration 239 out of 400 
+0.766393320337
+Working on iteration 239 out of 400 
+0.807442843848
+Working on iteration 239 out of 400 
+0.575263868078
+Working on iteration 239 out of 400 
+0.823914902647
+Working on iteration 240 out of 400 
+0.917661424953
+Working on iteration 240 out of 400 
+0.764619424222
+Working on iteration 240 out of 400 
+0.633691046426
+Working on iteration 241 out of 400 
+0.877548987313
+Working on iteration 240 out of 400 
+0.815184533737
+Working on iteration 241 out of 400 
+0.831898344127
+Working on iteration 241 out of 400 
+0.938930227654
+Working on iteration 242 out of 400 
+0.57868399595
+Working on iteration 242 out of 400 
+0.821789938337
+Working on iteration 241 out of 400 
+0.768111121464
+Working on iteration 242 out of 400 
+0.849547932479
+Working on iteration 243 out of 400 
+0.884224703438
+Working on iteration 243 out of 400 
+0.699713705206
+Working on iteration 242 out of 400 
+0.624738841091
+Working on iteration 243 out of 400 
+0.809054808289
+Working on iteration 244 out of 400 
+0.858634417692
+Working on iteration 243 out of 400 
+0.898420420156
+Working on iteration 244 out of 400 
+0.538538987097
+Working on iteration 244 out of 400 
+0.870682725269
+Working on iteration 245 out of 400 
+0.676567258495
+Working on iteration 245 out of 400 
+0.733543843612
+Working on iteration 244 out of 400 
+0.628656687704
+Working on iteration 245 out of 400 
+0.651750776174
+Working on iteration 246 out of 400 
+0.64900553205
+Working on iteration 246 out of 400 
+0.693450726358
+Working on iteration 245 out of 400 
+0.729802518514
+Working on iteration 246 out of 400 
+0.692144993296
+Working on iteration 247 out of 400 
+0.737041244518
+Working on iteration 246 out of 400 
+0.473256342327
+Working on iteration 247 out of 400 
+0.659489518049
+Working on iteration 247 out of 400 
+0.881436456633
+Working on iteration 248 out of 400 
+0.783321391144
+Working on iteration 247 out of 400 
+0.819570161114
+Working on iteration 248 out of 400 
+0.763425552376
+Working on iteration 248 out of 400 
+0.747792784616
+Working on iteration 249 out of 400 
+0.773923587692
+Working on iteration 248 out of 400 
+0.93341387681
+Working on iteration 249 out of 400 
+0.782982312065
+Working on iteration 249 out of 400 
+0.777265084774
+Working on iteration 250 out of 400 
+0.865192657273
+Working on iteration 249 out of 400 
+0.911659883097
+Working on iteration 250 out of 400 
+0.8249694201
+Working on iteration 250 out of 400 
+0.836729707428
+Working on iteration 251 out of 400 
+0.788581790864
+Working on iteration 250 out of 400 
+0.42900572259
+Working on iteration 251 out of 400 
+0.898997800725
+Working on iteration 251 out of 400 
+0.914616926924
+Working on iteration 252 out of 400 
+0.819027351032
+Working on iteration 251 out of 400 
+0.709843149129
+Working on iteration 252 out of 400 
+0.643818364107
+Working on iteration 252 out of 400 
+0.764911403283
+Working on iteration 253 out of 400 
+0.699396129498
+Working on iteration 252 out of 400 
+0.840433394191
+Working on iteration 253 out of 400 
+0.624563557757
+Working on iteration 253 out of 400 
+0.731924225037
+Working on iteration 254 out of 400 
+0.283737893406
+Working on iteration 253 out of 400 
+0.737720878467
+Working on iteration 254 out of 400 
+0.880409676927
+Working on iteration 254 out of 400 
+0.517357732832
+Working on iteration 255 out of 400 
+0.859582528727
+Working on iteration 254 out of 400 
+0.830897110894
+Working on iteration 255 out of 400 
+0.592472917375
+Working on iteration 255 out of 400 
+0.52872797234
+Working on iteration 256 out of 400 
+0.841826730961
+Working on iteration 255 out of 400 
+0.661746512285
+Working on iteration 256 out of 400 
+0.715754076314
+Working on iteration 256 out of 400 
+0.778814937719
+Working on iteration 257 out of 400 
+0.879422295348
+Working on iteration 256 out of 400 
+0.827594327174
+Working on iteration 257 out of 400 
+0.862190093681
+Working on iteration 257 out of 400 
+0.860956248315
+Working on iteration 258 out of 400 
+0.790734280409
+Working on iteration 257 out of 400 
+0.871917424383
+Working on iteration 258 out of 400 
+0.838320574415
+Working on iteration 258 out of 400 
+0.800546598215
+Working on iteration 259 out of 400 
+0.74327780821
+Working on iteration 258 out of 400 
+0.925051505194
+Working on iteration 259 out of 400 
+0.772714006036
+Working on iteration 259 out of 400 
+0.706047078515
+Working on iteration 260 out of 400 
+0.593388884468
+Working on iteration 259 out of 400 
+0.813782123274
+Working on iteration 260 out of 400 
+0.773939762481
+Working on iteration 260 out of 400 
+0.642438931524
+Working on iteration 261 out of 400 
+0.802919540483
+Working on iteration 260 out of 400 
+0.363980405698
+Working on iteration 261 out of 400 
+0.842849929084
+Working on iteration 261 out of 400 
+0.715524624063
+Working on iteration 262 out of 400 
+0.75408230451
+Working on iteration 261 out of 400 
+0.40874770077
+Working on iteration 262 out of 400 
+0.774229358176
+Working on iteration 262 out of 400 
+0.819575719699
+Working on iteration 263 out of 400 
+0.800507906336
+Working on iteration 262 out of 400 
+0.772317685741
+Working on iteration 263 out of 400 
+0.846262164798
+Working on iteration 263 out of 400 
+0.778412954438
+Working on iteration 264 out of 400 
+0.63585725987
+Working on iteration 263 out of 400 
+0.767016500505
+Working on iteration 264 out of 400 
+0.550532854979
+Working on iteration 264 out of 400 
+0.58536623379
+Working on iteration 265 out of 400 
+0.794617710025
+Working on iteration 264 out of 400 
+0.672034957889
+Working on iteration 265 out of 400 
+0.667024312692
+Working on iteration 265 out of 400 
+0.577939087928
+Working on iteration 266 out of 400 
+0.743121231006
+Working on iteration 265 out of 400 
+0.708524483934
+Working on iteration 266 out of 400 
+0.651921325642
+Working on iteration 266 out of 400 
+0.908228109576
+Working on iteration 266 out of 400 
+0.506586204466
+Working on iteration 267 out of 400 
+0.826812202728
+Working on iteration 267 out of 400 
+0.845791584971
+Working on iteration 267 out of 400 
+0.587284247835
+Working on iteration 267 out of 400 
+0.874823834268
+Working on iteration 268 out of 400 
+0.789421854783
+Working on iteration 268 out of 400 
+0.91837959217
+Working on iteration 268 out of 400 
+0.640531865874
+Working on iteration 268 out of 400 
+0.816285637313
+Working on iteration 269 out of 400 
+0.790111397615
+Working on iteration 269 out of 400 
+0.886693899267
+Working on iteration 269 out of 400 
+0.793124354353
+Working on iteration 269 out of 400 
+0.805719007727
+Working on iteration 270 out of 400 
+0.876738252671
+Working on iteration 270 out of 400 
+0.56007350138
+Working on iteration 270 out of 400 
+0.829403284048
+Working on iteration 271 out of 400 
+0.84370436154
+Working on iteration 270 out of 400 
+0.661233590893
+Working on iteration 271 out of 400 
+0.541765373851
+Working on iteration 271 out of 400 
+0.761631446044
+Working on iteration 272 out of 400 
+0.910895022874
+Working on iteration 271 out of 400 
+0.858414491432
+Working on iteration 272 out of 400 
+0.759930167929
+Working on iteration 272 out of 400 
+0.82577756594
+Working on iteration 273 out of 400 
+0.624000296041
+Working on iteration 272 out of 400 
+0.842638942942
+Working on iteration 273 out of 400 
+0.867789133079
+Working on iteration 273 out of 400 
+0.76709524723
+Working on iteration 274 out of 400 
+0.534269706012
+Working on iteration 273 out of 400 
+0.838717930494
+Working on iteration 274 out of 400 
+0.755564456667
+Working on iteration 274 out of 400 
+0.896650853719
+Working on iteration 274 out of 400 
+0.672528828325
+Working on iteration 275 out of 400 
+0.728874088779
+Working on iteration 275 out of 400 
+0.672194000744
+Working on iteration 275 out of 400 
+0.652456066295
+Working on iteration 275 out of 400 
+0.756007199022
+Working on iteration 276 out of 400 
+0.731417479074
+Working on iteration 276 out of 400 
+0.770519631393
+Working on iteration 276 out of 400 
+0.763041045848
+Working on iteration 277 out of 400 
+0.70844276505
+Working on iteration 276 out of 400 
+0.712233968683
+Working on iteration 277 out of 400 
+0.867865916865
+Working on iteration 277 out of 400 
+0.894946280195
+Working on iteration 277 out of 400 
+0.891830623236
+Working on iteration 278 out of 400 
+0.864995179939
+Working on iteration 278 out of 400 
+0.365385643416
+Working on iteration 278 out of 400 
+0.922587833512
+Working on iteration 279 out of 400 
+0.868619329894
+Working on iteration 278 out of 400 
+0.746523503952
+Working on iteration 279 out of 400 
+0.396632640863
+Working on iteration 279 out of 400 
+0.76784990437
+Working on iteration 279 out of 400 
+0.471340616651
+Working on iteration 280 out of 400 
+0.727011231868
+Working on iteration 280 out of 400 
+0.923847524349
+Working on iteration 280 out of 400 
+0.486844035656
+Working on iteration 280 out of 400 
+0.745046580252
+Working on iteration 281 out of 400 
+0.809845571835
+Working on iteration 281 out of 400 
+0.835137217477
+Working on iteration 281 out of 400 
+0.901513778873
+Working on iteration 281 out of 400 
+0.875736711913
+Working on iteration 282 out of 400 
+0.869727533943
+Working on iteration 282 out of 400 
+0.512495810967
+Working on iteration 282 out of 400 
+0.891173740113
+Working on iteration 282 out of 400 
+0.791241403107
+Working on iteration 283 out of 400 
+0.89617549271
+Working on iteration 283 out of 400 
+0.842131480357
+Working on iteration 283 out of 400 
+0.703744936806
+Working on iteration 284 out of 400 
+0.851285236091
+Working on iteration 283 out of 400 
+0.767565026201
+Working on iteration 284 out of 400 
+0.768539483315
+Working on iteration 284 out of 400 
+0.75561516038
+Working on iteration 285 out of 400 
+0.598720588077
+Working on iteration 284 out of 400 
+0.698225947585
+Working on iteration 285 out of 400 
+0.777014782649
+Working on iteration 285 out of 400 
+0.848541244894
+Working on iteration 286 out of 400 
+0.548429932457
+Working on iteration 285 out of 400 
+0.700282077491
+Working on iteration 286 out of 400 
+0.877546335534
+Working on iteration 287 out of 400 
+0.85499291629
+Working on iteration 286 out of 400 
+0.750654377902
+Working on iteration 286 out of 400 
+0.65531166812
+Working on iteration 287 out of 400 
+0.832391408912
+Working on iteration 288 out of 400 
+0.683926059617
+Working on iteration 287 out of 400 
+0.746162637674
+Working on iteration 287 out of 400 
+0.788554571989
+Working on iteration 288 out of 400 
+0.754337864653
+Working on iteration 289 out of 400 
+0.733413884269
+Working on iteration 288 out of 400 
+0.85317246828
+Working on iteration 288 out of 400 
+0.52310914489
+Working on iteration 289 out of 400 
+0.716552662066
+Working on iteration 290 out of 400 
+0.720897329531
+Working on iteration 289 out of 400 
+0.698271455126
+Working on iteration 289 out of 400 
+0.663148620995
+Working on iteration 290 out of 400 
+0.846856908646
+Working on iteration 291 out of 400 
+0.684361274757
+Working on iteration 290 out of 400 
+0.590221022442
+Working on iteration 290 out of 400 
+0.637691872173
+Working on iteration 291 out of 400 
+0.566496136957
+Working on iteration 292 out of 400 
+0.85603956764
+Working on iteration 291 out of 400 
+0.670599858658
+Working on iteration 291 out of 400 
+0.733204413735
+Working on iteration 292 out of 400 
+0.864626252902
+Working on iteration 293 out of 400 
+0.792964453187
+Working on iteration 292 out of 400 
+0.765936159648
+Working on iteration 292 out of 400 
+0.807020626319
+Working on iteration 293 out of 400 
+0.650751875163
+Working on iteration 294 out of 400 
+0.825281524528
+Working on iteration 293 out of 400 
+0.741130103001
+Working on iteration 293 out of 400 
+0.572067438794
+Working on iteration 294 out of 400 
+0.876479383592
+Working on iteration 295 out of 400 
+0.86589914703
+Working on iteration 294 out of 400 
+0.626217455349
+Working on iteration 294 out of 400 
+0.817055938597
+Working on iteration 295 out of 400 
+0.786982854363
+Working on iteration 296 out of 400 
+0.669834469464
+Working on iteration 295 out of 400 
+0.7748035018
+Working on iteration 295 out of 400 
+0.715677461216
+Working on iteration 296 out of 400 
+0.64357347174
+Working on iteration 297 out of 400 
+0.601695613394
+Working on iteration 296 out of 400 
+0.889697882492
+Working on iteration 296 out of 400 
+0.740610467951
+Working on iteration 297 out of 400 
+0.780229816771
+Working on iteration 298 out of 400 
+0.805335319914
+Working on iteration 297 out of 400 
+0.688879124663
+Working on iteration 297 out of 400 
+0.9132928011
+Working on iteration 298 out of 400 
+0.770442177532
+Working on iteration 299 out of 400 
+0.777512432101
+Working on iteration 298 out of 400 
+0.810588936526
+Working on iteration 298 out of 400 
+0.818810922652
+Working on iteration 299 out of 400 
+0.782312045335
+Working on iteration 300 out of 400 
+0.849108196277
+Working on iteration 299 out of 400 
+0.84001417094
+Working on iteration 299 out of 400 
+0.768716817419
+Working on iteration 300 out of 400 
+0.842903877079
+Working on iteration 301 out of 400 
+0.706987475284
+Working on iteration 300 out of 400 
+0.754824146636
+Working on iteration 300 out of 400 
+0.837040373301
+Working on iteration 301 out of 400 
+0.739204405338
+Working on iteration 302 out of 400 
+0.723191861621
+Working on iteration 301 out of 400 
+0.734035371618
+Working on iteration 301 out of 400 
+0.782709254225
+Working on iteration 302 out of 400 
+0.881632295319
+Working on iteration 303 out of 400 
+0.786347036957
+Working on iteration 302 out of 400 
+0.577664025982
+Working on iteration 302 out of 400 
+0.681885701369
+Working on iteration 303 out of 400 
+0.763784951582
+Working on iteration 304 out of 400 
+0.620796713073
+Working on iteration 303 out of 400 
+0.904097071534
+Working on iteration 303 out of 400 
+0.652231604454
+Working on iteration 304 out of 400 
+0.866157834148
+Working on iteration 305 out of 400 
+0.750675663546
+Working on iteration 304 out of 400 
+0.822796260204
+Working on iteration 304 out of 400 
+0.76931421672
+Working on iteration 305 out of 400 
+0.819456893049
+Working on iteration 306 out of 400 
+0.843574262686
+Working on iteration 305 out of 400 
+0.865004566913
+Working on iteration 305 out of 400 
+0.908934444323
+Working on iteration 306 out of 400 
+0.693645632926
+Working on iteration 307 out of 400 
+0.872717717037
+Working on iteration 306 out of 400 
+0.736618403682
+Working on iteration 306 out of 400 
+0.872666483123
+Working on iteration 307 out of 400 
+0.497214458346
+Working on iteration 307 out of 400 
+0.778657792628
+Working on iteration 308 out of 400 
+0.924472172154
+Working on iteration 307 out of 400 
+0.605601308252
+Working on iteration 308 out of 400 
+0.744591114566
+Working on iteration 308 out of 400 
+0.826438485023
+Working on iteration 309 out of 400 
+0.755183414752
+Working on iteration 308 out of 400 
+0.475666088309
+Working on iteration 309 out of 400 
+0.793943925967
+Working on iteration 309 out of 400 
+0.708235144384
+Working on iteration 310 out of 400 
+0.618685823513
+Working on iteration 309 out of 400 
+0.860725593378
+Working on iteration 310 out of 400 
+0.812496821475
+Working on iteration 310 out of 400 
+0.772480455285
+Working on iteration 311 out of 400 
+0.641637619086
+Working on iteration 310 out of 400 
+0.765309028545
+Working on iteration 311 out of 400 
+0.552482870183
+Working on iteration 311 out of 400 
+0.663787022299
+Working on iteration 312 out of 400 
+0.738298802219
+Working on iteration 311 out of 400 
+0.739587697847
+Working on iteration 312 out of 400 
+0.786855396014
+Working on iteration 312 out of 400 
+0.812769237305
+Working on iteration 313 out of 400 
+0.65189379302
+Working on iteration 312 out of 400 
+0.749077953483
+Working on iteration 313 out of 400 
+0.698780870429
+Working on iteration 313 out of 400 
+0.918274516756
+Working on iteration 314 out of 400 
+0.913881211791
+Working on iteration 313 out of 400 
+0.591710368817
+Working on iteration 314 out of 400 
+0.530378077879
+Working on iteration 314 out of 400 
+0.863376034853
+Working on iteration 315 out of 400 
+0.707215325788
+Working on iteration 314 out of 400 
+0.872985937678
+Working on iteration 315 out of 400 
+0.71818336865
+Working on iteration 315 out of 400 
+0.833925019039
+Working on iteration 316 out of 400 
+0.800418578385
+Working on iteration 315 out of 400 
+0.851982844783
+Working on iteration 316 out of 400 
+0.847989734206
+Working on iteration 316 out of 400 
+0.601747594218
+Working on iteration 317 out of 400 
+0.820685384768
+Working on iteration 316 out of 400 
+0.881294122077
+Working on iteration 317 out of 400 
+0.797824382155
+Working on iteration 317 out of 400 
+0.894542265525
+Working on iteration 318 out of 400 
+0.860207168901
+Working on iteration 317 out of 400 
+0.841632285394
+Working on iteration 318 out of 400 
+0.690023109148
+Working on iteration 318 out of 400 
+0.828148477937
+Working on iteration 319 out of 400 
+0.810645145429
+Working on iteration 318 out of 400 
+0.608141973766
+Working on iteration 319 out of 400 
+0.856177864988
+Working on iteration 320 out of 400 
+0.855208998834
+Working on iteration 319 out of 400 
+0.836931942737
+Working on iteration 319 out of 400 
+0.652313835133
+Working on iteration 320 out of 400 
+0.628221177018
+Working on iteration 320 out of 400 
+0.866521912363
+Working on iteration 321 out of 400 
+0.802988346666
+Working on iteration 320 out of 400 
+0.807044739666
+Working on iteration 321 out of 400 
+0.650732534081
+Working on iteration 321 out of 400 
+0.66929714614
+Working on iteration 322 out of 400 
+0.73843625977
+Working on iteration 321 out of 400 
+0.887235147032
+Working on iteration 322 out of 400 
+0.59218897554
+Working on iteration 322 out of 400 
+0.875374770467
+Working on iteration 323 out of 400 
+0.830014921086
+Working on iteration 322 out of 400 
+0.722147482245
+Working on iteration 323 out of 400 
+0.64027691439
+Working on iteration 323 out of 400 
+0.536403413164
+Working on iteration 324 out of 400 
+0.741737345187
+Working on iteration 323 out of 400 
+0.796204330534
+Working on iteration 324 out of 400 
+0.911643482657
+Working on iteration 324 out of 400 
+0.755692000624
+Working on iteration 325 out of 400 
+0.789287305154
+Working on iteration 324 out of 400 
+0.878791518488
+Working on iteration 325 out of 400 
+0.725502523925
+Working on iteration 325 out of 400 
+0.91064925529
+Working on iteration 326 out of 400 
+0.684111415299
+Working on iteration 325 out of 400 
+0.858514357702
+Working on iteration 326 out of 400 
+0.896390834528
+Working on iteration 326 out of 400 
+0.493952055409
+Working on iteration 327 out of 400 
+0.713015865876
+Working on iteration 326 out of 400 
+0.873596612341
+Working on iteration 327 out of 400 
+0.707791661534
+Working on iteration 327 out of 400 
+0.797704622466
+Working on iteration 328 out of 400 
+0.852136208205
+Working on iteration 327 out of 400 
+0.717929254673
+Working on iteration 328 out of 400 
+0.825273545355
+Working on iteration 328 out of 400 
+0.734742576406
+Working on iteration 329 out of 400 
+0.893773746096
+Working on iteration 328 out of 400 
+0.821828512617
+Working on iteration 329 out of 400 
+0.861536246464
+Working on iteration 329 out of 400 
+0.757146341908
+Working on iteration 330 out of 400 
+0.800141141558
+Working on iteration 329 out of 400 
+0.851128629333
+Working on iteration 330 out of 400 
+0.909649097073
+Working on iteration 330 out of 400 
+0.495580290241
+Working on iteration 331 out of 400 
+0.660108835579
+Working on iteration 330 out of 400 
+0.807257566923
+Working on iteration 331 out of 400 
+0.770956278274
+Working on iteration 331 out of 400 
+0.780892642764
+Working on iteration 332 out of 400 
+0.796378365016
+Working on iteration 331 out of 400 
+0.757124452982
+Working on iteration 332 out of 400 
+0.796101692432
+Working on iteration 332 out of 400 
+0.867706239883
+Working on iteration 333 out of 400 
+0.89794569841
+Working on iteration 332 out of 400 
+0.737543086974
+Working on iteration 333 out of 400 
+0.861345068427
+Working on iteration 333 out of 400 
+0.861528364334
+Working on iteration 334 out of 400 
+0.468819729882
+Working on iteration 333 out of 400 
+0.855079708653
+Working on iteration 334 out of 400 
+0.87636227719
+Working on iteration 334 out of 400 
+0.830149723235
+Working on iteration 335 out of 400 
+0.645052810794
+Working on iteration 334 out of 400 
+0.846881945733
+Working on iteration 335 out of 400 
+0.895731019656
+Working on iteration 335 out of 400 
+0.817653080973
+Working on iteration 336 out of 400 
+0.901045668842
+Working on iteration 335 out of 400 
+0.901571823765
+Working on iteration 336 out of 400 
+0.881844058322
+Working on iteration 336 out of 400 
+0.718161060834
+Working on iteration 337 out of 400 
+0.830441963434
+Working on iteration 336 out of 400 
+0.603093518048
+Working on iteration 337 out of 400 
+0.885579578429
+Working on iteration 337 out of 400 
+0.611840317317
+Working on iteration 338 out of 400 
+0.757570569755
+Working on iteration 337 out of 400 
+0.587752704103
+Working on iteration 338 out of 400 
+0.83971445996
+Working on iteration 338 out of 400 
+0.837155278494
+Working on iteration 339 out of 400 
+0.666070398063
+Working on iteration 338 out of 400 
+0.687469136822
+Working on iteration 339 out of 400 
+0.755036320853
+Working on iteration 339 out of 400 
+0.937723861916
+Working on iteration 340 out of 400 
+0.898792966152
+Working on iteration 339 out of 400 
+0.89532168998
+Working on iteration 340 out of 400 
+0.858766709778
+Working on iteration 340 out of 400 
+0.811134400108
+Working on iteration 341 out of 400 
+0.595844503721
+Working on iteration 340 out of 400 
+0.646746529642
+Working on iteration 341 out of 400 
+0.557425560746
+Working on iteration 341 out of 400 
+0.743725646242
+Working on iteration 342 out of 400 
+0.792896675847
+Working on iteration 341 out of 400 
+0.883822320605
+Working on iteration 342 out of 400 
+0.874685980931
+Working on iteration 342 out of 400 
+0.727731457672
+Working on iteration 343 out of 400 
+0.887348832064
+Working on iteration 342 out of 400 
+0.851943048053
+Working on iteration 343 out of 400 
+0.803573129253
+Working on iteration 343 out of 400 
+0.830690930533
+Working on iteration 344 out of 400 
+0.827687451799
+Working on iteration 343 out of 400 
+0.894198000116
+Working on iteration 344 out of 400 
+0.853956854749
+Working on iteration 344 out of 400 
+0.814241241733
+Working on iteration 345 out of 400 
+0.719651949523
+Working on iteration 344 out of 400 
+0.913320650436
+Working on iteration 345 out of 400 
+0.892157259001
+Working on iteration 345 out of 400 
+0.867082862564
+Working on iteration 346 out of 400 
+0.862546423933
+Working on iteration 345 out of 400 
+0.65630206969
+Working on iteration 346 out of 400 
+0.898463867931
+Working on iteration 346 out of 400 
+0.63248769336
+Working on iteration 347 out of 400 
+0.813373204702
+Working on iteration 346 out of 400 
+0.734478613696
+Working on iteration 347 out of 400 
+0.848848337454
+Working on iteration 347 out of 400 
+0.571293250787
+Working on iteration 348 out of 400 
+0.866200489803
+Working on iteration 347 out of 400 
+0.379651566831
+Working on iteration 348 out of 400 
+0.633261565339
+Working on iteration 348 out of 400 
+0.865772484136
+Working on iteration 349 out of 400 
+0.869590216091
+Working on iteration 348 out of 400 
+0.840733123769
+Working on iteration 349 out of 400 
+0.582405835347
+Working on iteration 349 out of 400 
+0.610501219931
+Working on iteration 350 out of 400 
+0.72835341038
+Working on iteration 349 out of 400 
+0.732320167288
+Working on iteration 350 out of 400 
+0.753012200619
+Working on iteration 350 out of 400 
+0.897574630235
+Working on iteration 351 out of 400 
+0.835932788471
+Working on iteration 350 out of 400 
+0.678871993436
+Working on iteration 351 out of 400 
+0.794386723963
+Working on iteration 351 out of 400 
+0.656676791538
+Working on iteration 352 out of 400 
+0.507484507985
+Working on iteration 351 out of 400 
+0.82802773697
+Working on iteration 352 out of 400 
+0.481044203557
+Working on iteration 352 out of 400 
+0.871960358506
+Working on iteration 353 out of 400 
+0.798761491279
+Working on iteration 352 out of 400 
+0.625691975768
+Working on iteration 353 out of 400 
+0.829703326691
+Working on iteration 353 out of 400 
+0.650143561008
+Working on iteration 354 out of 400 
+0.891464757625
+Working on iteration 353 out of 400 
+0.732270384034
+Working on iteration 354 out of 400 
+0.873702163415
+Working on iteration 354 out of 400 
+0.627636139976
+Working on iteration 355 out of 400 
+0.705318473001
+Working on iteration 354 out of 400 
+0.866940841043
+Working on iteration 355 out of 400 
+0.814432381726
+Working on iteration 355 out of 400 
+0.628928848381
+Working on iteration 356 out of 400 
+0.843115632339
+Working on iteration 355 out of 400 
+0.519246398443
+Working on iteration 356 out of 400 
+0.660635764725
+Working on iteration 356 out of 400 
+0.705216989151
+Working on iteration 357 out of 400 
+0.812323330765
+Working on iteration 356 out of 400 
+0.837783221931
+Working on iteration 357 out of 400 
+0.563530471865
+Working on iteration 357 out of 400 
+0.513404557806
+Working on iteration 358 out of 400 
+0.908199383149
+Working on iteration 357 out of 400 
+0.591951481187
+Working on iteration 358 out of 400 
+0.682735051254
+Working on iteration 358 out of 400 
+0.788673865965
+Working on iteration 359 out of 400 
+0.754595349508
+Working on iteration 358 out of 400 
+0.611571254531
+Working on iteration 359 out of 400 
+0.872050247367
+Working on iteration 359 out of 400 
+0.686256870096
+Working on iteration 360 out of 400 
+0.630937527072
+Working on iteration 359 out of 400 
+0.774670797102
+Working on iteration 360 out of 400 
+0.810317501522
+Working on iteration 361 out of 400 
+0.537441176256
+Working on iteration 360 out of 400 
+0.845368448993
+Working on iteration 360 out of 400 
+0.718065775941
+Working on iteration 361 out of 400 
+0.896858293668
+Working on iteration 361 out of 400 
+0.873809256374
+Working on iteration 362 out of 400 
+0.804974488482
+Working on iteration 361 out of 400 
+0.890831394464
+Working on iteration 362 out of 400 
+0.916938414834
+Working on iteration 362 out of 400 
+0.883377072692
+Working on iteration 363 out of 400 
+0.707391553356
+Working on iteration 362 out of 400 
+0.811881238679
+Working on iteration 363 out of 400 
+0.393710136502
+Working on iteration 363 out of 400 
+0.859733388006
+Working on iteration 364 out of 400 
+0.874592555311
+Working on iteration 363 out of 400 
+0.851206379643
+Working on iteration 364 out of 400 
+0.886642622622
+Working on iteration 364 out of 400 
+0.43410319474
+Working on iteration 365 out of 400 
+0.772285747684
+Working on iteration 364 out of 400 
+0.7309322448
+Working on iteration 365 out of 400 
+0.876455941364
+Working on iteration 365 out of 400 
+0.655199387595
+Working on iteration 366 out of 400 
+0.911030954677
+Working on iteration 365 out of 400 
+0.875188778996
+Working on iteration 366 out of 400 
+0.910104453557
+Working on iteration 366 out of 400 
+0.794394230735
+Working on iteration 367 out of 400 
+0.578534698436
+Working on iteration 366 out of 400 
+0.763518643198
+Working on iteration 367 out of 400 
+0.619692661717
+Working on iteration 367 out of 400 
+0.844894417655
+Working on iteration 368 out of 400 
+0.735509170741
+Working on iteration 368 out of 400 
+0.793855434159
+Working on iteration 367 out of 400 
+0.783662530155
+Working on iteration 368 out of 400 
+0.776980830396
+Working on iteration 369 out of 400 
+0.701543591724
+Working on iteration 368 out of 400 
+0.875050905615
+Working on iteration 369 out of 400 
+0.859373096123
+Working on iteration 369 out of 400 
+0.874811532122
+Working on iteration 370 out of 400 
+0.617776298145
+Working on iteration 369 out of 400 
+0.540242174168
+Working on iteration 370 out of 400 
+0.902846277174
+Working on iteration 371 out of 400 
+0.786607371689
+Working on iteration 370 out of 400 
+0.893254931253
+Working on iteration 370 out of 400 
+0.72864767073
+Working on iteration 371 out of 400 
+0.65357992939
+Working on iteration 372 out of 400 
+0.735120247512
+Working on iteration 371 out of 400 
+0.72884008168
+Working on iteration 371 out of 400 
+0.688084029026
+Working on iteration 372 out of 400 
+0.735516287527
+Working on iteration 372 out of 400 
+0.869257505854
+Working on iteration 373 out of 400 
+0.862167793579
+Working on iteration 372 out of 400 
+0.697214692283
+Working on iteration 373 out of 400 
+0.825711069044
+Working on iteration 373 out of 400 
+0.726102104822
+Working on iteration 374 out of 400 
+0.798448569135
+Working on iteration 373 out of 400 
+0.693856742516
+Working on iteration 374 out of 400 
+0.801830290616
+Working on iteration 374 out of 400 
+0.686414521915
+Working on iteration 375 out of 400 
+0.764546768627
+Working on iteration 374 out of 400 
+0.872230003675
+Working on iteration 375 out of 400 
+0.899276667661
+Working on iteration 375 out of 400 
+0.86559881738
+Working on iteration 376 out of 400 
+0.563243039408
+Working on iteration 375 out of 400 
+0.762352585681
+Working on iteration 376 out of 400 
+0.917621053716
+Working on iteration 376 out of 400 
+0.828652301533
+Working on iteration 377 out of 400 
+0.809761991189
+Working on iteration 376 out of 400 
+0.887164905233
+Working on iteration 377 out of 400 
+0.745017510494
+Working on iteration 377 out of 400 
+0.842281779587
+Working on iteration 378 out of 400 
+0.842823042579
+Working on iteration 377 out of 400 
+0.812215677052
+Working on iteration 378 out of 400 
+0.729951096754
+Working on iteration 378 out of 400 
+0.880782773015
+Working on iteration 379 out of 400 
+0.735535378084
+Working on iteration 378 out of 400 
+0.85842751908
+Working on iteration 379 out of 400 
+0.808517559361
+Working on iteration 379 out of 400 
+0.64269641657
+Working on iteration 380 out of 400 
+0.880333259749
+Working on iteration 379 out of 400 
+0.742706366369
+Working on iteration 380 out of 400 
+0.714810175433
+Working on iteration 381 out of 400 
+0.853355115757
+Working on iteration 380 out of 400 
+0.668408243084
+Working on iteration 380 out of 400 
+0.74317567854
+Working on iteration 382 out of 400 
+0.875035713087
+Working on iteration 381 out of 400 
+0.887825980243
+Working on iteration 381 out of 400 
+0.81673888754
+Working on iteration 381 out of 400 
+0.907055989285
+Working on iteration 383 out of 400 
+0.73286788064
+Working on iteration 382 out of 400 
+0.83659084897
+Working on iteration 382 out of 400 
+0.797526193829
+Working on iteration 382 out of 400 
+0.813510227214
+Working on iteration 384 out of 400 
+0.502126268208
+Working on iteration 383 out of 400 
+0.851264837975
+Working on iteration 383 out of 400 
+0.856870166203
+Working on iteration 383 out of 400 
+0.71468182184
+Working on iteration 385 out of 400 
+0.860085109224
+Working on iteration 384 out of 400 
+0.533106181062
+Working on iteration 384 out of 400 
+0.894271387386
+Working on iteration 384 out of 400 
+0.728675762025
+Working on iteration 386 out of 400 
+0.560201176842
+Working on iteration 385 out of 400 
+0.754315047028
+Working on iteration 385 out of 400 
+0.802766418315
+Working on iteration 385 out of 400 
+0.626918065508
+Working on iteration 386 out of 400 
+0.674569380416
+Working on iteration 387 out of 400 
+0.730751600222
+Working on iteration 386 out of 400 
+0.784389909563
+Working on iteration 386 out of 400 
+0.688286698648
+Working on iteration 387 out of 400 
+0.878908228489
+Working on iteration 387 out of 400 
+0.550316325136
+Working on iteration 388 out of 400 
+0.547479859154
+Working on iteration 387 out of 400 
+0.760135141838
+Working on iteration 388 out of 400 
+0.863967763443
+Working on iteration 388 out of 400 
+0.84509242764
+Working on iteration 389 out of 400 
+0.899383586867
+Working on iteration 388 out of 400 
+0.455530082266
+Working on iteration 389 out of 400 
+0.639375057975
+Working on iteration 389 out of 400 
+0.811993364973
+Working on iteration 390 out of 400 
+0.822873951115
+Working on iteration 389 out of 400 
+0.722733503968
+Working on iteration 390 out of 400 
+0.547918586005
+Working on iteration 390 out of 400 
+0.826586191855
+Working on iteration 391 out of 400 
+0.793231812707
+Working on iteration 390 out of 400 
+0.829753147584
+Working on iteration 391 out of 400 
+0.31620158779
+Working on iteration 391 out of 400 
+0.817803566605
+Working on iteration 392 out of 400 
+0.7870119471
+Working on iteration 391 out of 400 
+0.879729568844
+Working on iteration 392 out of 400 
+0.832329675464
+Working on iteration 392 out of 400 
+0.870401654233
+Working on iteration 393 out of 400 
+0.832578298483
+Working on iteration 392 out of 400 
+0.782495806474
+Working on iteration 393 out of 400 
+0.825928808729
+Working on iteration 393 out of 400 
+0.852295191031
+Working on iteration 394 out of 400 
+0.882511324194
+Working on iteration 393 out of 400 
+0.850157960146
+Working on iteration 394 out of 400 
+0.932319164315
+Working on iteration 394 out of 400 
+0.79516787501
+Working on iteration 395 out of 400 
+0.843623493506
+Working on iteration 394 out of 400 
+0.707138741727
+Working on iteration 395 out of 400 
+0.864756418627
+Working on iteration 395 out of 400 
+0.806233005424
+Working on iteration 396 out of 400 
+0.830086249032
+Working on iteration 395 out of 400 
+0.664742326757
+Working on iteration 396 out of 400 
+0.872321444497
+Working on iteration 396 out of 400 
+0.38179833926
+Working on iteration 397 out of 400 
+0.840868967585
+Working on iteration 396 out of 400 
+0.53260250005
+Working on iteration 397 out of 400 
+0.827444072881
+Working on iteration 397 out of 400 
+0.861828240392
+Working on iteration 398 out of 400 
+0.598028541847
+Working on iteration 397 out of 400 
+0.67149376983
+Working on iteration 398 out of 400 
+0.556531308244
+Working on iteration 398 out of 400 
+0.691221308949
+Working on iteration 399 out of 400 
+0.779973858611
+Working on iteration 398 out of 400 
+0.782307973164
+Working on iteration 399 out of 400 
+0.838337654891
+Working on iteration 399 out of 400 
+0.752895536788
+Working on iteration 399 out of 400 
+0.625459152901
+
+0.602807284357
+
+0.70857551247
+
+0.832101744809
+
+With an objective function value of 0.95, the best parameter set is:
+{1: {'a': 0.00277, 'k12': 0.2606826919996774, 'b': 2.0613188827451414, 'zrS': 100.0, 'zrR': 1000.1, 'f': 0.6406161228913586, 'res2': 1.0, 's0R': 0.024103177146638857, 'res1': 1.0, 'storageR': 100.0, 'gz': <class groundwaterZone.LinearToNonlinearReservoir at 0x107e1c390>, 's0S': 0.18554675732170908, 'k1': 0.19009760341916154, 'stR': 0.5919798394835826, 'stS': 0.22532300371832306, 'alpha': 0.16227488115533562, 'nR': 0.0960323438275401, 'nS': 0.2608593704156041, 'storageS': 1.0, 'vz': <class vadoseZone.PreferentialRockMoistureZone at 0x107dece88>}}
+
+
