@@ -56,7 +56,7 @@ def model_config(outputFilename='model_config.p'):
     Tmax = 1.0*(stop_date - start_date).days
 
     #hillslope timestep information
-    dt_hillslope = 1/4.
+    dt_hillslope = 1.
     # t_hillslope = np.linspace(0,Tmax,np.ceil(Tmax/dt_hillslope)+1)
     resample_freq_hillslope = str(int(dt_hillslope*24*60)) + 'T'
     # timestamps_hillslope = pd.date_range(start_date, stop_date, freq=resample_freq_hillslope)
