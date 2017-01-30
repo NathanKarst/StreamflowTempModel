@@ -156,7 +156,7 @@ def rew_config():
     #Each REW "Group" is the combination of its climate AND parameter group
     rew_config = _get_parameter_groups(rew_config, parent_dir)
     rew_config = _get_elevations(rew_config, parent_dir)
-    rew_config = _get_climate_groups(rew_config) 
+    rew_config = _get_climate_groups(rew_config, parent_dir) 
     rew_config['group'] = zip(rew_config['parameter_group'], rew_config['climate_group'])
     rew_config['interception_factor'] = _get_interception_factor(rew_config)
 
@@ -212,7 +212,7 @@ def _get_climate_groups(rew_config, parent_dir):
         - updated rew_config
     """
 
-    raster_file = os.path.join(parent_dir,'raw_data','parameter_groups','climate_groups.tif')
+    raster_file = os.path.join(parent_dir,'raw_data','climate_groups','climate_groups.tif')
     try:
         gdata = gdal.Open(raster_file)
     except:
