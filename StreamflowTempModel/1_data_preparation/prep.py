@@ -156,7 +156,7 @@ def rew_config():
     #Each REW "Group" is the combination of its climate AND parameter group
     rew_config = _get_parameter_groups(rew_config, parent_dir)
     rew_config = _get_elevations(rew_config, parent_dir)
-    rew_config['climate_group']=_get_climate_groups(rew_config) 
+    rew_config = _get_climate_groups(rew_config) 
     rew_config['group'] = zip(rew_config['parameter_group'], rew_config['climate_group'])
     rew_config['interception_factor'] = _get_interception_factor(rew_config)
 
@@ -199,6 +199,40 @@ def rew_config():
     #save config dataframe into model_data folder
     pickle.dump( rew_config, open( os.path.join(parent_dir,'model_data','rew_config.p'), "wb" ) )
     
+def _get_climate_groups(rew_config, parent_dir):
+    """ Fetch climate groups from climate groups raster. 
+    
+    If the climate groups .tif is not located in the folder, 
+    it is assumed that all REWs belong to the same climate group
+    Args:
+        - rew_config 
+        - parent_dir
+        
+    Returns: 
+        - updated rew_config
+    """
+
+    raster_file = os.path.join(parent_dir,'raw_data','parameter_groups','climate_groups.tif')
+    try:
+        gdata = gdal.Open(raster_file)
+    except:
+        return [0]*len(rew_config)
+
+    gt = gdata.GetGeoTransform()
+    data = gdata.ReadAsArray().astype(np.float)
+    gdata = None
+    pos_dict = _get_coords(parent_dir)
+    rew_config['climate_group'] = 0
+
+    for rew_id in rew_config.index: 
+        pos = pos_dict[rew_id]
+        x = int((pos[0] - gt[0])/gt[1])
+        y = int((pos[1] - gt[3])/gt[5])
+        rew_config.set_value(rew_id, 'climate_group', data[y, x])
+        
+    return rew_config
+
+
 def _get_parameter_groups(rew_config, parent_dir):
     """ Fetch parameter groups from parameter groups raster. 
     
@@ -264,11 +298,6 @@ def _get_elevations(rew_config, parent_dir):
         rew_config.set_value(rew_id, 'elevation', data[y, x])
         
     return rew_config
-
-def _get_climate_groups(rew_config):
-    #For now, all REWs are in the same climate group
-    # return range(len(rew_config))
-    return [0 for i in range(len(rew_config))]
 
 def _get_interception_factor(rew_config):
     return [0.2]*len(rew_config)
