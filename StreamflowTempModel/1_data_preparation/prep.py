@@ -68,7 +68,7 @@ def model_config(outputFilename='model_config.p'):
     # timestamps_channel = pd.date_range(start_date, stop_date, freq=resample_freq_channel)
 
     #temperature timestep information
-    dt_temperature = 4/1440.
+    dt_temperature = 2/1440.
     # t_temperature = np.linspace(0, Tmax, np.ceil(Tmax/dt_temperature)+1)
     resample_freq_temperature = str(int(dt_temperature*24*60)) + 'T'
     # timestamps_temperature = pd.date_range(start_date, stop_date, freq=resample_freq_temperature)
