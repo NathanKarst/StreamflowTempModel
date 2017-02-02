@@ -428,7 +428,7 @@ def rew_params():
 
     # Leggett, melange for parameter group 2, coastal belt for parameter group 1
     parameter_group_params = {1:{'zrS': 50.0, 'zrR': 1000.10, 'alpha':0.1431, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.24, 'b': 2.167, 'stS': 0.65, 'storageS': 1.0, 'nS': 0.45, 'a': 0.00277, 'k12': 0.4458, 'storageR': 100.0, 'f': 0.559, 's0R': 0.0708, 's0S': 0.24, 'k1': 0.2429, 'stR': 0.446, 'vz': PreferentialRockMoistureZone }  
-                            , 2:{'gz':Melange, 'vz':PorporatoVadoseZone,'storageVZ':1.0,'zr':31.0,'sw':0.18,'sfc':0.44,'n':0.38,'storageGZ':1.0, 'a':0.006, 'b':2.15, 'capacity':10.2}
+                            , 2:{'gz':Melange, 'vz':PorporatoVadoseZone,'storageVZ':1.0,'zr':81.0,'sw':0.18,'sfc':0.53,'n':0.155,'storageGZ':1.0, 'a':0.022, 'b':1.57, 'capacity':5.2}
                             }          
     parameter_ranges = {1:{}, 2:{'zr':(10.0,100.0), 'sw':(0.05,0.3), 'sfc':(0.3,0.8), 'n':(0.1,0.5),'a':(0.1,0.001),'b':(1.5,2.5),'capacity':(1.0,30.0)}}
     channel_params = {i:{'mannings_n':0.1, 'e':0.01, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}

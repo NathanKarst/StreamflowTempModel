@@ -195,6 +195,7 @@ def calibrate(arguments):
             # storageGZ     = np.zeros(np.size(t))
             discharge       = np.zeros(np.size(t))
             leakage         = np.zeros(np.size(t))
+            overlandFlow = np.zeros(np.size(t))
             # ET              = np.zeros(np.size(t))
 
             # Resample pet and ppt to integration timestep
@@ -210,9 +211,10 @@ def calibrate(arguments):
                 rew.gz.update(dt,**{'leakage':leakage[l]})
                 # storageGZ[l] = rew.gz.storageGZ
                 discharge[l] = rew.gz.discharge
+                overlandFlow[l] = rew.gz.overlandFlow
 
             # resample as daily data
-            solved_groups[group_id] = pd.DataFrame({'discharge':discharge}, index=timestamps_hillslope).resample('D').apply(sum)*dt
+            solved_groups[group_id] = pd.DataFrame({'discharge':discharge, 'overlandFlow':overlandFlow}, index=timestamps_hillslope).resample('D').apply(sum)*dt
 
 	
         total_area = 0
@@ -225,6 +227,7 @@ def calibrate(arguments):
         solved_subwatershed_array = np.zeros(int(len(solved_subwatershed)))
         for rew_id in ids_in_subwatershed:
             solved_subwatershed_array += rew_config[rew_id]['area_sqkm']/total_area*solved_groups[rew_config[rew_id]['group']]['discharge']
+            solved_subwatershed_array += rew_config[rew_id]['area_sqkm']/total_area*solved_groups[rew_config[rew_id]['group']]['overlandFlow']
 
         solved_subwatershed[name] = solved_subwatershed_array
         objs_curr = objective_function(solved_subwatershed[name][spinup_date:stop_date],calibration_data['runoff'][spinup_date:stop_date])
