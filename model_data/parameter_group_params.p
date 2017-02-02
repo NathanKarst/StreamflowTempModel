@@ -12,7 +12,7 @@ p4
 F2.17
 sS'zrS'
 p5
-F34.4
+F50.0
 sS'zrR'
 p6
 F1008.1
@@ -38,7 +38,7 @@ LinearToNonlinearReservoir
 p13
 sS's0S'
 p14
-F0.0356
+F0.19
 sS'k1'
 p15
 F0.2545
@@ -47,7 +47,7 @@ p16
 F0.824
 sS'stS'
 p17
-F0.2131
+F0.65
 sS'alpha'
 p18
 F0.1487
@@ -56,7 +56,7 @@ p19
 F0.194
 sS'nS'
 p20
-F0.166
+F0.45
 sS'storageS'
 p21
 F1.0
