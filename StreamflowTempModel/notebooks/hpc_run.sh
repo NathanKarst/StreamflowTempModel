@@ -9,7 +9,7 @@
 #SBATCH --partition=savio2
 #
 # Wall clock limit (30 seconds here):
-#SBATCH --time=00:00:30
+#SBATCH --time=24:00:00
 #
 ## Command(s) to run:
 source activate py2k_model

@@ -9,7 +9,7 @@ There are 4 cores on this machine,
 
 
 
-With an objective function value of 0.95, the best parameter set is:
-{1: {'a': 0.00277, 'k12': 0.4458, 'b': 2.167, 'zrS': 100.0, 'zrR': 1000.1, 'f': 0.559, 'res2': 1.0, 's0R': 0.0708, 'res1': 1.0, 'storageR': 100.0, 'gz': <class groundwaterZone.LinearToNonlinearReservoir at 0x107e1d390>, 's0S': 0.359, 'k1': 0.2429, 'stR': 0.446, 'stS': 0.3, 'alpha': 0.1431, 'nR': 0.24, 'nS': 0.06, 'storageS': 1.0, 'vz': <class vadoseZone.PreferentialRockMoistureZone at 0x107debe88>}, 2: {'a': 0.09443754313762343, 'storageGZ': 1.0, 'b': 2.365813998659112, 'capacity': 45.44795299403834, 'sw': 0.24921116371016933, 'gz': <class groundwaterZone.Melange at 0x107e1d3f8>, 'n': 0.3871898740922435, 'storageVZ': 1.0, 'vz': <class vadoseZone.PorporatoVadoseZone at 0x107debdb8>, 'sfc': 0.6040073699804549, 'zr': 131.5924475226703}}
+With an objective function value of 0.88, the best parameter set is:
+{1: {'a': 0.00277, 'k12': 0.4458, 'b': 2.167, 'zrS': 50.0, 'zrR': 1000.1, 'f': 0.559, 'res2': 1.0, 's0R': 0.0708, 'res1': 1.0, 'storageR': 100.0, 'gz': <class groundwaterZone.LinearToNonlinearReservoir at 0x107ea8390>, 's0S': 0.24, 'k1': 0.2429, 'stR': 0.446, 'stS': 0.65, 'alpha': 0.1431, 'nR': 0.24, 'nS': 0.45, 'storageS': 1.0, 'vz': <class vadoseZone.PreferentialRockMoistureZone at 0x107e76e88>}, 2: {'a': 0.00590999659944122, 'storageGZ': 1.0, 'b': 2.1450001112829225, 'capacity': 10.202069512252844, 'sw': 0.17932502503827735, 'gz': <class groundwaterZone.Melange at 0x107ea83f8>, 'n': 0.38676619957817027, 'storageVZ': 1.0, 'vz': <class vadoseZone.PorporatoVadoseZone at 0x107e76db8>, 'sfc': 0.4427348337180528, 'zr': 31.72369048517908}}
 
 
