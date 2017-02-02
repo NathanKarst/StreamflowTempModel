@@ -8,9 +8,10 @@
 # Partition:
 #SBATCH --partition=savio2
 #
-# Wall clock limit (30 seconds here):
-#SBATCH --time=00:00:30
+# Wall clock limit:
+#SBATCH --time=24:00:00
 #
 ## Command(s) to run:
+git checkout master
 source activate py2k_model
-python hpc_hillslope_calibrate.py False 50000 elder_runoff.p elder.shp > output.txt
+python hpc_hillslope_calibrate.py False 50000 elder_runoff.p elder.shp > output_elder.txt
