@@ -1,5 +1,5 @@
 (dp0
-I0
+I1
 ccopy_reg
 _reconstructor
 p1
