@@ -13,4 +13,4 @@
 #
 ## Command(s) to run:
 source activate py2k_model
-python hpc_hillslope_calibrate.py False 50000 elder_runoff.p elder.shp > output.txt
+python hpc_hillslope_calibrate.py False 50000 sf_leggett_runoff.p sf_leggett.shp > output.txt
