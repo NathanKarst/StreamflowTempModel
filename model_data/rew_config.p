@@ -72,7 +72,7 @@ tp27
 Rp28
 g1
 (g5
-S'\x00\x00\x00\x00\x00\x00\x00\x00'
+S'\x01\x00\x00\x00\x00\x00\x00\x00'
 p29
 tp30
 Rp31
@@ -82,7 +82,7 @@ p33
 I1
 sS'climate_group'
 p34
-I0
+I1
 sS'next_stream'
 p35
 I3
@@ -131,7 +131,7 @@ tp42
 Rp43
 g1
 (g5
-S'\x00\x00\x00\x00\x00\x00\x00\x00'
+S'\x01\x00\x00\x00\x00\x00\x00\x00'
 p44
 tp45
 Rp46
@@ -139,7 +139,7 @@ tp47
 sg33
 I1
 sg34
-I0
+I1
 sg35
 I3
 sg36
@@ -186,7 +186,7 @@ tp53
 Rp54
 g1
 (g5
-S'\x00\x00\x00\x00\x00\x00\x00\x00'
+S'\x01\x00\x00\x00\x00\x00\x00\x00'
 p55
 tp56
 Rp57
@@ -194,7 +194,7 @@ tp58
 sg33
 I2
 sg34
-I0
+I1
 sg35
 I-1
 sg36
