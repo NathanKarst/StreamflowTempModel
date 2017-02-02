@@ -8,9 +8,10 @@
 # Partition:
 #SBATCH --partition=savio2
 #
-# Wall clock limit (30 seconds here):
+# Wall clock limit:
 #SBATCH --time=24:00:00
 #
 ## Command(s) to run:
+git checkout test_leggett
 source activate py2k_model
-python hpc_hillslope_calibrate.py False 50000 sf_leggett_runoff.p sf_leggett.shp > output.txt
+python hpc_hillslope_calibrate.py False 50000 sf_leggett_runoff.p sf_leggett.shp > output_leggett.txt
