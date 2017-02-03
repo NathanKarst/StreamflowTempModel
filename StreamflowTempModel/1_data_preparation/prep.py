@@ -419,7 +419,7 @@ def rew_params():
 
     # daymet_angeloPPT, calibrated with logNSE on Savio
     # # FOR ELDER CREEK: Linear into nonlinear reservoir, preferential rock moisture vadose zone
-    parameter_group_params = {i:{'zrS': 100.0, 'zrR': 628.10, 'alpha':0.168, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.092, 'b': 2.32, 'stS': 0.65, 'storageS': 1.0, 'nS': 0.45, 'a': 0.00159, 'k12': 0.444, 'storageR': 100.0, 'f': 0.103, 's0R': 0.287, 's0S': 0.19, 'k1': 0.218, 'stR': 0.758, 'vz': PreferentialRockMoistureZone } for i in parameter_groups}          
+    parameter_group_params = {i:{'zrS': 100.0, 'zrR': 827.8, 'alpha':0.720, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.1139, 'b': 2.167, 'stS': 0.65, 'storageS': 1.0, 'nS': 0.45, 'a': 0.00298, 'k12': 0.498, 'storageR': 100.0, 'f': 0.793, 's0R': 0.0128, 's0S': 0.19, 'k1': 0.209, 'stR': 0.141, 'vz': PreferentialRockMoistureZone } for i in parameter_groups}          
     parameter_ranges = {i:{'zrR':(500.,1200.),'k1':(0.2,0.4),'k12':(0.3,0.5),'nR':(0.01,0.4),'f':(.1,.9),'s0R':(0,.4),'stR':(0.1,0.9), 'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.001,.003)} for i in parameter_groups}
     channel_params = {i:{'mannings_n':0.1, 'e':0.01, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
     channel_params_ranges = {i:{'mannings_n':(.03,.15)} for i in rews}

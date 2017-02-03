@@ -1,14 +1,0 @@
-
-......hillslope calibration......
-REWs [1, 2, 3] are located within the calibration sub-watershed
-The groups [(1, 1)] will be run for calibration purposes
-There are 4 cores on this machine, 
-20 model runs will be performed on each core
-
-
-
-
-With an objective function value of 0.90, the best parameter set is:
-{1: {'a': 0.0025973380728539453, 'k12': 0.3883040426194804, 'b': 2.0437622104930186, 'zrS': 100.0, 'zrR': 561.3737814686693, 'f': 0.178501951716167, 'res2': 1.0, 's0R': 0.13293629702939422, 'res1': 1.0, 'storageR': 100.0, 'gz': <class groundwaterZone.LinearToNonlinearReservoir at 0x107eaa390>, 's0S': 0.19, 'k1': 0.23086415300289675, 'stR': 0.4999883673457338, 'stS': 0.65, 'alpha': 0.43097089207008915, 'nR': 0.2321923652262257, 'nS': 0.45, 'storageS': 1.0, 'vz': <class vadoseZone.PreferentialRockMoistureZone at 0x107e78e88>}}
-
-
