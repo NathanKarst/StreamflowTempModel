@@ -297,9 +297,9 @@ class PreferentialRockMoistureZone(VadoseZone):
         sR = self.storageR/(self.nR*self.zrR)
         sS = self.storageS/(self.nS*self.zrS)
 
-        frac = self.storageVZ/(self.nS*self.zrS + self.nR*self.zrR)
+        # frac = self.storageVZ/(self.nS*self.zrS + self.nR*self.zrR)
 
-        bypass = ppt*(frac)*self.alpha
+        bypass = ppt*self.alpha#(frac)*self.alpha
         ppt = ppt - bypass
 
         if (sS <= self.s0S):
