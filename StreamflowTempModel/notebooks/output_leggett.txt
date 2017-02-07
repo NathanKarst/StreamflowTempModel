@@ -3,13 +3,12 @@
 REWs [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 40, 41, 42, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63] are located within the calibration sub-watershed
 The groups [(1, 1), (2, 2)] will be run for calibration purposes
 There are 4 cores on this machine, 
-50 model runs will be performed on each core
+10 model runs will be performed on each core
 
 
 
 
-
-With an objective function value of 0.93, the best parameter set is:
-{1: {'a': 0.00298, 'k12': 0.498, 'b': 2.167, 'zrS': 100.0, 'zrR': 827.8, 'f': 0.793, 'res2': 1.0, 's0R': 0.0128, 'res1': 1.0, 'storageR': 100.0, 'gz': <class groundwaterZone.LinearToNonlinearReservoir at 0x107e193f8>, 's0S': 0.19, 'k1': 0.209, 'stR': 0.141, 'stS': 0.65, 'alpha': 0.72, 'nR': 0.1139, 'nS': 0.45, 'storageS': 1.0, 'vz': <class vadoseZone.PreferentialRockMoistureZone at 0x107deaef0>}, 2: {'a': 0.01565508392400848, 'storageGZ': 1.0, 'b': 1.5474564600794642, 'capacity': 4.69202008237576, 'sw': 0.22331179540569146, 'gz': <class groundwaterZone.Melange at 0x107e19460>, 'n': 0.46972952095167164, 'storageVZ': 1.0, 'vz': <class vadoseZone.PorporatoVadoseZone at 0x107deae20>, 'sfc': 0.5640911125988195, 'zr': 90.89477926225763}}
+With an objective function value of 0.91, the best parameter set is:
+{1: {'a': 0.00372, 'k12': 0.486, 'b': 2.064, 'zrS': 75.0, 'zrR': 869.07, 'f': 0.798, 'res2': 1.0, 's0R': 0.343, 'res1': 1.0, 'storageR': 100.0, 'gz': <class groundwaterZone.LinearToNonlinearReservoir at 0x107eae3f8>, 's0S': 0.19, 'k1': 0.2477, 'stR': 0.698, 'stS': 0.6, 'alpha': 0.119, 'nR': 0.073, 'nS': 0.4, 'storageS': 1.0, 'vz': <class vadoseZone.PreferentialRockMoistureZone at 0x107d23ef0>}, 2: {'a': 0.04535737225885842, 'storageGZ': 1.0, 'b': 2.417199173178228, 'capacity': 2.878668157702567, 'sw': 0.2938322947209472, 'gz': <class groundwaterZone.Melange at 0x107eae460>, 'n': 0.43604365237043585, 'storageVZ': 1.0, 'vz': <class vadoseZone.PorporatoVadoseZone at 0x107d23e20>, 'sfc': 0.6530905455874776, 'zr': 41.93004212356088}}
 
 

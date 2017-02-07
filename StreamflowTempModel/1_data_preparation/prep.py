@@ -49,7 +49,7 @@ def model_config(outputFilename='model_config.p'):
     
     """
     #start/stop dates for running model
-    spinup_date = date(2012, 10, 01)             
+    spinup_date = date(2013, 10, 01)             
     start_date = date(2008, 07, 01)
     stop_date = date(2015, 9, 1)
     
