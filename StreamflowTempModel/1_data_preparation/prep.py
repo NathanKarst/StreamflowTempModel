@@ -427,7 +427,7 @@ def rew_params():
 
 
     # Leggett, melange for parameter group 2, coastal belt for parameter group 1
-    parameter_group_params = {1:{'zrS': 100.0, 'zrR': 827.80, 'alpha':0.72, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.1139, 'b': 2.167, 'stS': 0.65, 'storageS': 1.0, 'nS': 0.45, 'a': 0.00298, 'k12': 0.498, 'storageR': 100.0, 'f': 0.793, 's0R': 0.0128, 's0S': 0.19, 'k1': 0.209, 'stR': 0.141, 'vz': PreferentialRockMoistureZone }  
+    parameter_group_params = {1:{'zrS': 75.0, 'zrR': 869.07, 'alpha':0.119, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.073, 'b': 2.064, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.00372, 'k12': 0.486, 'storageR': 100.0, 'f': 0.798, 's0R': 0.343, 's0S': 0.19, 'k1': 0.2477, 'stR': 0.698, 'vz': PreferentialRockMoistureZone }  
                             , 2:{'gz':Melange, 'vz':PorporatoVadoseZone,'storageVZ':1.0,'zr':90.89,'sw':0.223,'sfc':0.564,'n':0.469,'storageGZ':1.0, 'a':0.015, 'b':1.54, 'capacity':4.69}
                             }          
     parameter_ranges = {1:{}, 2:{'zr':(10.0,100.0), 'sw':(0.05,0.3), 'sfc':(0.3,0.8), 'n':(0.1,0.5),'a':(0.1,0.001),'b':(1.5,2.5),'capacity':(1.0,30.0)}}
