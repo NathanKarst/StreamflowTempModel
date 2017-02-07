@@ -1,5 +1,4 @@
 import numpy as np
-from matplotlib import pyplot as plt
 import time
 class Channel:
     """ Abstract base class for all channel  models. (Test) 
