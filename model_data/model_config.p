@@ -8,7 +8,7 @@ p3
 F0.25
 sS'Tmax'
 p4
-F2253.0
+F2618.0
 sS'spinup_date'
 p5
 cdatetime
@@ -27,7 +27,7 @@ F0.002777777777777778
 sS'stop_date'
 p12
 g6
-(S'\x07\xde\t\x01'
+(S'\x07\xdf\t\x01'
 p13
 tp14
 Rp15
