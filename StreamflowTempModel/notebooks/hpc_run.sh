@@ -14,4 +14,8 @@
 ## Command(s) to run:
 git checkout test_leggett
 source activate py2k_model
-python hpc_hillslope_calibrate.py False 50000 sf_leggett_runoff.p sf_leggett.shp > output_leggett.txt
+python hpc_hillslope_calibrate.py False 2 sf_leggett_runoff.p sf_leggett.shp > output_leggett.txt
+DATE=`date +%Y-%m-%d:%H:%M:%S`
+TITLESTR="LEGGETT_$DATE"
+mail -s "$TITLESTR" 'daviddralle@gmail.com' < output_leggett.txt
+rm output_leggett.txt
