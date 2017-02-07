@@ -20,7 +20,7 @@ parent_dir = dirname(dirname(os.getcwd()))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','lib'))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','4_temperature'))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','3_channel_routing'))
-from temperature import SimpleTemperature
+from temperature import SimpleTemperature, LagrangianSimpleTemperature
 from channel import SimpleChannel
 import zonal_stats as zs
 import meteolib as meteo
@@ -100,7 +100,7 @@ def main(argv):
 
 # Nash sutcliffe efficiency. Should be maximized for best fit. 
 def objective_function(modeled, observed):
-    inds = ((modeled != 0) & (observed != 0))
+    inds = ((modeled != 0) & (observed != 0))&((modeled.index.month>=5)&(modeled.index.month<=9))
     if np.sum(modeled)<0.01:
         return -9999.0
     elif np.isnan(np.sum(modeled)):
@@ -184,8 +184,9 @@ def calibrate(arguments):
 
     desc = "Core #%s"%(cpu)
     for i in range(N):
-        # sys.stdout.write('\rWorking on iteration %d out of %d \n' % (i+1,N))
-        # sys.stdout.flush()
+        sys.stdout.write('\rWorking on iteration %d out of %d \n' % (i+1,N))
+        sys.stdout.flush()
+        
         channel_network = {}
         for rew_id in ids_in_subwatershed: 
             args = rew_config[rew_id].copy()
@@ -267,8 +268,9 @@ def calibrate(arguments):
                     for arg in varyArgs: tempArgs[arg] = copy.copy(locals()[arg][l])
                     for arg in constArgs: tempArgs[arg] = copy.copy(locals()[arg])
                     
-                    temperature_network[rew_id].update(dt, **tempArgs)
                     temp[l]=temperature_network[rew_id].temperature
+                    temperature_network[rew_id].update(dt, **tempArgs)
+                    
 
             network_temps[rew_id] = pd.DataFrame(temp,index=timestamps_temperature,columns=['temperature'])
 

@@ -21,7 +21,7 @@ sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','3_channel_routing
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','4_temperature'))
 from vadoseZone import LaioVadoseZone, PorporatoVadoseZone, SimpleRockMoistureZone, PreferentialRockMoistureZone
 from groundwaterZone import GroundwaterZone, Melange, NonlinearReservoir, NonlinearReservoir, TwoLinearReservoir, TwoParallelLinearReservoir, LinearToNonlinearReservoir
-from temperature import SimpleTemperature
+from temperature import SimpleTemperature, LagrangianSimpleTemperature
 from channel import SimpleChannel
   
 def model_config(outputFilename='model_config.p'): 
@@ -49,7 +49,7 @@ def model_config(outputFilename='model_config.p'):
     
     """
     #start/stop dates for running model
-    spinup_date = date(2012, 10, 01)             
+    spinup_date = date(2013, 10, 01)             
     start_date = date(2008, 07, 01)
     stop_date = date(2014, 9, 1)
     
@@ -62,13 +62,13 @@ def model_config(outputFilename='model_config.p'):
     # timestamps_hillslope = pd.date_range(start_date, stop_date, freq=resample_freq_hillslope)
 
     #channel timestep information
-    dt_channel = 4/1440.
+    dt_channel = 2/1440.
     # t_channel = np.linspace(0, Tmax, np.ceil(Tmax/dt_channel)+1)
     resample_freq_channel = str(int(dt_channel*24*60)) + 'T'
     # timestamps_channel = pd.date_range(start_date, stop_date, freq=resample_freq_channel)
 
     #temperature timestep information
-    dt_temperature = 2/1440.
+    dt_temperature = 4/1440.
     # t_temperature = np.linspace(0, Tmax, np.ceil(Tmax/dt_temperature)+1)
     resample_freq_temperature = str(int(dt_temperature*24*60)) + 'T'
     # timestamps_temperature = pd.date_range(start_date, stop_date, freq=resample_freq_temperature)
@@ -419,12 +419,12 @@ def rew_params():
 
     # daymet_angeloPPT, calibrated with logNSE on Savio
     # # FOR ELDER CREEK: Linear into nonlinear reservoir, preferential rock moisture vadose zone
-    parameter_group_params = {i:{'zrS': 75., 'zrR': 848.7, 'alpha':0.125, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.206, 'b': 2.13, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.00186, 'k12': 0.350, 'storageR': 100.0, 'f': 0.745, 's0R': 0.071, 's0S': 0.19, 'k1': 0.265, 'stR': 0.149, 'vz': PreferentialRockMoistureZone } for i in parameter_groups}          
+    parameter_group_params = {i:{'zrS': 75., 'zrR': 848.7, 'alpha':0.125, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.206, 'b': 2.13, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.002, 'k12': 0.350, 'storageR': 100.0, 'f': 0.745, 's0R': 0.071, 's0S': 0.19, 'k1': 0.265, 'stR': 0.149, 'vz': PreferentialRockMoistureZone } for i in parameter_groups}          
     parameter_ranges = {i:{ 'zrR':(500.,1200.),'k1':(0.2,0.4),'k12':(0.3,0.5),'nR':(0.01,0.4),'f':(.1,.9),'s0R':(0,.4),'stR':(0.1,0.9), 'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01)} for i in parameter_groups}
     channel_params = {i:{'mannings_n':0.1, 'e':0.01, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
     channel_params_ranges = {i:{'mannings_n':(.03,.15)} for i in rews}
-    temperature_params = {i:{'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':15.0,'sigma':5.67e-8, 'temperature':10.0, 'model':SimpleTemperature} for i in rews}
-    temperature_params_ranges = {i:{'alphaw':(0.05,0.5), 'kh':(1.0,20.0), 'Tgw':(8.0,14.0)} for i in rews}
+    temperature_params = {i:{'c1':1.479, 'c2':.98419, 'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':9.5969,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperature} for i in rews}
+    temperature_params_ranges = {i:{'kh':(0.1,20.0), 'c1':(0.1,3.0), 'c2':(0.1,3.0), 'alphaw':(0.01,0.2), 'windspeed':(0.5,3.0)} for i in rews}
 
 
 

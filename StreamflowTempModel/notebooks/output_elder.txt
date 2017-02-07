@@ -1,14 +1,6 @@
-
-......hillslope calibration......
+elder_temperature.p
 REWs [1, 2, 3] are located within the calibration sub-watershed
-The groups [(1, 1)] will be run for calibration purposes
 There are 4 cores on this machine, 
-200 model runs will be performed on each core
-
-
-
-
-With an objective function value of 0.96, the best parameter set is:
-{1: {'a': 0.001866599966795243, 'k12': 0.35061212076840503, 'b': 2.1377379371794034, 'zrS': 75.0, 'zrR': 848.8204624542905, 'f': 0.7449743556957541, 'res2': 1.0, 's0R': 0.07151750143637901, 'res1': 1.0, 'storageR': 100.0, 'gz': <class groundwaterZone.LinearToNonlinearReservoir at 0x102d21390>, 's0S': 0.19, 'k1': 0.2648763182466361, 'stR': 0.1497951567304841, 'stS': 0.6, 'alpha': 0.1254986996069019, 'nR': 0.2060447224251841, 'nS': 0.4, 'storageS': 1.0, 'vz': <class vadoseZone.PreferentialRockMoistureZone at 0x102cefe88>}}
-
-
+1 model runs will be performed on each core
+With an objective function value of -1.61, the best parameter set is:
+{1: {'alphaw': 0.05, 'kh': 8.438965324878644, 'eps': 0.95, 'temperature': 10.0, 'rho': 1000.0, 'c2': 0.9554964823368515, 'c1': 6.132512375539586, 'cp': 4186.0, 'sigma': 5.67e-08, 'model': <class temperature.LagrangianSimpleTemperature at 0x116cc4940>, 'Tgw': 11.0}, 2: {'alphaw': 0.05, 'kh': 8.438965324878644, 'eps': 0.95, 'temperature': 10.0, 'rho': 1000.0, 'c2': 0.9554964823368515, 'c1': 6.132512375539586, 'cp': 4186.0, 'sigma': 5.67e-08, 'model': <class temperature.LagrangianSimpleTemperature at 0x116cc4940>, 'Tgw': 11.0}, 3: {'alphaw': 0.05, 'kh': 8.438965324878644, 'eps': 0.95, 'temperature': 10.0, 'rho': 1000.0, 'c2': 0.9554964823368515, 'c1': 6.132512375539586, 'cp': 4186.0, 'sigma': 5.67e-08, 'model': <class temperature.LagrangianSimpleTemperature at 0x116cc4940>, 'Tgw': 11.0}}
