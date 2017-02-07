@@ -12,8 +12,8 @@
 #SBATCH --time=24:00:00
 #
 ## Command(s) to run:
-# git checkout test_leggett
-# source activate py2k_model
+git checkout test_leggett
+source activate py2k_model
 x=$(python hpc_hillslope_calibrate.py False 2 sf_leggett_runoff.p sf_leggett.shp)
 DATE=`date +%Y-%m-%d:%H:%M:%S`
 TITLESTR="LEGGETT_$DATE"
