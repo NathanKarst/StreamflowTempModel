@@ -1,0 +1,15 @@
+
+......hillslope calibration......
+REWs [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 40, 41, 42, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63] are located within the calibration sub-watershed
+The groups [(1, 1), (2, 2)] will be run for calibration purposes
+There are 4 cores on this machine, 
+2 model runs will be performed on each core
+
+
+
+
+
+With an objective function value of 0.89, the best parameter set is:
+{1: {'a': 0.00372, 'k12': 0.486, 'b': 2.064, 'zrS': 75.0, 'zrR': 869.07, 'f': 0.798, 'res2': 1.0, 's0R': 0.343, 'res1': 1.0, 'storageR': 100.0, 'gz': <class groundwaterZone.LinearToNonlinearReservoir at 0x107eb63f8>, 's0S': 0.19, 'k1': 0.2477, 'stR': 0.698, 'stS': 0.6, 'alpha': 0.119, 'nR': 0.073, 'nS': 0.4, 'storageS': 1.0, 'vz': <class vadoseZone.PreferentialRockMoistureZone at 0x107e88ef0>}, 2: {'a': 0.030049980154505176, 'storageGZ': 1.0, 'b': 2.3950398214919613, 'capacity': 16.56985119238096, 'sw': 0.12874531027584135, 'gz': <class groundwaterZone.Melange at 0x107eb6460>, 'n': 0.2585856920819583, 'storageVZ': 1.0, 'vz': <class vadoseZone.PorporatoVadoseZone at 0x107e88e20>, 'sfc': 0.5362409163642231, 'zr': 39.62508853039202}}
+
+
