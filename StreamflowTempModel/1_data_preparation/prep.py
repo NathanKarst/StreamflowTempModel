@@ -20,7 +20,7 @@ sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','2_hillslope_disch
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','3_channel_routing'))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','4_temperature'))
 from vadoseZone import LaioVadoseZone, PorporatoVadoseZone, SimpleRockMoistureZone, PreferentialRockMoistureZone
-from groundwaterZone import GroundwaterZone, Melange, NonlinearReservoir, NonlinearReservoir, TwoLinearReservoir, TwoParallelLinearReservoir, LinearToNonlinearReservoir
+from groundwaterZone import GroundwaterZone, LinearMelange, Melange, NonlinearReservoir, NonlinearReservoir, TwoLinearReservoir, TwoParallelLinearReservoir, LinearToNonlinearReservoir
 from temperature import SimpleTemperature
 from channel import SimpleChannel
   
@@ -428,9 +428,9 @@ def rew_params():
 
     # Leggett, melange for parameter group 2, coastal belt for parameter group 1
     parameter_group_params = {1:{'zrS': 75.0, 'zrR': 869.07, 'alpha':0.119, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.073, 'b': 2.064, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.00372, 'k12': 0.486, 'storageR': 100.0, 'f': 0.798, 's0R': 0.343, 's0S': 0.19, 'k1': 0.2477, 'stR': 0.698, 'vz': PreferentialRockMoistureZone }  
-                            , 2:{'gz':Melange, 'vz':PorporatoVadoseZone,'storageVZ':1.0,'zr':60.89,'sw':0.2428,'sfc':0.48,'n':0.38,'storageGZ':1.0, 'a':0.0051, 'b':2.04, 'capacity':3.71}
+                            , 2:{'gz':LinearMelange, 'vz':PorporatoVadoseZone,'storageVZ':1.0,'zr':60.89,'sw':0.2428,'sfc':0.48,'n':0.38,'storageGZ':1.0, 'k':0.2, 'capacity':3.71}
                             }          
-    parameter_ranges = {1:{}, 2:{'zr':(10.0,100.0), 'sw':(0.05,0.3), 'sfc':(0.3,0.8), 'n':(0.1,0.5),'a':(0.1,0.001),'b':(1.5,2.5),'capacity':(1.0,30.0)}}
+    parameter_ranges = {1:{}, 2:{'zr':(10.0,100.0), 'sw':(0.05,0.3), 'sfc':(0.3,0.8), 'n':(0.1,0.5),'k':(0.05,0.5),'capacity':(1.0,30.0)}}
     channel_params = {i:{'mannings_n':0.1, 'e':0.01, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
     channel_params_ranges = {i:{'mannings_n':(.03,.15)} for i in rews}
     temperature_params = {i:{'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':15.0,'sigma':5.67e-8, 'temperature':10.0, 'model':SimpleTemperature} for i in rews}
