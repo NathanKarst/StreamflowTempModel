@@ -297,9 +297,9 @@ class PreferentialRockMoistureZone(VadoseZone):
         sR = self.storageR/(self.nR*self.zrR)
         sS = self.storageS/(self.nS*self.zrS)
 
-        frac = self.storageVZ/(self.nS*self.zrS + self.nR*self.zrR)
+        # frac = self.storageVZ/(self.nS*self.zrS + self.nR*self.zrR)
 
-        bypass = ppt*(frac)*self.alpha
+        bypass = ppt*self.alpha#(frac)*self.alpha
         ppt = ppt - bypass
 
         if (sS <= self.s0S):
@@ -316,6 +316,8 @@ class PreferentialRockMoistureZone(VadoseZone):
         sS = np.min([sS, self.stS])
         self.storageS = sS*self.nS*self.zrS
 
+
+        
         if (sR <= self.s0R):
             self.ETR = 0
         elif (sR <= self.stR):
@@ -323,7 +325,7 @@ class PreferentialRockMoistureZone(VadoseZone):
         else: 
             self.ETR = (1-self.f)*pet
 
-        leakageToMatrix = soilLeakage
+        leakageToMatrix = soilLeakage#*(1-self.alpha)
 
         sR += leakageToMatrix*dt/(self.nR*self.zrR) - self.ETR*dt/(self.nR*self.zrR)
 
@@ -336,7 +338,7 @@ class PreferentialRockMoistureZone(VadoseZone):
         self.storageR = sR*self.nR*self.zrR
         self.ET = self.ETS + self.ETR
         self.storageVZ = self.storageS + self.storageR
-
+        
         return {'ET':self.ET, 'leakage':self.leakage, 'overlandFlow':self.overlandFlow}
 
 
