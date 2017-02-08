@@ -88,7 +88,7 @@ class SimpleTemperature(Temperature):
         Sin = kwargs['Sin']
 
         ## NJK: why self.eps here? compare to (18) in Westhoff 07. 
-        Lout = 0.97*self.eps*self.sigma*(temp_curr)**4 
+        Lout = self.eps*self.sigma*(temp_curr)**4 
         #Lout = 0.96*self.sigma*temp_curr**4 ## suggested change
 
         ## NJK: compare to (16) in Westhoff 07
@@ -115,11 +115,13 @@ class SimpleTemperature(Temperature):
             )/(volume_next)
         # Using equations from Westhoff et al. 2007, HESS
         depth = volume/(length*width)
-        tnew -= dt*self.kh*(temp_curr - Ta)/(self.rho*self.cp*depth)
-        tnew += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*depth)
-        tnew += dt*Lin/(self.rho*self.cp*depth) ## NJK: Multiply by dt? Units right now are K/s
-        tnew -= dt*Lout/(self.rho*self.cp*depth)*0.2
-        tnew += dt*285.9*(0.132 + 0.143*u)*(ea - esat)/(self.rho*self.cp*depth)
+        tnew -= dt*self.kh*(temp_curr - Ta)/(self.rho*self.cp*depth) ## sensible heat
+        tnew += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*depth) ## solar
+        tnew += dt*Lin/(self.rho*self.cp*depth) ## atmospheric
+        tnew -= dt*Lout/(self.rho*self.cp*depth) ## back radiation 
+
+        ## Garner, What causes cooling water..., 2014
+        tnew += dt*285.9*(0.132 + 0.143*u)*(ea - esat)/(self.rho*self.cp*depth) ## latent heat 
 
         self.temperature = tnew - 273.15
         

@@ -31,10 +31,10 @@ p13
 F1000.0
 sS'c2'
 p14
-F0.8019
+F1.0
 sS'c1'
 p15
-F0.809
+F1.0
 sS'cp'
 p16
 F4186.0
@@ -46,7 +46,7 @@ p18
 F11.0
 sS'kh'
 p19
-F10.5969
+F5.5969
 sS'eps'
 p20
 F0.95
@@ -56,7 +56,7 @@ F0.05
 sS'model'
 p22
 ctemperature
-LagrangianSimpleTemperature
+SimpleTemperature
 p23
 sS'sigma'
 p24
@@ -73,9 +73,9 @@ F1.0
 sg13
 F1000.0
 sg14
-F0.8019
+F1.0
 sg15
-F0.809
+F1.0
 sg16
 F4186.0
 sg17
@@ -83,7 +83,7 @@ F11.0
 sg18
 F11.0
 sg19
-F10.5969
+F5.5969
 sg20
 F0.95
 sg21
@@ -104,9 +104,9 @@ F1.0
 sg13
 F1000.0
 sg14
-F0.8019
+F1.0
 sg15
-F0.809
+F1.0
 sg16
 F4186.0
 sg17
@@ -114,7 +114,7 @@ F11.0
 sg18
 F11.0
 sg19
-F10.5969
+F5.5969
 sg20
 F0.95
 sg21
