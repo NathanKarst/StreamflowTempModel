@@ -86,18 +86,26 @@ class SimpleTemperature(Temperature):
         # energy fluxes
         Lin = kwargs['Lin']
         Sin = kwargs['Sin']
-        Lout = 0.97*self.eps*self.sigma*(temp_curr)**4
+
+        ## NJK: why self.eps here? compare to (18) in Westhoff 07. 
+        Lout = 0.97*self.eps*self.sigma*(temp_curr)**4 
+        #Lout = 0.96*self.sigma*temp_curr**4 ## suggested change
+
+        ## NJK: compare to (16) in Westhoff 07
         esat = 0.611*np.exp(2.5*10**6/461.0*(1/273.2 - 1/temp_curr)) # saturation vapor pressure in kPa
+        #esat = 0.61275*np.exp((17.27*(Ta - 273.15))/(237.3 + Ta - 273.15)) ## suggested change
         u = 2.0 # windspeed in m/s; assume 0.5 m/s, Allen 1998
         
 
         dt = dt*86400
 
+        ## NJK: why do we need this?
         #need volumetric update back in here...
         flux = dt*ppt*length*width + vol_1*dt + vol_2*dt + hillslope_volumetric_discharge*dt  \
             + hillslope_volumetric_overlandFlow*dt - volumetric_discharge*dt
         volume_next = volume + flux
         leftover_stream_volume = volume - volumetric_discharge*dt
+
 
         tnew = (temp_curr*leftover_stream_volume 
             + Ta*dt*ppt*length*width
@@ -109,7 +117,7 @@ class SimpleTemperature(Temperature):
         depth = volume/(length*width)
         tnew -= dt*self.kh*(temp_curr - Ta)/(self.rho*self.cp*depth)
         tnew += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*depth)
-        tnew += Lin/(self.rho*self.cp*depth)
+        tnew += dt*Lin/(self.rho*self.cp*depth) ## NJK: Multiply by dt? Units right now are K/s
         tnew -= dt*Lout/(self.rho*self.cp*depth)*0.2
         tnew += dt*285.9*(0.132 + 0.143*u)*(ea - esat)/(self.rho*self.cp*depth)
 
@@ -196,8 +204,6 @@ class LagrangianSimpleTemperature(Temperature):
         # timestep        
         dt = dt*86400
 
-        # latent heat model stuff
-        esat = 0.611*np.exp(2.5*10**6/461.0*(1/273.2 - 1/temp_curr))
 
         #compute distance that outlet parcel travels during this timestep
         depth = volume/(length*width)
@@ -211,9 +217,11 @@ class LagrangianSimpleTemperature(Temperature):
             temp_up = vol_1/(vol_1+vol_2)*temp_1 + vol_2/(vol_1+vol_2)*temp_2
         
         temp_start = (temp_curr-temp_up)/length*(length-distance) + temp_up
+        # latent heat model stuff
+        esat = 0.611*np.exp(2.5*10**6/461.0*(1/273.2 - 1/temp_start))
 
         # now add in various heat fluxes
-        temp_start += dt*(-(self.kh*(temp_start - Ta)) + self.c1*(Sin-Sin*self.alphaw) + self.c2*(Lin - 0) + (285.9*(0.132 + 0.143*self.windspeed)*(ea - esat)) - self.eps*self.sigma*(temp_start)**4)/(depth*self.rho*self.cp)
+        temp_start += dt*(-(self.kh*(temp_start - Ta)) + (Sin-Sin*self.alphaw) + self.c2*(Lin - 0) + (285.9*(0.132 + 0.143*self.windspeed)*(ea - esat)) - self.c1*self.eps*self.sigma*(temp_start)**4)/(depth*self.rho*self.cp)
 
         # combine with incoming water fluxes
         volume_end = depth*width + width*ppt*dt + 1/length*hillslope_volumetric_discharge*dt

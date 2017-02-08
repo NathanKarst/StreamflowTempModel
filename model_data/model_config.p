@@ -14,7 +14,7 @@ p5
 cdatetime
 date
 p6
-(S'\x07\xdd\n\x01'
+(S'\x07\xdd\x05\x01'
 p7
 tp8
 Rp9
@@ -23,7 +23,7 @@ p10
 F0.001388888888888889
 sS'dt_temperature'
 p11
-F0.002777777777777778
+F0.011111111111111112
 sS'stop_date'
 p12
 g6
@@ -37,7 +37,7 @@ S'2T'
 p17
 sS'resample_freq_temperature'
 p18
-S'4T'
+S'16T'
 p19
 sS'start_date'
 p20
