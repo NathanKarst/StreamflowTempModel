@@ -249,7 +249,29 @@ class Melange(GroundwaterZone):
         return {'discharge':self.discharge, 'overlandFlow':self.overlandFlow}
          
         
+class LinearMelange(GroundwaterZone):
+    def __init__(self, **kwargs):
+        args = ['storageGZ', 'k', 'capacity']
+        for arg in args: setattr(self, arg, kwargs[arg])        
         
+        self.discharge = 0
+        self.overlandFlow = 0
+        
+    def update(self, dt, **kwargs):
+        
+        leakage = kwargs['leakage']
+        self.discharge = self.k*self.storageGZ
+
+        self.storageGZ += (leakage - self.discharge)*dt
+        self.overlandFlow = 0
+        
+        if self.storageGZ > self.capacity:
+            self.overlandFlow = (self.storageGZ - self.capacity)/dt
+            self.storageGZ = self.capacity
+        
+            
+        return {'discharge':self.discharge, 'overlandFlow':self.overlandFlow}
+         
         
         
         
