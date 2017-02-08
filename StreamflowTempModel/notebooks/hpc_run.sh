@@ -14,4 +14,10 @@
 ## Command(s) to run:
 git checkout master
 source activate py2k_model
-python hpc_hillslope_calibrate.py False 50000 elder_runoff.p elder.shp > output_elder.txt
+x=$(python hpc_hillslope_calibrate.py False 40000 elder_runoff.p elder.shp)
+DATE=`date +%Y-%m-%d:%H:%M:%S`
+TITLESTR="ELDER_$DATE"
+sendmail daviddralle@gmail.com << EOF
+subject:$TITLESTR
+$x
+EOF
