@@ -49,9 +49,9 @@ def model_config(outputFilename='model_config.p'):
     
     """
     #start/stop dates for running model
-    spinup_date = date(2013, 10, 01)             
+    spinup_date = date(2012, 10, 01)             
     start_date = date(2008, 07, 01)
-    stop_date = date(2015, 9, 1)
+    stop_date = date(2014, 10, 1)
     
     Tmax = 1.0*(stop_date - start_date).days
 
@@ -428,7 +428,7 @@ def rew_params():
 
     # Leggett, melange for parameter group 2, coastal belt for parameter group 1
     parameter_group_params = {1:{'zrS': 75.0, 'zrR': 869.07, 'alpha':0.119, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.073, 'b': 2.064, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.00372, 'k12': 0.486, 'storageR': 100.0, 'f': 0.798, 's0R': 0.343, 's0S': 0.19, 'k1': 0.2477, 'stR': 0.698, 'vz': PreferentialRockMoistureZone }  
-                            , 2:{'gz':LinearToNonlinearMelange, 'vz':PorporatoVadoseZone,'res1':1.0, 'res2':1.0,'storageVZ':1.0,'zr':50.89,'sw':0.2428,'sfc':0.48,'n':0.38,'storageGZ':1.0, 'a':0.008,'b':1.8, 'k1':0.6, 'k12':0.486, 'capacity':2.8}
+                            , 2:{'gz':LinearToNonlinearMelange, 'vz':PorporatoVadoseZone,'res1':1.0, 'res2':1.0,'storageVZ':1.0,'zr':40.5,'sw':0.2455,'sfc':0.73,'n':0.46,'storageGZ':1.0, 'a':0.0169,'b':2.49, 'k1':0.7644, 'k12':0.4529, 'capacity':2.38}
                             }          
     parameter_ranges = {1:{}, 2:{ 'zr':(10.0,100.0), 'sw':(0.05,0.3), 'sfc':(0.3,0.8), 'n':(0.1,0.5),'a':(0.001,1.0),'b':(1.5,2.5), 'k1':(0.2,0.8),'k12':(0.1,0.5),'capacity':(1.0,5.0)}}
     channel_params = {i:{'mannings_n':0.1, 'e':0.01, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
