@@ -223,13 +223,23 @@ class LagrangianSimpleTemperature(Temperature):
         esat = 0.611*np.exp(2.5*10**6/461.0*(1/273.2 - 1/temp_start))
 
         # now add in various heat fluxes
-        temp_start += dt*(-(self.kh*(temp_start - Ta)) + (Sin-Sin*self.alphaw) + self.c2*(Lin - 0) + (285.9*(0.132 + 0.143*self.windspeed)*(ea - esat)) - self.c1*self.eps*self.sigma*(temp_start)**4)/(depth*self.rho*self.cp)
+        sensible = -(self.kh*(temp_start - Ta))
+        solar = Sin*(1-self.alphaw)
+        atmospheric = self.c2*Lin
+        latent = (285.9*(0.132 + 0.143*self.windspeed)*(ea - esat))
+        back_radiation = -self.c1*self.eps*self.sigma*(temp_start)**4
+
+        temp_start += (+sensible + solar + atmospheric + latent + back_radiation)/(depth*self.rho*self.cp)*dt
 
         # combine with incoming water fluxes
         volume_end = depth*width + width*ppt*dt + 1/length*hillslope_volumetric_discharge*dt
         tnew = (depth*width*temp_start + Ta*width*ppt*dt + (self.Tgw + 273.15)/length*hillslope_volumetric_discharge*dt)/volume_end
 
         self.temperature = tnew - 273.15
+
+        return {'sensible':sensible,'solar':solar,'atmospheric':atmospheric,'latent':latent,'back_radiation':back_radiation}
+
+
 
         
         
