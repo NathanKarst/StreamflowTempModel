@@ -56,7 +56,7 @@ F0.05
 sS'model'
 p22
 ctemperature
-LagrangianSimpleTemperature
+EulerianWesthoff
 p23
 sS'sigma'
 p24
