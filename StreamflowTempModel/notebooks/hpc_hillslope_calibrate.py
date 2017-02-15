@@ -92,12 +92,12 @@ def main(argv):
 # Nash sutcliffe efficiency. Should be maximized for best fit. 
 def objective_function(modeled, observed):
     inds = ((modeled != 0) & (observed != 0))
-    if np.sum(modeled)<0.01:
-        return -9999.0
-    elif np.isnan(np.sum(modeled)):
-        return -9999.0
-    else:
-        return 1-np.sum((np.log(observed.loc[inds])-np.log(modeled.loc[inds]))**2)/np.sum((np.log(observed.loc[inds])-np.mean(np.log(observed.loc[inds])))**2)
+    # if np.sum(modeled)<0.01:
+    #     return -9999.0
+    # elif np.isnan(np.sum(modeled)):
+    #     return -9999.0
+    # else:
+    #     return 1-np.sum((np.log(observed.loc[inds])-np.log(modeled.loc[inds]))**2)/np.sum((np.log(observed.loc[inds])-np.mean(np.log(observed.loc[inds])))**2)
 
     inds = ((modeled != 0) & (observed != 0))
     if np.sum(modeled)<0.01:
