@@ -49,9 +49,10 @@ def model_config(outputFilename='model_config.p'):
     
     """
     #start/stop dates for running model
-    spinup_date = date(2015, 12, 01)             
+
+    spinup_date = date(2015, 12, 05)             
     start_date = date(2013, 07, 01)
-    stop_date = date(2016, 6, 1)
+    stop_date = date(2016, 3, 30)
     
     Tmax = 1.0*(stop_date - start_date).days
 
@@ -388,7 +389,7 @@ def rew_params():
 
     # Giving things a shot on Dry Creek, Melange site. 
     parameter_group_params = {i:{'gz':LinearToNonlinearMelange, 'vz': PorporatoVadoseZone, 'zr':30.0, 'sw':0.2, 'sfc':0.6, 'n':0.3, 'a':0.01, 'b':2.0, 'capacity':3.0, 'res1':1.0, 'res2':1.0,'k12':0.5, 'k1':0.7, 'storageVZ':1.0} for i in parameter_groups}          
-    parameter_ranges = {i:{ 'zr':(5.0, 50.0), 'sw':(0.1,0.3), 'sfc':(0.3,0.65), 'n':(0.2,0.5), 'a':(0.1, 0.001), 'b':(1.5, 2.5), 'capacity':(1.0, 10.0)} for i in parameter_groups}
+    parameter_ranges = {i:{ 'zr':(5.0, 50.0), 'sw':(0.1,0.3), 'sfc':(0.3,0.65), 'n':(0.1,0.5), 'a':(0.1, 0.001), 'b':(1.0, 2.5), 'capacity':(1.0, 10.0)} for i in parameter_groups}
     channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
     channel_params_ranges = {i:{ } for i in rews}
     temperature_params = {i:{'mannings_n':0.1, 'windspeed':1.0,'thetahalf':10600000000.0, 'thetamax':50.0*3.14/180, 'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':5.5969,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}

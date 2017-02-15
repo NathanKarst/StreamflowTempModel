@@ -8,7 +8,7 @@ F0.001
 tp3
 sS'b'
 p4
-(F1.5
+(F1.0
 F2.5
 tp5
 sS'capacity'
@@ -23,7 +23,7 @@ F0.3
 tp9
 sS'n'
 p10
-(F0.2
+(F0.1
 F0.5
 tp11
 sS'sfc'
