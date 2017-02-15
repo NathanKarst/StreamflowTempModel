@@ -16,11 +16,11 @@ rm $MODEL/raw_data/basins_poly/*
 rm $MODEL/raw_data/streams_poly/*
 
 M=dem
-r.in.gdal input=$MODEL/raw_data/dem/dem.tif output=dem_unfilled
-r.mapcalc "dem_unfilled_nulled = if(dem_unfilled ,dem_unfilled , null() , null() )"
-g.region raster=dem_unfilled_nulled -p
-g.region res=50 -ap
-r.resamp.stats --overwrite input=dem_unfilled_nulled output=$M
+r.in.gdal input=$MODEL/raw_data/dem/dem.tif output=$M
+# r.mapcalc "dem_unfilled_nulled = if(dem_unfilled ,dem_unfilled , null() , null() )"
+# g.region raster=dem_unfilled_nulled -p
+# g.region res=50 -ap
+# r.resamp.stats --overwrite input=dem_unfilled_nulled output=$M
 
 g.region raster=dem
 g.region -p > info.txt
@@ -40,12 +40,12 @@ echo "Cells threshold is $THRESH"
 ACCUMSTRING="accum_$THRESHMETERS"
 DIRSTRING="dir_$THRESHMETERS"
 STREAMSTRING="stream_$THRESHMETERS"
-r.watershed -a --overwrite elevation=$M accumulation=$ACCUMSTRING
-r.stream.extract --overwrite elevation=$M threshold=$THRESH stream_length=5 stream_raster=$STREAMSTRING stream_vector=stream_vector_temp direction=$DIRSTRING
+r.watershed -a --overwrite elevation=$M accumulation=$ACCUMSTRING drainage=$DIRSTRING threshold=$THRESH stream=$STREAMSTRING
+# r.stream.extract --overwrite elevation=$M threshold=$THRESH stream_length=2 stream_raster=$STREAMSTRING stream_vector=stream_vector_temp direction=$DIRSTRING
 
 #uncomment and install r extensions, which are not pre-installed with grass 7.0.x
-g.extension r.stream.order
-g.extension r.stream.basins
+# g.extension r.stream.order
+# g.extension r.stream.basins
 
 #get the maximum accumulation point and use as watershed outlet for rest of analysis
 #r.watershed
