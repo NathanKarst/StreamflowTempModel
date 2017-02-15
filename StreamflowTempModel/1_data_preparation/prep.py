@@ -20,7 +20,7 @@ sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','2_hillslope_disch
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','3_channel_routing'))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','4_temperature'))
 from vadoseZone import LaioVadoseZone, PorporatoVadoseZone, SimpleRockMoistureZone, PreferentialRockMoistureZone
-from groundwaterZone import GroundwaterZone, Melange, NonlinearReservoir, NonlinearReservoir, TwoLinearReservoir, TwoParallelLinearReservoir, LinearToNonlinearReservoir
+from groundwaterZone import GroundwaterZone, LinearToNonlinearMelange, Melange, NonlinearReservoir, NonlinearReservoir, TwoLinearReservoir, TwoParallelLinearReservoir, LinearToNonlinearReservoir
 from temperature import SimpleTemperature, LagrangianSimpleTemperature, EulerianWesthoff, LaxWendroffWesthoff, LagrangianSimpleTemperatureTriangular
 from channel import SimpleChannel, NoChannel
   
@@ -387,8 +387,7 @@ def rew_params():
     temperature_params_ranges = {i:{'kh':(0.1,20.0), 'c1':(0.1,3.0), 'c2':(0.1,3.0)} for i in rews}
 
     # Giving things a shot on Dry Creek, Melange site. 
-    ['storageVZ','zr','sw','sfc','n']
-    parameter_group_params = {i:{'gz':Melange, 'vz': PorporatoVadoseZone, 'zr':30.0, 'sw':0.2, 'sfc':0.6, 'n':0.3, 'a':0.01, 'b':2.0, 'capacity':3.0, 'storageGZ':2.0, 'storageVZ':1.0} for i in parameter_groups}          
+    parameter_group_params = {i:{'gz':LinearToNonlinearMelange, 'vz': PorporatoVadoseZone, 'zr':30.0, 'sw':0.2, 'sfc':0.6, 'n':0.3, 'a':0.01, 'b':2.0, 'capacity':3.0, 'res1':1.0, 'res2':1.0,'k12':0.5, 'k1':0.7, 'storageVZ':1.0} for i in parameter_groups}          
     parameter_ranges = {i:{ 'zr':(5.0, 50.0), 'sw':(0.1,0.3), 'sfc':(0.3,0.65), 'n':(0.2,0.5), 'a':(0.1, 0.001), 'b':(1.5, 2.5), 'capacity':(1.0, 10.0)} for i in parameter_groups}
     channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
     channel_params_ranges = {i:{ } for i in rews}
