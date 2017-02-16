@@ -309,7 +309,7 @@ class LinearToNonlinearMelange(GroundwaterZone):
         self.storageGZ = self.res1 + self.res2
         self.overlandFlow = 0
 
-        if self.res2 > self.capacity:
+        if self.res1 > self.capacity:
             self.overlandFlow = (self.res2 - self.capacity)/dt
             self.res2 = self.capacity
             self.storageGZ = self.res1 + self.res2
