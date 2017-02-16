@@ -52,7 +52,7 @@ def model_config(outputFilename='model_config.p'):
 
     spinup_date = date(2015, 12, 05)             
     start_date = date(2013, 07, 01)
-    stop_date = date(2016, 7, 30)
+    stop_date = date(2016, 1, 30)
     
     Tmax = 1.0*(stop_date - start_date).days
 

@@ -91,7 +91,7 @@ def main(argv):
 
 # Nash sutcliffe efficiency. Should be maximized for best fit. 
 def objective_function(modeled, observed):
-    inds = ((modeled != 0) & (observed != 0))
+    # inds = ((modeled != 0) & (observed != 0))
     # if np.sum(modeled)<0.01:
     #     return -9999.0
     # elif np.isnan(np.sum(modeled)):
