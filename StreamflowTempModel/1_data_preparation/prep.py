@@ -57,7 +57,7 @@ def model_config(outputFilename='model_config.p'):
     Tmax = 1.0*(stop_date - start_date).days
 
     #hillslope timestep information
-    dt_hillslope = 1/4.
+    dt_hillslope = 1/8.
     # t_hillslope = np.linspace(0,Tmax,np.ceil(Tmax/dt_hillslope)+1)
     resample_freq_hillslope = str(int(dt_hillslope*24*60)) + 'T'
     # timestamps_hillslope = pd.date_range(start_date, stop_date, freq=resample_freq_hillslope)
@@ -388,7 +388,7 @@ def rew_params():
     # temperature_params_ranges = {i:{'kh':(0.1,20.0), 'c1':(0.1,3.0), 'c2':(0.1,3.0)} for i in rews}
 
     # Giving things a shot on Dry Creek, Melange site. 
-    parameter_group_params = {i:{'gz':Melange, 'vz': PorporatoVadoseZone, 'zr':18.58, 'sw':0.20,'storageGZ':1.0, 'sfc':0.63, 'n':0.40, 'a':0.09, 'b':3.88, 'capacity':2.0, 'res1':1.0, 'res2':1.0,'k12':0.13, 'k1':3.3, 'storageVZ':1.0} for i in parameter_groups}          
+    parameter_group_params = {i:{'gz':Melange, 'vz': PorporatoVadoseZone, 'zr':43.128, 'sw':0.288,'storageGZ':1.0, 'sfc':0.306, 'n':0.311, 'a':0.098, 'b':3.73, 'capacity':4.7, 'res1':1.0, 'res2':1.0,'k12':0.8866, 'k1':3.78, 'storageVZ':1.0} for i in parameter_groups}          
     parameter_ranges = {i:{ 'zr':(5.0, 50.0), 'sw':(0.1,0.3), 'sfc':(0.3,0.65), 'n':(0.1,0.5), 'a':(0.1, 0.001), 'k12':(0.05,1.0), 'k1':(0.5,5.0), 'b':(1.5, 4.0), 'capacity':(1.0, 10.0)} for i in parameter_groups}
     channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
     channel_params_ranges = {i:{ } for i in rews}
