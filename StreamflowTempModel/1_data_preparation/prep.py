@@ -308,7 +308,7 @@ def _get_climate_groups(rew_config, parent_dir):
     return rew_config
 
 def _get_interception_factor(rew_config):
-    return [0.2]*len(rew_config)
+    return [0]*len(rew_config)
 
 def _get_upstream_contributing(rew_config, rew_id):
     if (rew_config.prev_str02.loc[rew_id]==0) and (rew_config.prev_str01.loc[rew_id]==0):
