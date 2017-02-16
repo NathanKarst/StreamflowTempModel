@@ -8,8 +8,8 @@ F0.001
 tp3
 sS'k12'
 p4
-(F0.5
-F2.0
+(F0.05
+F1.0
 tp5
 sS'k1'
 p6
@@ -18,8 +18,8 @@ F5.0
 tp7
 sS'b'
 p8
-(F1.0
-F2.5
+(F1.5
+F4.0
 tp9
 sS'capacity'
 p10
