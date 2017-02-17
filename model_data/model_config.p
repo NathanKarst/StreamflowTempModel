@@ -1,11 +1,11 @@
 (dp0
 S'resample_freq_hillslope'
 p1
-S'360T'
+S'180T'
 p2
 sS'dt_hillslope'
 p3
-F0.25
+F0.125
 sS'Tmax'
 p4
 F943.0
