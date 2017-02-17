@@ -18,8 +18,8 @@ F5.0
 tp7
 sS'b'
 p8
-(F1.5
-F4.0
+(F2.0
+F6.0
 tp9
 sS'capacity'
 p10
