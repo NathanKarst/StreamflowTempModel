@@ -90,12 +90,10 @@ class NonlinearReservoir(GroundwaterZone):
         #     return discharge, groundwater
 
         leakage = kwargs['leakage']
-        discharge = self.discharge
-        # else:
+
         self.discharge = self.a*self.storageGZ**self.b
-        self.storageGZ += (-discharge + leakage)*dt
-#         self.overlandFlow = np.max((self.storage - self.storageMax,0))
-#         self.storage = np.min((self.storage,self.storageMax))
+        self.storageGZ += (-self.discharge + leakage)*dt
+
         return {'discharge':self.discharge, 'overlandFlow':self.overlandFlow}
 
 class TwoLinearReservoir(GroundwaterZone):

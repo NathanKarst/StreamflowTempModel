@@ -131,6 +131,32 @@ class PorporatoVadoseZone(VadoseZone):
         self.leakage        = 0             # [cm/day]
         self.ET             = 0             # [cm/day]
         self.overlandFlow   = 0
+
+
+class MelangeVadoseZone(VadoseZone): 
+    """ Vadose zone model based on Rodriguez Iturbe (1999)
+    
+    Public attributes:
+        - eta
+        - s1
+        - sstar 
+        - k1 
+        - k12
+        - n 
+        - zr 
+    
+    """
+    def __init__(self, **kwargs):        
+    
+        args = ['storageVZ', 'eta', 's1', 'sstar', 'k1', 'k12', 'n', 'zr']
+        for arg in args: setattr(self, arg, kwargs[arg])
+
+        # main external variables
+        self.leakage        = 0             # [cm/day]
+        self.ET             = 0             # [cm/day]
+        self.overlandFlow   = 0
+        self.overlandRes    = 0 
+        self.soilRes        = self.storageVZ
     
     def update(self,dt,**kwargs):
         """ Update vadose zone stocks and compute fluxes.
@@ -148,15 +174,30 @@ class PorporatoVadoseZone(VadoseZone):
         pet = kwargs['pet']
 
         #convert current storage to normalized relative soil moisture
-        s = self.storageVZ/(self.n*self.zr)
-        self.ET = 0 if (s <= self.sw) else pet*(s-self.sw)/(self.sfc-self.sw)
+        s = self.soilRes/(self.n*self.zr)
+        self.ET = self.eta*pet if (s > self.sstar) else s*(pet*self.eta)/self.sstar
 
         s += ppt*dt/(self.n*self.zr) - self.ET*dt/(self.n*self.zr)
 
-        #anything in excess of field capacity is drained
-        self.leakage = np.max([s - self.sfc, 0])*self.n*self.zr/dt
-        s = np.min([s, self.sfc])
-        self.storageVZ = s*self.n*self.zr
+        #anything in excess of field capacity is drained to groundwater (slow zone) 
+        #or to surface overland flow; k12 splits leakage between these reservoirs
+        leakage = np.max([s - self.s1, 0])*self.n*self.zr/dt
+        s = np.min([s, self.s1])
+
+        self.soilRes = s*self.n*self.zr
+
+        # get output from overland flow reservoir
+        self.overlandFlow = self.overlandRes*self.k1
+
+        # get input to overland flow reservoir
+        overlandResInput = leakage*(1-self.k12)
+
+        # update overland flow reservoir
+        self.overlandRes += overlandResInput*dt - self.overlandFlow*dt 
+
+        self.leakage = leakage*self.k12
+
+        self.storageVZ = self.overlandRes + self.soilRes
 
         return {'ET':self.ET, 'leakage':self.leakage, 'overlandFlow':self.overlandFlow}
 
