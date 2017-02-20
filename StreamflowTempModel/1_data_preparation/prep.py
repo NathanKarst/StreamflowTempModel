@@ -52,7 +52,7 @@ def model_config(outputFilename='model_config.p'):
 
     spinup_date = date(2015, 12, 05)             
     start_date = date(2013, 07, 01)
-    stop_date = date(2016, 5, 30)
+    stop_date = date(2016, 4, 30)
     
     Tmax = 1.0*(stop_date - start_date).days
 
@@ -396,8 +396,8 @@ def rew_params():
     # temperature_params_ranges = {i:{'kh':(0.1,20.0), 'c1':(0.1,3.0), 'c2':(0.1,3.0)} for i in rews}
 
     # # Dry Creek with MelangeVadoseZone
-    parameter_group_params = {i:{'gz':NonlinearReservoir, 'vz': MelangeVadoseZone, 'zr':21.6, 'sstar':0.20,'storageGZ':1.0, 's1':0.5, 'n':0.24, 'a':0.085, 'b':3.5, 'k12':0.5, 'k1':3.0, 'storageVZ':1.0, 'eta':1.0} for i in parameter_groups}          
-    parameter_ranges = {i:{ 'zr':(5.0, 100.0), 'sstar':(0.1,0.3), 's1':(0.3,0.65), 'n':(0.1,0.5), 'a':(0.1, 0.001), 'k12':(0.05,1.0), 'k1':(1.0,5.0), 'b':(1.0, 3.0)} for i in parameter_groups}
+    parameter_group_params = {i:{'gz':NonlinearReservoir, 'vz': MelangeVadoseZone, 'zr':100.0, 'sstar':0.57,'storageGZ':1.0, 's1':0.65, 'n':0.45, 'a':0.085, 'b':3.5, 'k12':0.5, 'k1':3.0, 'storageVZ':1.0, 'eta':.5} for i in parameter_groups}          
+    parameter_ranges = {i:{'a':(0.1, 0.001), 'k12':(0.05,1.0), 'k1':(1.0,5.0), 'b':(1.0, 3.0), 'eta':(0.2, 1.0)} for i in parameter_groups}
     channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
     channel_params_ranges = {i:{ } for i in rews}
     temperature_params = {i:{'mannings_n':0.1, 'windspeed':1.0,'thetahalf':10600000000.0, 'thetamax':50.0*3.14/180, 'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':5.5969,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}

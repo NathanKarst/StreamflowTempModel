@@ -1,13 +1,0 @@
-elder_temperature.p
-REWs [1, 2, 3] are located within the calibration sub-watershed
-There are 4 cores on this machine, 
-1 model runs will be performed on each core
-Working on iteration 1 out of 1 
-Working on iteration 1 out of 1 
-Working on iteration 1 out of 1 
-Working on iteration 1 out of 1 
--4.61713137347
-
-
-With an objective function value of -0.38, the best parameter set is:
-{1: {'alphaw': 0.05, 'kh': 12.635690048923475, 'eps': 0.95, 'windspeed': 1.0, 'temperature': 11.0, 'rho': 1000.0, 'c2': 0.5522784395266503, 'c1': 0.13224941096661358, 'cp': 4186.0, 'sigma': 5.67e-08, 'model': <class temperature.LagrangianSimpleTemperature at 0x117404530>, 'Tgw': 11.0}, 2: {'alphaw': 0.05, 'kh': 12.635690048923475, 'eps': 0.95, 'windspeed': 1.0, 'temperature': 11.0, 'rho': 1000.0, 'c2': 0.5522784395266503, 'c1': 0.13224941096661358, 'cp': 4186.0, 'sigma': 5.67e-08, 'model': <class temperature.LagrangianSimpleTemperature at 0x117404530>, 'Tgw': 11.0}, 3: {'alphaw': 0.05, 'kh': 12.635690048923475, 'eps': 0.95, 'windspeed': 1.0, 'temperature': 11.0, 'rho': 1000.0, 'c2': 0.5522784395266503, 'c1': 0.13224941096661358, 'cp': 4186.0, 'sigma': 5.67e-08, 'model': <class temperature.LagrangianSimpleTemperature at 0x117404530>, 'Tgw': 11.0}}

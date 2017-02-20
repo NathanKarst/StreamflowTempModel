@@ -6,7 +6,7 @@ p2
 F1.0
 sS'sstar'
 p3
-F0.2
+F0.57
 sS'gz'
 p4
 cgroundwaterZone
@@ -22,7 +22,7 @@ MelangeVadoseZone
 p8
 sS'zr'
 p9
-F21.6
+F100.0
 sS'a'
 p10
 F0.085
@@ -34,14 +34,14 @@ p12
 F3.5
 sS's1'
 p13
-F0.5
+F0.65
 sS'n'
 p14
-F0.24
+F0.45
 sS'k1'
 p15
 F3.0
 sS'eta'
 p16
-F1.0
+F0.5
 ss.
