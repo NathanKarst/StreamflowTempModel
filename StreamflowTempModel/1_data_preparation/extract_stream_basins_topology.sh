@@ -36,12 +36,17 @@ THRESH=$(echo "$THRESHMETERS/$cell_area" | bc)
 echo "Cell area is $cell_area"
 echo "Cells threshold is $THRESH"
 
+# use this to eliminate hanging cells
+min_cell_area=$(echo "2*$nsres*$ewres" | bc)
+
 # get accumulation raster and extract stream network
 ACCUMSTRING="accum_$THRESHMETERS"
 DIRSTRING="dir_$THRESHMETERS"
 STREAMSTRING="stream_$THRESHMETERS"
-r.watershed -a --overwrite elevation=$M accumulation=$ACCUMSTRING drainage=$DIRSTRING threshold=$THRESH stream=$STREAMSTRING
+# r.watershed -a --overwrite elevation=$M accumulation=$ACCUMSTRING drainage=$DIRSTRING threshold=$THRESH stream=$STREAMSTRING
 # r.stream.extract --overwrite elevation=$M threshold=$THRESH stream_length=2 stream_raster=$STREAMSTRING stream_vector=stream_vector_temp direction=$DIRSTRING
+r.watershed -a --overwrite elevation=$M accumulation=$ACCUMSTRING
+r.stream.extract --overwrite elevation=$M threshold=$THRESH stream_length=5 stream_raster=$STREAMSTRING stream_vector=stream_vector_temp direction=$DIRSTRING
 
 #uncomment and install r extensions, which are not pre-installed with grass 7.0.x
 # g.extension r.stream.order
@@ -92,7 +97,7 @@ v.build --overwrite map=$BASINVECT option=build
 
 #NOTE! NEEDS TO BE RE-WRITTEN SO THAT THRESH=MINIMUM MAPPING UNIT + EPSILON. 
 #The point of v.clean is to get rid of dangly pieces of raster around the edge of the map
-v.clean --overwrite input=$BASINVECT output=$BASINVECTCLEAN type=area tool=rmarea thresh=$cell_area
+v.clean --overwrite input=$BASINVECT output=$BASINVECTCLEAN type=area tool=rmarea thresh=$min_cell_area
 v.db.addcolumn map=$BASINVECTCLEAN columns="area_sqkm DOUBLE PRECISION"
 v.to.db map=$BASINVECTCLEAN option=area columns=area_sqkm unit=k
 
