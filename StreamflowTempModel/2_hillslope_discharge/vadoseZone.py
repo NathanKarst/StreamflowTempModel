@@ -308,7 +308,7 @@ class PreferentialRockMoistureZone(VadoseZone):
     """
     def __init__(self, **kwargs):        
     
-        args = ['nS','nR','s0R','s0S','stR','stS','zrR','zrS','f','alpha','storageR','storageS']
+        args = ['nS','nR','s0R','s0S','stR','stS','zrR','zrS','f','alpha','eta','storageR','storageS']
         for arg in args: setattr(self, arg, kwargs[arg])
 
         # main external variables
@@ -332,7 +332,7 @@ class PreferentialRockMoistureZone(VadoseZone):
          """
         
         ppt = kwargs['ppt']
-        pet = kwargs['pet']
+        pet = self.eta*kwargs['pet']
 
         #convert current storage to normalized relative value
         sR = self.storageR/(self.nR*self.zrR)

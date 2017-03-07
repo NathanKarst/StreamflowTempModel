@@ -700,13 +700,10 @@ class LagrangianSimpleTemperatureTriangular(Temperature):
     def __init__(self, rew_id, **kwargs):
         Temperature.__init__(self, rew_id)
         
-        args = ['upstream_area', 'windspeed', 'mannings_n', 'thetamax', 'gradient', 'thetahalf', 'alphaw','eps','rho','cp','kh','sigma','Tgw','temperature']
+        args = ['upstream_area', 'mannings_n', 'gradient', 'alphaw','eps','rho','cp','kh','sigma','Tgw_amplitude', 'Tgw_phase', 'Tgw_offset', 'temperature']
         for arg in args: setattr(self, arg, kwargs[arg])        
 
-        self.T_soil = self.Tgw
-        self.H = 20
-        self.angle = self.thetamax*self.upstream_area/(self.thetahalf + self.upstream_area)
-
+        self.width = self.e*self.upstream_area**self.f
         self.internalCounter = 0
 
     def update(self, dt, **kwargs):
@@ -732,6 +729,9 @@ class LagrangianSimpleTemperatureTriangular(Temperature):
         Returns: 
            
         """
+        # day of year
+        doy = kwargs['doy']
+
         # volumetric fluxes
         vol_1 = 1.15741e-11*kwargs['vol_1']
         vol_2 = 1.15741e-11*kwargs['vol_2']
@@ -749,9 +749,11 @@ class LagrangianSimpleTemperatureTriangular(Temperature):
         length = 0.01*kwargs['length']
 
          # triangular channel
-        width = 2*2**.25*self.mannings_n**(3/8.)*q**(3/8.)*np.tan(self.angle)**(3/8.)/(np.cos(self.angle)**.25*self.gradient**(3/16.))
-        depth = 2**.25*self.mannings_n**(3/8.)*q**(3/8.)/(np.cos(self.angle)**.25*self.gradient**(3/16.)*np.tan(self.angle)**(5/8.))
-        u = np.cos(self.angle)**.5*q**.25*self.gradient**(3/8.)*np.tan(self.angle)**.25/(np.sqrt(2)*self.mannings_n**.75)
+        # width = 2*2**.25*self.mannings_n**(3/8.)*q**(3/8.)*np.tan(self.angle)**(3/8.)/(np.cos(self.angle)**.25*self.gradient**(3/16.))
+        # depth = 2**.25*self.mannings_n**(3/8.)*q**(3/8.)/(np.cos(self.angle)**.25*self.gradient**(3/16.)*np.tan(self.angle)**(5/8.))
+        # u = np.cos(self.angle)**.5*q**.25*self.gradient**(3/8.)*np.tan(self.angle)**.25/(np.sqrt(2)*self.mannings_n**.75)
+
+        
 
         # atmospheric data (water vapor pressure in kPa)
         ea = kwargs['ea']
@@ -760,8 +762,9 @@ class LagrangianSimpleTemperatureTriangular(Temperature):
         Lin = kwargs['Lin']
         Sin = kwargs['Sin']
 
-        # try: self.H = kwargs['H']
-        # except: pass
+        # get groundwater temperature
+        Tgw = self.Tgw_amplitude*np.sin(2*np.pi*doy/365.0 - 2*np.pi*self.Tgw_phase/365.0) + self.Tgw_offset
+
 
         # timestep        
         dt = dt*86400
@@ -772,7 +775,7 @@ class LagrangianSimpleTemperatureTriangular(Temperature):
 
         #interpolate between upstream temp and current outlet temp
         if vol_1+vol_2==0: 
-            temp_up =  self.Tgw + 273.15
+            temp_up =  Tgw + 273.15
         else:
             temp_up = vol_1/(vol_1+vol_2)*temp_1 + vol_2/(vol_1+vol_2)*temp_2
         
@@ -807,8 +810,10 @@ class LagrangianSimpleTemperatureTriangular(Temperature):
         ## Garner, What causes cooling water..., 2014
         # tnew += dt*285.9*(0.132 + 0.143*u)*(ea - esat)/(self.rho*self.cp*depth) ## latent heat
 
-        tnew = (tnew*vol_initial + (self.Tgw+273.15)*added_groundwater + Ta*added_overlandFlow)/(vol_initial + added_groundwater + added_overlandFlow)
+        tnew = (tnew*vol_initial + (Tgw+273.15)*added_groundwater + Ta*added_overlandFlow)/(vol_initial + added_groundwater + added_overlandFlow)
 
         self.temperature = tnew - 273.15
+
+        return (width, depth)
 
 
