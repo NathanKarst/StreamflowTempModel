@@ -54,7 +54,7 @@ def model_config(outputFilename='model_config.p'):
     # start_date = date(2013, 07, 01)
     # stop_date = date(2016, 4, 30)
 
-    start_date = date(2013, 10, 1)             
+    start_date = date(2012, 10, 1)             
     spinup_date = date(2015, 12, 10)
     stop_date = date(2016, 4, 30)
 
@@ -401,9 +401,13 @@ def rew_params():
     # temperature_params = {i:{'mannings_n':0.1, 'windspeed':1.0,'thetahalf':10600000000.0, 'thetamax':50.0*3.14/180, 'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':5.5969,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}
     # temperature_params_ranges = {i:{'kh':(0.1,20.0), 'c1':(0.1,3.0), 'c2':(0.1,3.0)} for i in rews}
 
+
+
+
+
     # # Dry Creek with MelangeVadoseZone
-    parameter_group_params = {i:{'gz':NonlinearReservoir, 'vz': MelangeVadoseZone, 'zr':100.0, 'sstar':0.57,'storageGZ':1.0, 's1':0.65, 'n':0.45, 'a':0.2, 'b':1.2, 'k12':0.1, 'k1':5.0, 'storageVZ':1.0, 'eta':.5} for i in parameter_groups}          
-    parameter_ranges = {i:{'a':(0.01,5.0), 'k12':(0,0.8), 'k1':(1.0,8.0), 'eta':(0.2, 1.0)} for i in parameter_groups}
+    parameter_group_params = {i:{'gz':NonlinearReservoir, 'vz': MelangeVadoseZone, 'zr':100.0, 'sstar':0.57,'storageGZ':1.0, 's1':0.65, 'n':0.45, 'a':0.76, 'b':1.26, 'k12':0.69, 'k1':7.2, 'storageVZ':1.0, 'eta':.72} for i in parameter_groups}          
+    parameter_ranges = {i:{'k12':(0,0.8), 'k1':(1.0,8.0), 'eta':(0.2, 1.0), 'a':(0.7,1.0), 'b':(1.0,1.5)} for i in parameter_groups}
     channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
     channel_params_ranges = {i:{ } for i in rews}
     temperature_params = {i:{'mannings_n':0.1, 'windspeed':1.0,'thetahalf':10600000000.0, 'thetamax':50.0*3.14/180, 'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':5.5969,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}

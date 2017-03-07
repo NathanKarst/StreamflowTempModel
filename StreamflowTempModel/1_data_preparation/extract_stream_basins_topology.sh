@@ -16,13 +16,13 @@ rm $MODEL/raw_data/basins_poly/*
 rm $MODEL/raw_data/streams_poly/*
 
 M=dem
-r.in.gdal input=$MODEL/raw_data/dem/dem.tif output=$M
-# r.mapcalc "dem_unfilled_nulled = if(dem_unfilled ,dem_unfilled , null() , null() )"
-# g.region raster=dem_unfilled_nulled -p
-# g.region res=50 -ap
-# r.resamp.stats --overwrite input=dem_unfilled_nulled output=$M
+r.in.gdal input=$MODEL/raw_data/dem/dem.tif output=dem_unfilled
+r.mapcalc "dem_unfilled_nulled = if(dem_unfilled ,dem_unfilled , null() , null() )"
+g.region raster=dem_unfilled_nulled -p
+g.region res=50 -ap
+r.resamp.stats --overwrite input=dem_unfilled_nulled output=$M
 
-g.region raster=dem
+g.region raster=$M
 g.region -p > info.txt
 nsres="$(grep "nsres" info.txt)"
 nsres=${nsres:6}
