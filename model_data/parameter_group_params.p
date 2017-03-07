@@ -1,5 +1,5 @@
 (dp0
-I1
+I2
 (dp1
 S'storageGZ'
 p2
