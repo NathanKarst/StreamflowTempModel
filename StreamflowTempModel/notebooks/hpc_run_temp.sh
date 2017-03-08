@@ -14,4 +14,10 @@
 ## Command(s) to run:
 git checkout master
 source activate py2k_model
-python hpc_temperature_calibrate.py False 1000 elder_temperature.p elder.shp > output_elder_temperature.txt
+x=$(hpc_temperature_calibrate.py True 5000 elder_temperature.p elder.shp)
+DATE=`date +%Y-%m-%d:%H:%M:%S`
+TITLESTR="ELDER_TEMP_$DATE"
+sendmail daviddralle@gmail.com << EOF
+subject:$TITLESTR
+$x
+EOF

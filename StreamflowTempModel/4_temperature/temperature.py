@@ -700,10 +700,9 @@ class LagrangianSimpleTemperatureTriangular(Temperature):
     def __init__(self, rew_id, **kwargs):
         Temperature.__init__(self, rew_id)
         
-        args = ['upstream_area', 'mannings_n', 'gradient', 'alphaw','eps','rho','cp','kh','sigma','Tgw_amplitude', 'Tgw_phase', 'Tgw_offset', 'temperature']
+        args = ['angle','upstream_area', 'mannings_n', 'gradient', 'alphaw','eps','rho','cp','kh','sigma','Tgw_amplitude', 'Tgw_phase', 'Tgw_offset', 'temperature']
         for arg in args: setattr(self, arg, kwargs[arg])        
 
-        self.width = self.e*self.upstream_area**self.f
         self.internalCounter = 0
 
     def update(self, dt, **kwargs):
@@ -732,6 +731,9 @@ class LagrangianSimpleTemperatureTriangular(Temperature):
         # day of year
         doy = kwargs['doy']
 
+        # channel angle
+        angle = np.pi/180*self.angle
+
         # volumetric fluxes
         vol_1 = 1.15741e-11*kwargs['vol_1']
         vol_2 = 1.15741e-11*kwargs['vol_2']
@@ -748,12 +750,9 @@ class LagrangianSimpleTemperatureTriangular(Temperature):
         # lengths
         length = 0.01*kwargs['length']
 
-         # triangular channel
-        # width = 2*2**.25*self.mannings_n**(3/8.)*q**(3/8.)*np.tan(self.angle)**(3/8.)/(np.cos(self.angle)**.25*self.gradient**(3/16.))
-        # depth = 2**.25*self.mannings_n**(3/8.)*q**(3/8.)/(np.cos(self.angle)**.25*self.gradient**(3/16.)*np.tan(self.angle)**(5/8.))
-        # u = np.cos(self.angle)**.5*q**.25*self.gradient**(3/8.)*np.tan(self.angle)**.25/(np.sqrt(2)*self.mannings_n**.75)
-
-        
+        width = 2**(5/8.)*self.mannings_n**(3/8.)*q**(3/8.)*np.tan(angle)**(3/8.)/(np.cos(angle)**.25*self.gradient**(3/16.))
+        depth = self.mannings_n**(3/8.)*q**(3/8.)/(2**(3/8.)*np.cos(angle)**.25*self.gradient**(3/16.)*np.tan(angle)**(5/8.))
+        u = np.sqrt(np.cos(angle))*q**.25*self.gradient**(3/8.)*np.tan(angle)**.25/(2**.25*self.mannings_n**(3/4.))
 
         # atmospheric data (water vapor pressure in kPa)
         ea = kwargs['ea']
@@ -808,12 +807,12 @@ class LagrangianSimpleTemperatureTriangular(Temperature):
         tnew -= dt*back_radiation/(self.rho*self.cp*depth) ## back radiation 
 
         ## Garner, What causes cooling water..., 2014
-        # tnew += dt*285.9*(0.132 + 0.143*u)*(ea - esat)/(self.rho*self.cp*depth) ## latent heat
+        tnew += dt*285.9*(0.132 + 0.143*0.5)*(ea - esat)/(self.rho*self.cp*depth) ## latent heat
 
         tnew = (tnew*vol_initial + (Tgw+273.15)*added_groundwater + Ta*added_overlandFlow)/(vol_initial + added_groundwater + added_overlandFlow)
 
         self.temperature = tnew - 273.15
 
-        return (width, depth)
+        return (depth, u)
 
 

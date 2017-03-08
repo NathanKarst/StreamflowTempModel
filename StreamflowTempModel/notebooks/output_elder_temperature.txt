@@ -1,0 +1,26 @@
+elder_temperature.p
+REWs [1, 2, 3] are located within the calibration sub-watershed
+There are 4 cores on this machine, 
+1 model runs will be performed on each core
+Working on iteration 1 out of 1 
+Working on iteration 1 out of 1 
+Working on iteration 1 out of 1 
+Working on iteration 1 out of 1 
+4.24006067139
+
+
+4.24006067139
+5.29547719847
+
+
+5.29547719847
+3.46020187776
+
+
+3.46020187776
+4.98419490461
+
+
+4.98419490461
+With an objective function value of 3.46, the best parameter set is:
+{1: {'mannings_n': 0.05281401077348622, 'angle': 14.204448228583908, 'temperature': 11.0, 'kh': 8.156147976903263, 'Tgw_amplitude': 1.9538921828052267, 'Tgw_offset': 10.8080383860438, 'Tgw_phase': 114.0143178052806, 'eps': 0.95, 'rho': 1000.0, 'model': <class temperature.LagrangianSimpleTemperatureTriangular at 0x116dfa120>, 'cp': 4186.0, 'sigma': 5.67e-08, 'alphaw': 0.05}, 2: {'mannings_n': 0.05281401077348622, 'angle': 14.204448228583908, 'temperature': 11.0, 'kh': 8.156147976903263, 'Tgw_amplitude': 1.9538921828052267, 'Tgw_offset': 10.8080383860438, 'Tgw_phase': 114.0143178052806, 'eps': 0.95, 'rho': 1000.0, 'model': <class temperature.LagrangianSimpleTemperatureTriangular at 0x116dfa120>, 'cp': 4186.0, 'sigma': 5.67e-08, 'alphaw': 0.05}, 3: {'mannings_n': 0.05281401077348622, 'angle': 14.204448228583908, 'temperature': 11.0, 'kh': 8.156147976903263, 'Tgw_amplitude': 1.9538921828052267, 'Tgw_offset': 10.8080383860438, 'Tgw_phase': 114.0143178052806, 'eps': 0.95, 'rho': 1000.0, 'model': <class temperature.LagrangianSimpleTemperatureTriangular at 0x116dfa120>, 'cp': 4186.0, 'sigma': 5.67e-08, 'alphaw': 0.05}}

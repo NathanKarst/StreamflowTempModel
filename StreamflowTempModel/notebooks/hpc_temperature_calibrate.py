@@ -100,13 +100,22 @@ def main(argv):
 
 # Nash sutcliffe efficiency. Should be maximized for best fit. 
 def objective_function(modeled, observed):
+    modeled = modeled.resample('D').mean()
+    observed = observed.resample('D').mean()
     inds = ((modeled != 0) & (observed != 0))&((modeled.index.month>=5)&(modeled.index.month<=9))
+    # if np.sum(modeled)<0.01:
+    #     return -9999.0
+    # elif np.isnan(np.sum(modeled)):
+    #     return -9999.0
+    # else:
+    #     return 1-np.sum((observed.loc[inds]-modeled.loc[inds])**2)/np.sum((observed.loc[inds]-np.mean(observed.loc[inds]))**2)
+
     if np.sum(modeled)<0.01:
-        return -9999.0
+        return np.inf
     elif np.isnan(np.sum(modeled)):
-        return -9999.0
+        return np.inf
     else:
-        return 1-np.sum((observed.loc[inds]-modeled.loc[inds])**2)/np.sum((observed.loc[inds]-np.mean(observed.loc[inds]))**2)
+        return np.sqrt(1.0/len(observed.loc[inds])*np.sum((observed.loc[inds] - modeled.loc[inds])**2))
 
 
 def get_rews_to_calibrate(subwatershed_name):
@@ -215,6 +224,7 @@ def calibrate(arguments):
             
             Lin = np.array(radiation[rew_id]['Lin'][start_date:stop_date].resample(resample_freq_temperature).ffill())
             Sin = np.array(radiation[rew_id]['Sin'][start_date:stop_date].resample(resample_freq_temperature).ffill())
+            doy = np.array(radiation[rew_id]['doy'][start_date:stop_date].resample(resample_freq_temperature).ffill())
 
             temp_ea = ta_ea[rew_id].resample(resample_freq_temperature).interpolate()
             ppt_daily = climate_group_forcing[climate_group_id][start_date:stop_date].ppt
@@ -262,7 +272,7 @@ def calibrate(arguments):
                 if l<start_temp_model:
                     temp[l] = temperature_network[rew_id].temperature
                 else:  
-                    varyArgs = ['vol_1','temp_1','vol_2','temp_2','hillslope_volumetric_discharge', 'hillslope_volumetric_overlandFlow', 'volumetric_discharge', 'volume', 'ta', 'Lin', 'Sin', 'ppt', 'ea']
+                    varyArgs = ['doy','vol_1','temp_1','vol_2','temp_2','hillslope_volumetric_discharge', 'hillslope_volumetric_overlandFlow', 'volumetric_discharge', 'volume', 'ta', 'Lin', 'Sin', 'ppt', 'ea']
                     constArgs = ['width','length']
                     tempArgs = {}
                     for arg in varyArgs: tempArgs[arg] = copy.copy(locals()[arg][l])
@@ -290,7 +300,7 @@ def calibrate(arguments):
                 best_obj = objs_curr
                 best_fit = solved_outlet.copy()
                 best_parameter_set = copy.deepcopy(parameters_current)
-
+    print best_obj
     return (best_fit, best_obj, best_parameter_set)
 
 
