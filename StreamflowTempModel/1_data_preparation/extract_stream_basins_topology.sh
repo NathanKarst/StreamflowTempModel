@@ -33,6 +33,9 @@ rm info.txt
 # convert m^2 threshold into #cells threshold
 cell_area=$(echo "$nsres*$ewres" | bc)
 THRESH=$(echo "$THRESHMETERS/$cell_area" | bc)
+
+# stream length must be greater than 800m
+MINSTREAM=$(echo "$MINSTREAMMETERS/$nsres" | bc)
 echo "Cell area is $cell_area"
 echo "Cells threshold is $THRESH"
 
@@ -46,7 +49,7 @@ STREAMSTRING="stream_$THRESHMETERS"
 # r.watershed -a --overwrite elevation=$M accumulation=$ACCUMSTRING drainage=$DIRSTRING threshold=$THRESH stream=$STREAMSTRING
 # r.stream.extract --overwrite elevation=$M threshold=$THRESH stream_length=2 stream_raster=$STREAMSTRING stream_vector=stream_vector_temp direction=$DIRSTRING
 r.watershed -a --overwrite elevation=$M accumulation=$ACCUMSTRING
-r.stream.extract --overwrite elevation=$M threshold=$THRESH stream_length=5 stream_raster=$STREAMSTRING stream_vector=stream_vector_temp direction=$DIRSTRING
+r.stream.extract --overwrite elevation=$M threshold=$THRESH stream_length=$MINSTREAM stream_raster=$STREAMSTRING stream_vector=stream_vector_temp direction=$DIRSTRING
 
 #uncomment and install r extensions, which are not pre-installed with grass 7.0.x
 # g.extension r.stream.order
