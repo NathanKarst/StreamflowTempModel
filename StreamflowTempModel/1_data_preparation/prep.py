@@ -413,7 +413,7 @@ def rew_params():
     channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
     channel_params_ranges = {i:{ } for i in rews}
     temperature_params = {i:{'Tgw_phase':114.0, 'Tgw_amplitude':4.98, 'Tgw_offset':13., 'mannings_n':0.1, 'angle':35.1, 'cp':4186.0, 'eps':0.95, 'alphaw':0.05, 'rho':1000.0, 'kh':14.469,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}
-    temperature_params_ranges = {i:{'mannings_n':(.05,.2),'angle':(5,60),'kh':(0.1,15.0), 'Tgw_phase':(90, 130), 'Tgw_offset':(10.0,13.0), 'Tgw_amplitude':(1.0,3.0)} for i in rews}
+    temperature_params_ranges = {i:{'mannings_n':(.01,.2),'angle':(5,60),'kh':(0.1,15.0), 'Tgw_phase':(90, 130), 'Tgw_offset':(10.0,13.0), 'Tgw_amplitude':(1.0,3.0)} for i in rews}
 
 
     # # # # Dry Creek with MelangeVadoseZone

@@ -103,20 +103,12 @@ def objective_function(modeled, observed):
     modeled = modeled.resample('D').mean()
     observed = observed.resample('D').mean()
     inds = ((modeled != 0) & (observed != 0))&((modeled.index.month>=5)&(modeled.index.month<=9))
-    # if np.sum(modeled)<0.01:
-    #     return -9999.0
-    # elif np.isnan(np.sum(modeled)):
-    #     return -9999.0
-    # else:
-    #     return 1-np.sum((observed.loc[inds]-modeled.loc[inds])**2)/np.sum((observed.loc[inds]-np.mean(observed.loc[inds]))**2)
-
     if np.sum(modeled)<0.01:
-        return np.inf
+        return -9999.0
     elif np.isnan(np.sum(modeled)):
-        return np.inf
+        return -9999.0
     else:
-        return np.sqrt(1.0/len(observed.loc[inds])*np.sum((observed.loc[inds] - modeled.loc[inds])**2))
-
+        return 1-np.sum((observed.loc[inds]-modeled.loc[inds])**2)/np.sum((observed.loc[inds]-np.mean(observed.loc[inds]))**2)
 
 def get_rews_to_calibrate(subwatershed_name):
     shapefile_path = os.path.join(parent_dir, 'raw_data','watershed_poly', subwatershed_name)
