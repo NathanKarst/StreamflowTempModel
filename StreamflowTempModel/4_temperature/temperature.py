@@ -700,7 +700,7 @@ class LagrangianSimpleTemperatureTriangular(Temperature):
     def __init__(self, rew_id, **kwargs):
         Temperature.__init__(self, rew_id)
         
-        args = ['angle','upstream_area', 'mannings_n', 'gradient', 'alphaw','eps','rho','cp','kh','sigma','Tgw_amplitude', 'Tgw_phase', 'Tgw_offset', 'temperature']
+        args = ['angle','upstream_area', 'mannings_n', 'gradient', 'alphaw','eps','rho','cp','kh','sigma','Tgw_amplitude', 'Tgw_phase', 'Tgw_offset', 'Tgw_sd', 'temperature']
         for arg in args: setattr(self, arg, kwargs[arg])        
 
         self.internalCounter = 0
@@ -762,7 +762,7 @@ class LagrangianSimpleTemperatureTriangular(Temperature):
         Sin = kwargs['Sin']
 
         # get groundwater temperature
-        Tgw = self.Tgw_amplitude*np.sin(2*np.pi*doy/365.0 - 2*np.pi*self.Tgw_phase/365.0) + self.Tgw_offset
+        Tgw = self.Tgw_offset + self.Tgw_amplitude*np.exp(-(doy-self.Tgw_phase)**2/(2*self.Tgw_sd**2)) 
 
 
         # timestep        

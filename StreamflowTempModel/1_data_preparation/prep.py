@@ -412,8 +412,8 @@ def rew_params():
     parameter_ranges = {i:{ 'eta':(0.5, 1.0), 'zrR':(500.,1200.),'k1':(0.2,0.4),'k12':(0.3,0.5),'nR':(0.01,0.4),'f':(.1,.9),'s0R':(0,.4),'stR':(0.1,0.9), 'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01)} for i in parameter_groups}
     channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
     channel_params_ranges = {i:{ } for i in rews}
-    temperature_params = {i:{'Tgw_phase':114.0, 'Tgw_amplitude':4.98, 'Tgw_offset':13., 'mannings_n':0.1, 'angle':35.1, 'cp':4186.0, 'eps':0.95, 'alphaw':0.05, 'rho':1000.0, 'kh':14.469,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}
-    temperature_params_ranges = {i:{'mannings_n':(.01,.2),'angle':(5,60),'kh':(0.1,15.0), 'Tgw_phase':(90, 130), 'Tgw_offset':(10.0,13.0), 'Tgw_amplitude':(1.0,3.0)} for i in rews}
+    temperature_params = {i:{'Tgw_phase':200.0, 'Tgw_amplitude':7.93, 'Tgw_offset':10.0, 'Tgw_sd':60.0, 'mannings_n':0.086, 'angle':39.1, 'cp':4186.0, 'eps':0.95, 'alphaw':0.05, 'rho':1000.0, 'kh':13.189,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}
+    temperature_params_ranges = {i:{'mannings_n':(.01,.2),'angle':(20,60),'kh':(5.0,18.0), 'Tgw_phase':(180, 220), 'Tgw_sd':(30,70), 'Tgw_offset':(10.0,11.0), 'Tgw_amplitude':(4.0,10.0)} for i in rews}
 
 
     # # # # Dry Creek with MelangeVadoseZone
