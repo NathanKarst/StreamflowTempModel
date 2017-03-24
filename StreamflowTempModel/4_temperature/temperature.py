@@ -815,4 +815,226 @@ class LagrangianSimpleTemperatureTriangular(Temperature):
 
         return (depth, u)
 
+class ChengHeatedGw(Temperature):
+    """ 
+ 
+    """
+    def __init__(self, rew_id, **kwargs):
+        Temperature.__init__(self, rew_id)
+        
+        args = ['Vf','gradient','eps','rho','cp','sigma','k_f', 'temperature', 'Tgw_hillslope']
+        for arg in args: setattr(self, arg, kwargs[arg])        
 
+        self.internalCounter = 0
+
+    def update(self, dt, **kwargs):
+        """ Update channel temperature
+        
+        Args:
+            - kwargs (dict) : dictionary of inputs required to integrate time step
+                - vol_1 : upstream volumetric discharge from stream 1
+                - temp_1 : upstream temperature from stream 1
+                - vol_2 : upstream volumetric discharge from stream 2
+                - temp_2 : upstream temperature from stream 2
+                - hillslope_volumetric_discharge : discharge to stream from REW groundwaterZone
+                - hillslope_volumetric_overlandFlow : overland flow from REW to stream
+                - volumetric_discharge : discharge leaving stream link in current timestep
+                - width : channel width
+                - length : channel length
+                - Ta : air temperature 
+                - Lin : longwave incoming radiation
+                - Sin : shortwave incoming radiation
+                - ppt : incoming precipitation
+
+        
+        Returns: 
+           
+        """
+        # day of year
+        doy = kwargs['doy']
+
+        # volumetric fluxes
+        vol_1 = 1.15741e-11*kwargs['vol_1']
+        vol_2 = 1.15741e-11*kwargs['vol_2']
+        hillslope_volumetric_discharge = 1.15741e-11*kwargs['hillslope_volumetric_discharge']
+        hillslope_volumetric_overlandFlow = 1.15741e-11*kwargs['hillslope_volumetric_overlandFlow']
+        q = 1.15741e-11*kwargs['volumetric_discharge']
+
+        # thermal depth from model 
+        # dh = np.exp(-self.a_dh)*kwargs['upstream_area']**self.b_dh*q**self.c_dh
+
+        # lengths
+        length = 0.01*kwargs['length']
+        width = 0.01*kwargs['width']
+
+        # energy fluxes
+        Sin = kwargs['Sin']
+
+        # heat transfer coefficient from Cheng 2016, where va is wind speed
+        hc = 1.5*10**6*1.74*10**(-6)*(1 + 0.72*kwargs['va'])
+
+
+        # temperatures 
+        temp_1 = kwargs['temp_1'] + 273.15
+        temp_2 = kwargs['temp_2'] + 273.15
+        Ta = kwargs['ta'] + 273.15
+        Ta_mean = kwargs['ta_mean'] + 273.15
+        temp_curr = self.temperature + 273.15
+        tau =length*self.Vf/hillslope_volumetric_discharge
+        Tgw = self.Tgw_hillslope*np.exp(-self.k_f*tau) + (Ta_mean-273.15)*(1-np.exp(-self.k_f*tau)) + 273.15
+
+
+        depth = 1e-6*kwargs['volume']/(length*width)
+        u = q/(width*depth)
+        # heat exchange coefficient, Cheng 2016
+        k = (4*273**3*self.sigma*self.eps + hc)/(depth*self.rho*self.cp)
+
+        # timestep        
+        dt = dt*86400
+
+        #compute distance that outlet parcel travels during this timestep
+        distance = np.min([u*dt, length])
+
+        #interpolate between upstream temp and current outlet temp
+        #upstream temperature is assumed to be a mixture of groundwater
+        #overland flow, and upstream flow links
+        if vol_1+vol_2==0: 
+            temp_up =  Tgw*hillslope_volumetric_discharge/q + (Ta_mean)*hillslope_volumetric_overlandFlow/q
+        else:
+            total_vol_in = vol_1 + vol_2 + hillslope_volumetric_discharge + hillslope_volumetric_overlandFlow
+            temp_up = 1/total_vol_in*(vol_1*temp_1 + vol_2*temp_2 + hillslope_volumetric_discharge*Tgw + Ta_mean*hillslope_volumetric_overlandFlow)
+            temp_up = temp_up
+        
+        temp_start = (temp_curr-temp_up)/length*(length-distance) + temp_up
+        tnew = Ta + Sin/(k*depth*self.rho*self.cp) + (temp_start - Ta - Sin/(k*depth*self.rho*self.cp))*np.exp(-k*dt)
+        self.temperature = tnew - 273.15
+        return (depth, u)
+
+
+class LagrangianSimpleTemperatureTriangularHeatedGW(Temperature):
+    """ 
+ 
+    """
+    def __init__(self, rew_id, **kwargs):
+        Temperature.__init__(self, rew_id)
+        
+        args = ['angle','upstream_area', 'mannings_n', 'gradient', 'alphaw','eps','rho','cp','kh','sigma','temperature', 'kf', 'tau0', 'ktau', 'Tgw_offset']
+        for arg in args: setattr(self, arg, kwargs[arg])        
+
+        self.internalCounter = 0
+
+    def update(self, dt, **kwargs):
+        """ Update channel temperature
+        
+        Args:
+            - kwargs (dict) : dictionary of inputs required to integrate time step
+                - vol_1 : upstream volumetric discharge from stream 1
+                - temp_1 : upstream temperature from stream 1
+                - vol_2 : upstream volumetric discharge from stream 2
+                - temp_2 : upstream temperature from stream 2
+                - hillslope_volumetric_discharge : discharge to stream from REW groundwaterZone
+                - hillslope_volumetric_overlandFlow : overland flow from REW to stream
+                - volumetric_discharge : discharge leaving stream link in current timestep
+                - width : channel width
+                - length : channel length
+                - Ta : air temperature 
+                - Lin : longwave incoming radiation
+                - Sin : shortwave incoming radiation
+                - ppt : incoming precipitation
+
+        
+        Returns: 
+           
+        """
+        # day of year
+        doy = kwargs['doy']
+
+        # channel angle
+        angle = np.pi/180*self.angle
+
+        # volumetric fluxes
+        vol_1 = 1.15741e-11*kwargs['vol_1']
+        vol_2 = 1.15741e-11*kwargs['vol_2']
+        hillslope_volumetric_discharge = 1.15741e-11*kwargs['hillslope_volumetric_discharge']
+        hillslope_volumetric_overlandFlow = 1.15741e-11*kwargs['hillslope_volumetric_overlandFlow']
+        q = 1.15741e-11*kwargs['volumetric_discharge']
+
+        # temperatures 
+        temp_1 = kwargs['temp_1'] + 273.15
+        temp_2 = kwargs['temp_2'] + 273.15
+        Ta = kwargs['ta'] + 273.15
+        Ta_mean = kwargs['ta_mean'] + 273.15
+        temp_curr = self.temperature + 273.15
+
+        # lengths
+        length = 0.01*kwargs['length']
+
+        width = 2**(5/8.)*self.mannings_n**(3/8.)*q**(3/8.)*np.tan(angle)**(3/8.)/(np.cos(angle)**.25*self.gradient**(3/16.))
+        depth = self.mannings_n**(3/8.)*q**(3/8.)/(2**(3/8.)*np.cos(angle)**.25*self.gradient**(3/16.)*np.tan(angle)**(5/8.))
+        u = np.sqrt(np.cos(angle))*q**.25*self.gradient**(3/8.)*np.tan(angle)**.25/(2**.25*self.mannings_n**(3/4.))
+
+        # atmospheric data (water vapor pressure in kPa)
+        ea = kwargs['ea']
+        
+        # energy fluxes
+        Lin = kwargs['Lin']
+        Sin = kwargs['Sin']
+
+        # get groundwater temperature
+        tau = self.tau0*np.exp(-self.ktau*hillslope_volumetric_discharge)
+        Tgw = (self.Tgw_offset+273.15)*np.exp(-self.kf*tau) + Ta_mean*(1-np.exp(-self.kf*tau)) - 273.15
+
+
+        # timestep        
+        dt = dt*86400
+
+
+        #compute distance that outlet parcel travels during this timestep
+        distance = np.min([u*dt, length])
+
+        #interpolate between upstream temp and current outlet temp
+        if vol_1+vol_2==0: 
+            temp_up =  Tgw + 273.15
+        else:
+            temp_up = vol_1/(vol_1+vol_2)*temp_1 + vol_2/(vol_1+vol_2)*temp_2
+        
+        temp_start = (temp_curr-temp_up)/length*(length-distance) + temp_up
+        tnew = temp_start
+
+        # now add in various heat fluxes
+        back_radiation = 0.96*self.sigma*(temp_start)**4
+
+        # atmospheric data (water vapor pressure in kPa)
+        ea = kwargs['ea']
+        
+        # energy fluxes
+        Lin = kwargs['Lin']
+        Sin = kwargs['Sin']
+
+        ## NJK: why self.eps here? compare to (18) in Westhoff 07. 
+        Lout = 0.96*self.sigma*temp_start**4 ## suggested change
+        esat = 0.611*np.exp(2.5*10**6/461.0*(1/273.2 - 1/temp_start)) # saturation vapor pressure in kPa
+   
+        dt = dt*86400
+
+        VTS = 0.9
+        land_cover = 0.96*(1-VTS)*self.sigma*(Ta_mean)**4
+
+        added_groundwater = hillslope_volumetric_discharge/length*dt
+        added_overlandFlow = hillslope_volumetric_overlandFlow/length*dt
+        vol_initial = width*depth
+
+        tnew -= dt*self.kh*(temp_start - Ta)/(self.rho*self.cp*depth) ## sensible heat
+        tnew += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*depth) ## solar
+        tnew += dt*Lin/(self.rho*self.cp*depth) ## atmospheric
+        tnew += dt*land_cover/(self.rho*self.cp*depth) ## atmospheric
+        tnew -= dt*back_radiation/(self.rho*self.cp*depth) ## back radiation 
+
+        ## Garner, What causes cooling water..., 2014
+        # tnew += dt*285.9*(0.132 + 0.143*kwargs['va'])*(ea - esat)/(self.rho*self.cp*depth) ## latent heat
+
+        tnew = (tnew*vol_initial + (Tgw+273.15)*added_groundwater + Ta*added_overlandFlow)/(vol_initial + added_groundwater + added_overlandFlow)
+
+        self.temperature = tnew - 273.15
+
+        return (depth, u, Tgw, hillslope_volumetric_discharge)

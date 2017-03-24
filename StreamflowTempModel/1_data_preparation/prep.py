@@ -21,7 +21,7 @@ sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','3_channel_routing
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','4_temperature'))
 from vadoseZone import LaioVadoseZone, MelangeVadoseZone, PorporatoVadoseZone, SimpleRockMoistureZone, PreferentialRockMoistureZone
 from groundwaterZone import GroundwaterZone, LinearToNonlinearMelange, Melange, NonlinearReservoir, NonlinearReservoir, TwoLinearReservoir, TwoParallelLinearReservoir, LinearToNonlinearReservoir
-from temperature import SimpleTemperature, LagrangianSimpleTemperature, EulerianWesthoff, LaxWendroffWesthoff, LagrangianSimpleTemperatureTriangular
+from temperature import LagrangianSimpleTemperatureTriangularHeatedGW, ChengHeatedGw, SimpleTemperature, LagrangianSimpleTemperature, EulerianWesthoff, LaxWendroffWesthoff, LagrangianSimpleTemperatureTriangular
 from channel import SimpleChannel, NoChannel
   
 def model_config(outputFilename='model_config.p'): 
@@ -75,7 +75,7 @@ def model_config(outputFilename='model_config.p'):
     # timestamps_channel = pd.date_range(start_date, stop_date, freq=resample_freq_channel)
 
     #temperature timestep information
-    dt_temperature = 8./1440.
+    dt_temperature = 32./1440.
     # t_temperature = np.linspace(0, Tmax, np.ceil(Tmax/dt_temperature)+1)
     resample_freq_temperature = str(int(dt_temperature*24*60)) + 'T'
     # timestamps_temperature = pd.date_range(start_date, stop_date, freq=resample_freq_temperature)
@@ -121,6 +121,7 @@ def rew_config():
         - flow_accum (float): total upstream accumulated area
         - out_dist (float): distance to outlet 
         - elev_drop (float): eleveation drop from REW to outlet
+        - elevation (float): elevation of REW at centroid
         - gradient (float): gradient along REW's channel
         - parameter_group: REW parameter group
         - climate_group: REW climate group  
@@ -398,22 +399,30 @@ def rew_params():
     # temperature_params = {i:{'windspeed':1.0,'c1':1.0, 'c2':1.0, 'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':5.5969,'sigma':5.67e-8, 'temperature':11.0, 'model':EulerianWesthoff} for i in rews}
     # temperature_params_ranges = {i:{'kh':(0.1,20.0), 'c1':(0.1,3.0), 'c2':(0.1,3.0)} for i in rews}
 
-    #   # David's "no routing" temp model test
-    # parameter_group_params = {i:{'zrS': 75., 'zrR': 869.7, 'alpha':0.119, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.073, 'b': 2.063, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.0037, 'k12': 0.486, 'storageR': 100.0, 'f': 0.798, 's0R': 0.343, 's0S': 0.19, 'k1': 0.2477, 'eta':0.5, 'stR': 0.698, 'vz': PreferentialRockMoistureZone } for i in parameter_groups}          
+    # David's "no routing" temp model test
+    # parameter_group_params = {i:{'zrS': 75., 'zrR': 900.7, 'alpha':0.12, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.073, 'b': 2.063, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.0037, 'k12': 0.486, 'storageR': 100.0, 'f': 0.8, 's0R': 0.343, 's0S': 0.19, 'k1': 0.2477, 'eta':1.0, 'stR': 0.698, 'vz': PreferentialRockMoistureZone } for i in parameter_groups}          
     # parameter_ranges = {i:{ 'eta':(0.5, 1.0), 'zrR':(500.,1200.),'k1':(0.2,0.4),'k12':(0.3,0.5),'nR':(0.01,0.4),'f':(.1,.9),'s0R':(0,.4),'stR':(0.1,0.9), 'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01)} for i in parameter_groups}
     # channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
     # channel_params_ranges = {i:{ } for i in rews}
-    # temperature_params = {i:{'e':0.01, 'f':0.39, 'Tgw_phase':91.0, 'Tgw_amplitude':3.0, 'Tgw_offset':14.0, 'mannings_n':0.1, 'cp':4186.0, 'eps':0.95, 'alphaw':0.05, 'rho':1000.0, 'kh':10.5969,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}
-    # temperature_params_ranges = {i:{'kh':(0.1,20.0), 'Tgw_phase':(90, 130), 'Tgw_offset':(10.0,13.0), 'Tgw_amplitude':(1.0,3.0)} for i in rews}
-
-
-    # David's "no routing" temp model test
+    # temperature_params = {i:{'Tgw_phase':204.8, 'Tgw_amplitude':9.12, 'Tgw_offset':10.56, 'Tgw_sd':49.8, 'mannings_n':0.166, 'angle':29.28, 'cp':4186.0, 'eps':0.95, 'alphaw':0.05, 'rho':1000.0, 'kh':14.189,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}
+    # temperature_params_ranges = {i:{'mannings_n':(.01,.2),'angle':(20,60),'kh':(5.0,18.0), 'Tgw_phase':(180, 220), 'Tgw_sd':(30,70), 'Tgw_offset':(10.0,11.0), 'Tgw_amplitude':(4.0,10.0)} for i in rews}
+  
+  # David's "no routing" temp model test
     parameter_group_params = {i:{'zrS': 75., 'zrR': 900.7, 'alpha':0.12, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.073, 'b': 2.063, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.0037, 'k12': 0.486, 'storageR': 100.0, 'f': 0.8, 's0R': 0.343, 's0S': 0.19, 'k1': 0.2477, 'eta':1.0, 'stR': 0.698, 'vz': PreferentialRockMoistureZone } for i in parameter_groups}          
     parameter_ranges = {i:{ 'eta':(0.5, 1.0), 'zrR':(500.,1200.),'k1':(0.2,0.4),'k12':(0.3,0.5),'nR':(0.01,0.4),'f':(.1,.9),'s0R':(0,.4),'stR':(0.1,0.9), 'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01)} for i in parameter_groups}
     channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
     channel_params_ranges = {i:{ } for i in rews}
-    temperature_params = {i:{'Tgw_phase':200.0, 'Tgw_amplitude':7.93, 'Tgw_offset':10.0, 'Tgw_sd':60.0, 'mannings_n':0.086, 'angle':39.1, 'cp':4186.0, 'eps':0.95, 'alphaw':0.05, 'rho':1000.0, 'kh':13.189,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}
-    temperature_params_ranges = {i:{'mannings_n':(.01,.2),'angle':(20,60),'kh':(5.0,18.0), 'Tgw_phase':(180, 220), 'Tgw_sd':(30,70), 'Tgw_offset':(10.0,11.0), 'Tgw_amplitude':(4.0,10.0)} for i in rews}
+    temperature_params = {i:{'kf':1.0, 'tau0':0.4, 'ktau':0.5, 'Tgw_offset':11.0, 'mannings_n':0.166, 'angle':29.28, 'cp':4186.0, 'eps':1.0, 'alphaw':0.05, 'rho':1000.0, 'kh':13.0,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangularHeatedGW} for i in rews}
+    temperature_params_ranges = {i:{'tau0':(0.1,2), 'ktau':(0.01,5.0),'kf':(.1,20.0),'mannings_n':(.01,.2),'angle':(20,60),'kh':(5.0,14.0)} for i in rews}
+
+
+    #   # test of cheng heated GW
+    # parameter_group_params = {i:{'zrS': 75., 'zrR': 900.7, 'alpha':0.12, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.073, 'b': 2.063, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.0037, 'k12': 0.486, 'storageR': 100.0, 'f': 0.8, 's0R': 0.343, 's0S': 0.19, 'k1': 0.2477, 'eta':1.0, 'stR': 0.698, 'vz': PreferentialRockMoistureZone } for i in parameter_groups}          
+    # parameter_ranges = {i:{ 'eta':(0.5, 1.0), 'zrR':(500.,1200.),'k1':(0.2,0.4),'k12':(0.3,0.5),'nR':(0.01,0.4),'f':(.1,.9),'s0R':(0,.4),'stR':(0.1,0.9), 'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01)} for i in parameter_groups}
+    # channel_params = {i:{'mannings_n':0.1, 'e':0.01, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
+    # channel_params_ranges = {i:{ } for i in rews}
+    # temperature_params = {i:{'Vf':0.0,'eps':0.98,'rho':1000.0,'cp':4186.0,'sigma':5.67e-8,'k_f':1.0, 'temperature':12.0, 'Tgw_hillslope':11.0,'model':ChengHeatedGw} for i in rews}
+    # temperature_params_ranges = {i:{ } for i in rews}
 
 
     # # # # Dry Creek with MelangeVadoseZone

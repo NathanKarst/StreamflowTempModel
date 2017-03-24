@@ -23,7 +23,7 @@ p10
 F0.001388888888888889
 sS'dt_temperature'
 p11
-F0.005555555555555556
+F0.022222222222222223
 sS'stop_date'
 p12
 g6
@@ -37,7 +37,7 @@ S'2T'
 p17
 sS'resample_freq_temperature'
 p18
-S'8T'
+S'32T'
 p19
 sS'start_date'
 p20

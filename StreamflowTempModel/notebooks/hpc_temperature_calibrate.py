@@ -20,7 +20,7 @@ parent_dir = dirname(dirname(os.getcwd()))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','lib'))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','4_temperature'))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','3_channel_routing'))
-from temperature import SimpleTemperature, LagrangianSimpleTemperature
+from temperature import SimpleTemperature, LagrangianSimpleTemperature, LagrangianSimpleTemperatureTriangularHeatedGW
 from channel import SimpleChannel
 import zonal_stats as zs
 import meteolib as meteo
@@ -102,7 +102,7 @@ def main(argv):
 def objective_function(modeled, observed):
     modeled = modeled.resample('D').mean()
     observed = observed.resample('D').mean()
-    inds = ((modeled != 0) & (observed != 0))&((modeled.index.month>=5)&(modeled.index.month<=9))
+    inds = ((modeled != 0) & (observed != 0))#&((modeled.index.month>=5)&(modeled.index.month<=9))
     if np.sum(modeled)<0.01:
         return -9999.0
     elif np.isnan(np.sum(modeled)):
@@ -185,8 +185,6 @@ def calibrate(arguments):
 
     desc = "Core #%s"%(cpu)
     for i in range(N):
-        sys.stdout.write('\rWorking on iteration %d out of %d \n' % (i+1,N))
-        sys.stdout.flush()
         
         channel_network = {}
         for rew_id in ids_in_subwatershed: 
@@ -222,6 +220,7 @@ def calibrate(arguments):
             ppt_daily = climate_group_forcing[climate_group_id][start_date:stop_date].ppt
             ppt = np.array(climate_group_forcing[climate_group_id][start_date:stop_date].ppt.resample(resample_freq_temperature).ffill())
             ta = np.array(temp_ea['ta'][start_date:stop_date])
+            ta_mean = np.array(temp_ea['tmean'][start_date:stop_date])
             ea = np.array(temp_ea['ea'][start_date:stop_date])
             hillslope_discharge = pd.DataFrame({'discharge':hill_groups[group_id]['discharge']}, index=hill_groups[group_id].index)
             hillslope_overlandFlow = pd.DataFrame({'overlandFlow':hill_groups[group_id]['overlandFlow']}, index=hill_groups[group_id].index)
@@ -264,7 +263,7 @@ def calibrate(arguments):
                 if l<start_temp_model:
                     temp[l] = temperature_network[rew_id].temperature
                 else:  
-                    varyArgs = ['doy','vol_1','temp_1','vol_2','temp_2','hillslope_volumetric_discharge', 'hillslope_volumetric_overlandFlow', 'volumetric_discharge', 'volume', 'ta', 'Lin', 'Sin', 'ppt', 'ea']
+                    varyArgs = ['ta_mean', 'doy','vol_1','temp_1','vol_2','temp_2','hillslope_volumetric_discharge', 'hillslope_volumetric_overlandFlow', 'volumetric_discharge', 'volume', 'ta', 'Lin', 'Sin', 'ppt', 'ea']
                     constArgs = ['width','length']
                     tempArgs = {}
                     for arg in varyArgs: tempArgs[arg] = copy.copy(locals()[arg][l])
@@ -280,8 +279,7 @@ def calibrate(arguments):
         rng = calibration_data.index
         solved_outlet = network_temps[outlet_id].temperature.reindex(rng, method='nearest')
         objs_curr = objective_function(solved_outlet[spinup_date:stop_date],calibration_data['temperature'][spinup_date:stop_date])
-        print(objs_curr)
-        print('\n')
+
         if minimize_objective_function:
             if objs_curr<best_obj:
                 best_obj = objs_curr
