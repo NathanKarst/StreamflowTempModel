@@ -414,7 +414,7 @@ def rew_params():
     channel_params_ranges = {i:{ } for i in rews}
     temperature_params = {i:{'kf':.56, 'tau0':1.31, 'ktau':0.619, 'Tgw_offset':11.0, 'mannings_n':0.1, 'angle':30.0, 'cp':4186.0, 'eps':1.0, 'alphaw':0.05, 'rho':1000.0, 'kh':6.49,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangularHeatedGW} for i in rews}
     temperature_params_ranges = {i:{'tau0':(0.1,2), 'ktau':(0.01,5.0),'kf':(.1,20.0),'kh':(5.0,14.0)} for i in rews}
-
+     # 
 
     #   # test of cheng heated GW
     # parameter_group_params = {i:{'zrS': 75., 'zrR': 900.7, 'alpha':0.12, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.073, 'b': 2.063, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.0037, 'k12': 0.486, 'storageR': 100.0, 'f': 0.8, 's0R': 0.343, 's0S': 0.19, 'k1': 0.2477, 'eta':1.0, 'stR': 0.698, 'vz': PreferentialRockMoistureZone } for i in parameter_groups}          
