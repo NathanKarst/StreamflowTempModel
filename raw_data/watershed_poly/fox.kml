@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>fox.kml</name>
+	<Style id="waterskmz_results.polygon">
+		<BalloonStyle>
+			<text><![CDATA[<b><font color="#000000" size="+1"><nobr>Drainage Area Delineation Results</nobr></font></b><br/><br/><font face="Courier"><nobr>Total Area (Square Kilometers) - $[total_areasqkm]</nobr></font><br/><br/><nobr>Produced using EPA's MyWATERS KMZ and WATERS Geospatial Tools</nobr><br/>]]></text>
+		</BalloonStyle>
+		<LineStyle>
+			<color>ff00ffff</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>7f00ffff</color>
+		</PolyStyle>
+	</Style>
+	<Placemark>
+		<name>fox</name>
+		<styleUrl>#waterskmz_results.polygon</styleUrl>
+		<ExtendedData>
+			<Data name="total_areasqkm">
+				<value>2.825</value>
+			</Data>
+		</ExtendedData>
+		<Polygon>
+			<tessellate>1</tessellate>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-123.61637964,39.74935213,0 -123.61786865,39.74888586,0 -123.61841132,39.7484616,0 -123.6217277,39.74745229,0 -123.6242866,39.74652836,0 -123.62650394,39.74690108,0 -123.62868805,39.74566142,0 -123.6288359,39.74541067,0 -123.62899103,39.74414092,0 -123.62962797,39.74288309,0 -123.6309591,39.7422472,0 -123.63134342,39.74148872,0 -123.63124216,39.74123225,0 -123.63158057,39.7411555,0 -123.63158178,39.74067384,0 -123.63222807,39.73990725,0 -123.62988242,39.73915442,0 -123.62908715,39.73907716,0 -123.62686211,39.73850652,0 -123.6239033,39.73882156,0 -123.61976158,39.73746938,0 -123.61776558,39.73614156,0 -123.6163867,39.73578719,0 -123.61382775,39.73532808,0 -123.61196468,39.73442524,0 -123.61140405,39.73437984,0 -123.61036059,39.73482261,0 -123.60829906,39.734362,0 -123.60716069,39.7343962,0 -123.60702556,39.73455562,0 -123.60638869,39.73659476,0 -123.60602878,39.73926859,0 -123.60432639,39.74128607,0 -123.60456798,39.74401135,0 -123.60386493,39.7459552,0 -123.60385952,39.74787308,0 -123.60399557,39.74880495,0 -123.60440552,39.74929058,0 -123.60599654,39.74977934,0 -123.60840576,39.74997794,0 -123.61098806,39.7499539,0 -123.61223655,39.74953785,0 -123.61513125,39.74951061,0 -123.61637964,39.74935213,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+</Document>
+</kml>
