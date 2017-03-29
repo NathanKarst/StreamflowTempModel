@@ -412,8 +412,8 @@ def rew_params():
     parameter_ranges = {i:{ 'eta':(0.5, 1.0), 'zrR':(500.,1200.),'k1':(0.2,0.4),'k12':(0.3,0.5),'nR':(0.01,0.4),'f':(.1,.9),'s0R':(0,.4),'stR':(0.1,0.9), 'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01)} for i in parameter_groups}
     channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
     channel_params_ranges = {i:{ } for i in rews}
-    temperature_params = {i:{'kf':.56, 'tau0':1.31, 'ktau':0.619, 'Tgw_offset':11.0, 'mannings_n':0.1, 'angle':30.0, 'cp':4186.0, 'eps':1.0, 'alphaw':0.05, 'rho':1000.0, 'kh':6.49,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangularHeatedGW} for i in rews}
-    temperature_params_ranges = {i:{'tau0':(0.1,2), 'ktau':(0.01,5.0),'kf':(.1,20.0),'kh':(5.0,14.0)} for i in rews}
+    temperature_params = {i:{'kf':0.5, 'tau0':0.52, 'ktau':0.59, 'Tgw_offset':12.0, 'mannings_n':0.1, 'angle':30.0, 'cp':4186.0, 'eps':1.0, 'alphaw':0.05, 'rho':1000.0, 'kh':6.49,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangularHeatedGW} for i in rews}
+    temperature_params_ranges = {i:{'tau0':(0.1,2), 'ktau':(0.01,5.0),'kf':(.1,20.0),'kh':(5.0,14.0), 'angle':(30.0, 70.0), 'Tgw_offset':(9.0,11.0)} for i in rews}
      # 
 
     #   # test of cheng heated GW

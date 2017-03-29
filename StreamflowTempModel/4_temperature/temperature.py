@@ -966,6 +966,7 @@ class LagrangianSimpleTemperatureTriangularHeatedGW(Temperature):
         Ta_mean = kwargs['ta_mean'] + 273.15
         temp_curr = self.temperature + 273.15
 
+
         # lengths
         length = 0.01*kwargs['length']
 
@@ -982,7 +983,7 @@ class LagrangianSimpleTemperatureTriangularHeatedGW(Temperature):
 
         # get groundwater temperature
         tau = self.tau0*np.exp(-self.ktau*hillslope_volumetric_discharge)
-        Tgw = (self.Tgw_offset+273.15)*np.exp(-self.kf*tau) + Ta_mean*(1-np.exp(-self.kf*tau)) - 273.15
+        Tgw = (self.Tgw_offset+273.15)*np.exp(-self.kf*tau) + Ta_mean*(1-np.exp(-self.kf*tau))
 
 
         # timestep        
@@ -994,7 +995,7 @@ class LagrangianSimpleTemperatureTriangularHeatedGW(Temperature):
 
         #interpolate between upstream temp and current outlet temp
         if vol_1+vol_2==0: 
-            temp_up =  Tgw + 273.15
+            temp_up =  Tgw 
         else:
             temp_up = vol_1/(vol_1+vol_2)*temp_1 + vol_2/(vol_1+vol_2)*temp_2
         
@@ -1033,8 +1034,10 @@ class LagrangianSimpleTemperatureTriangularHeatedGW(Temperature):
         ## Garner, What causes cooling water..., 2014
         # tnew += dt*285.9*(0.132 + 0.143*kwargs['va'])*(ea - esat)/(self.rho*self.cp*depth) ## latent heat
 
-        tnew = (tnew*vol_initial + (Tgw+273.15)*added_groundwater + Ta*added_overlandFlow)/(vol_initial + added_groundwater + added_overlandFlow)
+        tnew = (tnew*vol_initial + (Tgw)*added_groundwater + Ta*added_overlandFlow)/(vol_initial + added_groundwater + added_overlandFlow)
 
         self.temperature = tnew - 273.15
 
-        return (depth, u, Tgw, hillslope_volumetric_discharge)
+        Tgw = Tgw - 273.
+        Ta_mean = Ta_mean - 273.0
+        return (Tgw, Ta_mean, depth)
