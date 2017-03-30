@@ -12,13 +12,13 @@ p4
 F2.063
 sS'zrS'
 p5
-F75.0
+F50.0
 sS'zrR'
 p6
-F900.7
+F869.7
 sS'f'
 p7
-F0.8
+F0.2
 sS'res2'
 p8
 F1.0
@@ -53,7 +53,7 @@ p18
 F0.6
 sS'alpha'
 p19
-F0.12
+F0.7
 sS'nR'
 p20
 F0.073

@@ -16,10 +16,10 @@ rm $MODEL/raw_data/basins_poly/*
 rm $MODEL/raw_data/streams_poly/*
 
 M=dem
-r.in.gdal input=$MODEL/raw_data/dem/dem.tif output=dem_unfilled
+r.in.gdal --quiet input=$MODEL/raw_data/dem/dem.tif output=dem_unfilled
 r.mapcalc "dem_unfilled_nulled = if(dem_unfilled ,dem_unfilled , null() , null() )"
 g.region raster=dem_unfilled_nulled -p
-g.region res=50 -ap
+g.region res=$DEMRES -ap
 r.resamp.stats --overwrite input=dem_unfilled_nulled output=$M
 
 g.region raster=$M
@@ -48,8 +48,8 @@ DIRSTRING="dir_$THRESHMETERS"
 STREAMSTRING="stream_$THRESHMETERS"
 # r.watershed -a --overwrite elevation=$M accumulation=$ACCUMSTRING drainage=$DIRSTRING threshold=$THRESH stream=$STREAMSTRING
 # r.stream.extract --overwrite elevation=$M threshold=$THRESH stream_length=2 stream_raster=$STREAMSTRING stream_vector=stream_vector_temp direction=$DIRSTRING
-r.watershed -a --overwrite elevation=$M accumulation=$ACCUMSTRING
-r.stream.extract --overwrite elevation=$M threshold=$THRESH stream_length=$MINSTREAM stream_raster=$STREAMSTRING stream_vector=stream_vector_temp direction=$DIRSTRING
+r.watershed -a --overwrite --quiet elevation=$M accumulation=$ACCUMSTRING
+r.stream.extract --overwrite --quiet elevation=$M threshold=$THRESH stream_length=$MINSTREAM stream_raster=$STREAMSTRING stream_vector=stream_vector_temp direction=$DIRSTRING
 
 #uncomment and install r extensions, which are not pre-installed with grass 7.0.x
 # g.extension r.stream.order
@@ -74,25 +74,25 @@ r.stream.extract --overwrite elevation=$M threshold=$THRESH stream_length=$MINST
 
 # get topologic properties of stream network
 STREAMVECT="stream_vect_$THRESHMETERS"
-r.stream.order --overwrite accumulation=$ACCUMSTRING elevation=$M stream_rast=$STREAMSTRING direction=$DIRSTRING stream_vect=$STREAMVECT
+r.stream.order --overwrite --quiet accumulation=$ACCUMSTRING elevation=$M stream_rast=$STREAMSTRING direction=$DIRSTRING stream_vect=$STREAMVECT
 v.out.ogr --overwrite -c input=$STREAMVECT type=line output="$MODEL/raw_data/streams_poly"
 
 # streamvector to points, export
-v.to.rast --overwrite input=$STREAMVECT output=streamrastertemp type=line use=val value=1
+v.to.rast --overwrite --quiet input=$STREAMVECT output=streamrastertemp type=line use=val value=1
 POINTSVECT="points_$THRESHMETERS"
-r.to.vect --overwrite input=streamrastertemp output=$POINTSVECT type=point
-v.out.ogr --overwrite -c input=$POINTSVECT type=point output="$MODEL/raw_data/streams_points"
+r.to.vect --overwrite --quiet input=streamrastertemp output=$POINTSVECT type=point
+v.out.ogr --overwrite -c --quiet input=$POINTSVECT type=point output="$MODEL/raw_data/streams_points"
 
 
 
 # export table with stream topology info
-db.out.ogr --overwrite input=$STREAMVECT output="$MODEL/raw_data/topology/topology.csv"
+db.out.ogr --overwrite --quiet input=$STREAMVECT output="$MODEL/raw_data/topology/topology.csv"
 
 #get raster of basins corresponding to stream network
 BASINSTRING="basins_$THRESHMETERS"
 BASINVECT="basins_vect_$THRESHMETERS"
 BASINVECTCLEAN="basins_vect_clean_$THRESHMETERS"
-r.stream.basins --overwrite direction=$DIRSTRING stream_rast=$STREAMSTRING basins=$BASINSTRING
+r.stream.basins --overwrite --quiet direction=$DIRSTRING stream_rast=$STREAMSTRING basins=$BASINSTRING
 
 #convert basins raster into basins polygons, rebuild topology of vector layer
 r.to.vect --overwrite -v input=$BASINSTRING output=$BASINVECT type=area

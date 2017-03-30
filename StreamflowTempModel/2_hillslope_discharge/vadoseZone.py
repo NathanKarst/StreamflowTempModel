@@ -336,12 +336,10 @@ class PreferentialRockMoistureZone(VadoseZone):
 
         #convert current storage to normalized relative value
         sR = self.storageR/(self.nR*self.zrR)
+        xR = (sR - self.s0R)/(self.stR - self.s0R)
         sS = self.storageS/(self.nS*self.zrS)
 
         # frac = self.storageVZ/(self.nS*self.zrS + self.nR*self.zrR)
-
-        bypass = ppt*self.alpha#(frac)*self.alpha
-        ppt = ppt - bypass
 
         if (sS <= self.s0S):
             self.ETS = 0 
@@ -366,11 +364,14 @@ class PreferentialRockMoistureZone(VadoseZone):
         else: 
             self.ETR = (1-self.f)*pet
 
-        leakageToMatrix = soilLeakage#*(1-self.alpha)
+        # soil leakage is partitioned into bypass flow, and storage in rock moisture
+        # bypass flow is a linear function of rock moisture storage
+        bypass = soilLeakage*self.alpha*xR
+        leakageToMatrix = soilLeakage - bypass
 
         sR += leakageToMatrix*dt/(self.nR*self.zrR) - self.ETR*dt/(self.nR*self.zrR)
 
-        #anything in excess of stS is drained to rock moisture
+        #anything in excess of stR is drained
         self.leakage = np.max([sR - self.stR, 0])*self.nR*self.zrR/dt
         # add water preferentially routed through rock moisture zone
         self.leakage += bypass
