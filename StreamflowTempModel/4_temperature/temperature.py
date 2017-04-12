@@ -1025,14 +1025,14 @@ class LagrangianSimpleTemperatureTriangularHeatedGW(Temperature):
         added_overlandFlow = hillslope_volumetric_overlandFlow/length*dt
         vol_initial = width*depth
 
-        tnew -= dt*self.kh*(temp_start - Ta)/(self.rho*self.cp*depth) ## sensible heat
-        tnew += dt*(1-self.alphaw)*Sin/(self.rho*self.cp*depth) ## solar
-        tnew += dt*Lin/(self.rho*self.cp*depth) ## atmospheric
-        tnew += dt*land_cover/(self.rho*self.cp*depth) ## atmospheric
-        tnew -= dt*back_radiation/(self.rho*self.cp*depth) ## back radiation 
+        tnew -= 2*dt*self.kh*(temp_start - Ta)/(self.rho*self.cp*depth) ## sensible heat
+        tnew += 2*dt*(1-self.alphaw)*Sin/(self.rho*self.cp*depth) ## solar
+        tnew += 2*dt*Lin/(self.rho*self.cp*depth) ## atmospheric
+        tnew += 2*dt*land_cover/(self.rho*self.cp*depth) ## atmospheric
+        tnew -= 2*dt*back_radiation/(self.rho*self.cp*depth) ## back radiation 
 
         ## Garner, What causes cooling water..., 2014
-        # tnew += dt*285.9*(0.132 + 0.143*kwargs['va'])*(ea - esat)/(self.rho*self.cp*depth) ## latent heat
+        # tnew += 2*dt*285.9*(0.132 + 0.143*kwargs['va'])*(ea - esat)/(self.rho*self.cp*depth) ## latent heat
 
         tnew = (tnew*vol_initial + (Tgw)*added_groundwater + Ta*added_overlandFlow)/(vol_initial + added_groundwater + added_overlandFlow)
 

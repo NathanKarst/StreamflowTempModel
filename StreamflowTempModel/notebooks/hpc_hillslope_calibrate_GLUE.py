@@ -15,6 +15,7 @@ from datetime import date
 from datetime import datetime
 import pandas as pd
 import numpy as np
+import bisect
 import geopandas as gp
 import time
 import sys
@@ -53,6 +54,7 @@ def main(argv):
     N = int(argv[1])
     subwatershed_calibration_name = argv[2]
     subwatershed_name = argv[3]
+    num_save = int(argv[4])
 
     groups_to_calibrate, ids_in_subwatershed = get_groups_to_calibrate(subwatershed_name)
     #specify the number of parameter sets to generat
@@ -65,7 +67,7 @@ def main(argv):
 
     arguments = []
     for cpu in range(0,cores):
-        arguments.append((subwatershed_calibration_name, groups_to_calibrate, ids_in_subwatershed, N, objective_function, minimize_objective_function, cpu))
+        arguments.append((subwatershed_calibration_name, groups_to_calibrate, ids_in_subwatershed, N, objective_function, minimize_objective_function, cpu, num_save))
 
     pool = mp.Pool()
 
@@ -83,6 +85,15 @@ def main(argv):
     best_fit = results[cpu_best][0]
     best_objective = results[cpu_best][1]
     best_params = copy.deepcopy(results[cpu_best][2])
+
+    best_params_list = []
+    best_objs_list = []
+    for cpu in range(cores):
+        best_params_list.extend(copy.deepcopy(results[cpu][3]))
+        best_objs_list.extend(copy.deepcopy(results[cpu][4]))
+
+    pickle.dump(best_params_list, open('./best_params_list.p','wb'))
+    pickle.dump(best_objs_list, open('./best_objs_list.p','wb'))
 
     print('With an objective function value of %0.2f, the best parameter set is:' % (best_objective))
     print(best_params)
@@ -180,7 +191,7 @@ def generate_parameter_set(parameter_group_params, parameter_ranges):
 
   
 def calibrate(arguments):
-    calibration_data_filename, groups_to_calibrate, ids_in_subwatershed, N, objective_function, minimize_objective_function, cpu = arguments
+    calibration_data_filename, groups_to_calibrate, ids_in_subwatershed, N, objective_function, minimize_objective_function, cpu, num_save = arguments
     
     # Load calibration data
     calibration_data = pickle.load( open(os.path.join(parent_dir,'calibration_data',calibration_data_filename)))
@@ -189,12 +200,16 @@ def calibrate(arguments):
     # for each parameter realization 
     best_fit = pd.DataFrame({'modeled':np.zeros(len(timestamps_hillslope))}, index=timestamps_hillslope).resample('D').mean()
     best_parameter_set = {}
+    best_parameter_sets = [{}]*num_save
+
     if minimize_objective_function: 
         objs_curr = np.inf
         best_obj = np.inf
+        best_objective_functions = [np.inf]*num_save
     else:
         objs_curr = -np.inf
         best_obj = -np.inf
+        best_objective_functions = [-np.inf]*num_save
 
     best_index = -1
     desc = "Core #%s"%(cpu)
@@ -254,18 +269,30 @@ def calibrate(arguments):
         solved_subwatershed[name] = solved_subwatershed_array
         objs_curr = objective_function(solved_subwatershed[name][spinup_date:stop_date],calibration_data['runoff'][spinup_date:stop_date])
         if minimize_objective_function:
+            insert_index = bisect.bisect(best_objective_functions, objs_curr)
+            best_objective_functions[insert_index:insert_index] = [objs_curr]
+            best_objective_functions.pop()
+            best_parameter_sets[insert_index:insert_index] = [copy.deepcopy(parameter_group_params_curr)]
+            best_parameter_sets.pop()
+
             if objs_curr<best_obj:
                 best_obj = objs_curr
                 best_fit = solved_subwatershed[name].copy()
                 best_parameter_set = copy.deepcopy(parameter_group_params_curr)
         else:
+            insert_index = len(best_objective_functions) - bisect.bisect(best_objective_functions, objs_curr)
+            best_objective_functions[insert_index:insert_index] = [objs_curr]
+            best_objective_functions.pop()
+            best_parameter_sets[insert_index:insert_index] = [copy.deepcopy(parameter_group_params_curr)]
+            best_parameter_sets.pop()
+
             if objs_curr>best_obj:
                 best_obj = objs_curr
                 best_fit = solved_subwatershed[name].copy()
                 best_parameter_set = copy.deepcopy(parameter_group_params_curr)
 
     sys.stdout.write('\r\n')
-    return (best_fit, best_obj, best_parameter_set)
+    return (best_fit, best_obj, best_parameter_set, best_parameter_sets, best_objective_functions)
 
 
 if __name__ == '__main__':
