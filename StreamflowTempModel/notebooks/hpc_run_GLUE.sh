@@ -14,7 +14,11 @@
 ## Command(s) to run:
 git checkout master
 source activate py2k_model
-x=$(python hpc_hillslope_calibrate.py False 5 elder_runoff.p elder.shp 2)
+x=$(python hpc_hillslope_calibrate_GLUE.py False 5 elder_runoff.p elder.shp 2)
 DATE=`date +%Y-%m-%d:%H:%M:%S`
 TITLESTR="ELDER_$DATE"
-echo 'Best fit params attached' | mail -s 'GLUE -- $TITLESTR, $DATE' -a best_params_list.p -a best_objs_list.p daviddralle@gmail.com
+sendmail daviddralle@gmail.com << EOF
+subject:$TITLESTR
+Finished. 
+$x
+EOF
