@@ -20,7 +20,7 @@ TITLESTR="ELDER_$DATE"
 sendmail daviddralle@gmail.com << EOF
 subject:$TITLESTR
 Finished. Run the following command to fetch the parameter list: 
-scp dralle@dtn.brc.berkeley.edu:/global/home/users/dralle/StreamflowTempModel/StreamflowTempModel/notebooks/best_params_list.p $rew/StreamflowTempModel/notebooks
-scp dralle@dtn.brc.berkeley.edu:/global/home/users/dralle/StreamflowTempModel/StreamflowTempModel/notebooks/best_objs_list.p $rew/StreamflowTempModel/notebooks
+scp dralle@dtn.brc.berkeley.edu:/global/home/users/dralle/StreamflowTempModel/StreamflowTempModel/notebooks/best_params_list.p /StreamflowTempModel/notebooks
+scp dralle@dtn.brc.berkeley.edu:/global/home/users/dralle/StreamflowTempModel/StreamflowTempModel/notebooks/best_objs_list.p /StreamflowTempModel/notebooks
 
 EOF
