@@ -55,9 +55,9 @@ def model_config(outputFilename='model_config.p'):
     # stop_date = date(2016, 12, 30)
 
 
-    start_date = date(2010, 10, 1)             
-    spinup_date = date(2013, 10, 1)
-    stop_date = date(2015, 9, 30)
+    start_date = date(2012, 1, 1)             
+    spinup_date = date(2015, 10, 1)
+    stop_date = date(2017, 5, 30)
 
 
     
@@ -65,40 +65,27 @@ def model_config(outputFilename='model_config.p'):
 
     #hillslope timestep information
     dt_hillslope = 1/8.
-    # t_hillslope = np.linspace(0,Tmax,np.ceil(Tmax/dt_hillslope)+1)
     resample_freq_hillslope = str(int(dt_hillslope*24*60)) + 'T'
-    # timestamps_hillslope = pd.date_range(start_date, stop_date, freq=resample_freq_hillslope)
 
     #channel timestep information
     dt_channel = 2/1440.
-    # t_channel = np.linspace(0, Tmax, np.ceil(Tmax/dt_channel)+1)
     resample_freq_channel = str(int(dt_channel*24*60)) + 'T'
-    # timestamps_channel = pd.date_range(start_date, stop_date, freq=resample_freq_channel)
 
     #temperature timestep information
     dt_temperature = 32./1440.
-    # t_temperature = np.linspace(0, Tmax, np.ceil(Tmax/dt_temperature)+1)
     resample_freq_temperature = str(int(dt_temperature*24*60)) + 'T'
-    # timestamps_temperature = pd.date_range(start_date, stop_date, freq=resample_freq_temperature)
     
     parent_dir = dirname(dirname(os.getcwd()))
-
     model_config = {'spinup_date':spinup_date, 
                     'start_date':start_date, 
                     'stop_date':stop_date, 
                     'Tmax':Tmax,
                     'dt_hillslope':dt_hillslope, 
-                    #'t_hillslope':t_hillslope, 
                     'resample_freq_hillslope':resample_freq_hillslope, 
                     'dt_channel':dt_channel, 
-                    # 't_channel':t_channel,
                     'resample_freq_channel':resample_freq_channel, 
-                    # 'timestamps_channel':timestamps_channel, 
-                    # 'timestamps_hillslope':timestamps_hillslope,
                     'dt_temperature':dt_temperature,
-                    # 't_temperature':t_temperature,
                     'resample_freq_temperature':resample_freq_temperature,
-                    # 'timestamps_temperature':timestamps_temperature
                     }
 
     pickle.dump( model_config, open( os.path.join(parent_dir,'model_data',outputFilename), "wb" ) )
@@ -152,6 +139,7 @@ def rew_config():
     
     #get area of each REW into table 
     df['rew']=df['cat']
+
     #make sure gradient is nonzero for all channels
     for i,row in df.iterrows():
         if row.gradient==0:
@@ -168,7 +156,6 @@ def rew_config():
     df_basins.set_index('cat', inplace=True)
     rew_config = pd.concat([rew_config, df_basins], axis=1)
 
- 
     #Assign parameter groups and climate groups
     #for the time being, assume each REW is in its own climate group
     #Each REW "Group" is the combination of its climate AND parameter group
@@ -177,7 +164,6 @@ def rew_config():
     rew_config = _get_climate_groups(rew_config, parent_dir) 
     rew_config['group'] = zip(rew_config['parameter_group'], rew_config['climate_group'])
     rew_config['interception_factor'] = _get_interception_factor(rew_config)
-
 
     #Get basins from shapefile to check that the REW ids and basins ids match
     try:
@@ -210,7 +196,6 @@ def rew_config():
     #write centroids to file
     _write_coords(parent_dir=parent_dir)
 
-
     #for the sake of consistency with other config files, write as a dictionary
     rew_config = rew_config.to_dict('index')
 
@@ -233,10 +218,12 @@ def _get_parameter_groups(rew_config, parent_dir):
     raster_file = os.path.join(parent_dir,'raw_data','parameter_groups','parameter_groups.tif')
     try:
         gdata = gdal.Open(raster_file)
+        gt = gdata.GetGeoTransform()
     except:
-        return [0]*len(rew_config)
+        for rew_id in rew_config.index: 
+            rew_config.set_value(rew_id, 'parameter_group', 1)
+        return rew_config
 
-    gt = gdata.GetGeoTransform()
     data = gdata.ReadAsArray().astype(np.float)
     gdata = None
     pos_dict = _get_coords(parent_dir)
@@ -251,13 +238,11 @@ def _get_parameter_groups(rew_config, parent_dir):
         except:  #default set parameter group to melange
             rew_config.set_value(rew_id, 'parameter_group', 2)
 
-        
     return rew_config
 
 
 def _get_elevations(rew_config, parent_dir):
     """ Fetch REW elevations. 
-    
     
     Args:
         - rew_config 
@@ -299,18 +284,15 @@ def _get_climate_groups(rew_config, parent_dir):
     Returns: 
         - updated rew_config
     """
+    raster_file = os.path.join(parent_dir,'raw_data','climate_groups','climate_groups.tif')
     try:
-    	raster_file = os.path.join(parent_dir,'raw_data','climate_groups','climate_groups.tif')
         gdata = gdal.Open(raster_file)
         gt = gdata.GetGeoTransform()
     except:
-    	rew_config['climate_group'] = 0
-    	for rew_id in rew_config.index:
-    		climate_group = rew_id
-    		rew_config.set_value(rew_id, 'climate_group', climate_group)
-        return rew_config 
+        for rew_id in rew_config.index: 
+            rew_config.set_value(rew_id, 'climate_group', 1)
+        return rew_config
 
-    
     data = gdata.ReadAsArray().astype(np.float)
     gdata = None
     pos_dict = _get_coords(parent_dir)
@@ -320,16 +302,16 @@ def _get_climate_groups(rew_config, parent_dir):
         pos = pos_dict[rew_id]
         x = int((pos[0] - gt[0])/gt[1])
         y = int((pos[1] - gt[3])/gt[5])
-
-        try:
+        try: 
             rew_config.set_value(rew_id, 'climate_group', data[y, x])
-        except:
+        except:  #default set parameter group to melange
             rew_config.set_value(rew_id, 'climate_group', 2)
+
         
     return rew_config
 
 def _get_interception_factor(rew_config):
-    return [0.2]*len(rew_config)
+    return [0.3]*len(rew_config)
 
 def _get_upstream_contributing(rew_config, rew_id):
     if (rew_config.prev_str02.loc[rew_id]==0) and (rew_config.prev_str01.loc[rew_id]==0):
@@ -391,13 +373,13 @@ def rew_params():
     parameter_groups = set([rew_config[i]['parameter_group'] for i in rews])
 
  
-  # # # David's "no routing" temp model test; with preferential flow affects setup
-    parameter_group_params = {i:{'eta':1.0, 'zrS': 50., 'zrR': 692.7, 'alpha':0.3819, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.3638, 'b': 2.239, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.002388, 'k12': 0.408, 'storageR': 100.0, 'f': 0.1245, 's0R': 0.1016, 's0S': 0.19, 'k1': 0.2618, 'stR': 0.23596, 'vz': PreferentialRockMoistureZone  } for i in parameter_groups}          
-    parameter_ranges = {i:{'zrR':(500.,1200.),'k1':(0.2,0.4),'k12':(0.3,0.5),'nR':(0.01,0.6),'f':(.1,.9),'s0R':(0,.4),'stR':(0.1,0.9), 'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01)} for i in parameter_groups}
-    channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
-    channel_params_ranges = {i:{ } for i in rews}
-    temperature_params = {i:{'e':3.0, 'f':0.125, 'g':0.202, 'kf':0.0, 'tau0':0.52, 'ktau':0.59, 'Tgw_offset':12.0, 'mannings_n':0.1, 'cp':4186.0, 'eps':1.0, 'alphaw':0.05, 'rho':1000.0, 'kh':10.49,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureChengHeatedGW} for i in rews}
-    temperature_params_ranges = {i:{'g':(0.05,0.5), 'e':(0.5,3.0), 'f':(0.01,0.6), 'tau0':(0.1,2), 'ktau':(0.01,5.0),'kf':(.1,20.0),'kh':(5.0,14.0)} for i in rews}
+  # # # # David's "no routing" temp model test; with preferential flow affects setup
+    # parameter_group_params = {i:{'eta':1.0, 'zrS': 75., 'zrR': 692.7, 'alpha':0.3819, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.3638, 'b': 2.239, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.002388, 'k12': 0.408, 'storageR': 100.0, 'f': 0.1245, 's0R': 0.1016, 's0S': 0.19, 'k1': 0.2618, 'stR': 0.23596, 'vz': PreferentialRockMoistureZone  } for i in parameter_groups}          
+    # parameter_ranges = {i:{'zrR':(500.,1200.),'k1':(0.2,0.4),'k12':(0.3,0.5),'nR':(0.01,0.6),'f':(.1,.9),'s0R':(0,.4),'stR':(0.1,0.9), 'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01)} for i in parameter_groups}
+    # channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
+    # channel_params_ranges = {i:{ } for i in rews}
+    # temperature_params = {i:{'e':3.31, 'f':0.175, 'g':0.5, 'kf':1.84, 'tau0':0.52, 'ktau':1.59, 'Tgw_offset':10.0, 'mannings_n':0.2, 'cp':4186.0, 'eps':1.0, 'alphaw':0.2, 'rho':1000.0, 'kh':10.96,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureChengHeatedGW} for i in rews}
+    # temperature_params_ranges = {i:{'mannings_n':(0.01,0.15), 'g':(0.2, 1.0), 'e':(0.5,3.0), 'f':(0.01,0.6), 'tau0':(0.1,2), 'ktau':(0.01,5.0),'kf':(.1,20.0),'kh':(5.0,14.0)} for i in rews}
 
 
   # without preferential flow 
@@ -409,9 +391,9 @@ def rew_params():
     # temperature_params_ranges = {i:{'tau0':(0.1,2), 'ktau':(0.01,5.0),'kf':(.1,20.0),'kh':(5.0,14.0), 'angle':(30.0, 70.0), 'Tgw_offset':(9.0,11.0)} for i in rews}
 
 
-    # # # Dry Creek with MelangeVadoseZone
-    # parameter_group_params = {i:{'gz':NonlinearReservoir, 'vz': MelangeVadoseZone, 'zr':50.0, 'sstar':0.57,'storageGZ':1.0, 's1':0.65, 'n':0.45, 'a':0.8, 'b':1.0, 'k12':0.24, 'k1':6.0, 'storageVZ':1.0, 'eta':.99} for i in parameter_groups}        
-    # parameter_ranges = {i:{'k12':(0,0.6), 'k1':(1.0,10.0), 'eta':(0.2, 1.0)} for i in parameter_groups}
+    # # Dry Creek with MelangeVadoseZone
+    # parameter_group_params = {i:{'gz':NonlinearReservoir, 'vz': MelangeVadoseZone, 'zr':100.0, 'sstar':0.57,'storageGZ':1.0, 's1':0.65, 'n':0.45, 'a':0.8, 'b':1.6, 'k12':0.24, 'k1':6.0, 'storageVZ':1.0, 'eta':.99} for i in parameter_groups}        
+    # parameter_ranges = {i:{'k12':(0,0.6), 'k1':(1.0,10.0), 'b':(1.0,1.5), 'a':(0.1,1.0)} for i in parameter_groups}
     # channel_params = {i:{'mannings_n':0.1, 'e':0.02, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
     # channel_params_ranges = {i:{ } for i in rews}
     # temperature_params = {i:{'mannings_n':0.1, 'windspeed':1.0,'thetahalf':10600000000.0, 'thetamax':50.0*3.14/180, 'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':5.5969,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}
@@ -420,13 +402,32 @@ def rew_params():
 
     # Model for SF leggett; best fits for coastal belt and melange. Temp params are meaningless, do not pay attention
     # parameter_group_params = {2:{'gz':NonlinearReservoir, 'vz': MelangeVadoseZone, 'zr':50.0, 'sstar':0.57,'storageGZ':1.0, 's1':0.65, 'n':0.45, 'a':0.8, 'b':1.0, 'k12':0.24, 'k1':6.0, 'storageVZ':1.0, 'eta':.99},
-    # 						 1:{'eta':1.0, 'zrS': 50., 'zrR': 692.7, 'alpha':0.45, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.3638, 'b': 2.239, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.002388, 'k12': 0.408, 'storageR': 100.0, 'f': 0.1245, 's0R': 0.1016, 's0S': 0.19, 'k1': 0.2618, 'stR': 0.23596, 'vz': PreferentialRockMoistureZone }
+    # 						 1:{'eta':1.0, 'zrS': 50., 'zrR': 692.7, 'alpha':0.3819, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'nR': 0.3638, 'b': 2.239, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.002388, 'k12': 0.408, 'storageR': 100.0, 'f': 0.1245, 's0R': 0.1016, 's0S': 0.19, 'k1': 0.2618, 'stR': 0.23596, 'vz': PreferentialRockMoistureZone  }
     # 						 }          
     # parameter_ranges = {i:{'k12':(0,0.4), 'k1':(0.5,4.0), 'eta':(0.2, 1.0)} for i in parameter_groups}
     # channel_params = {i:{'mannings_n':0.1, 'e':0.02, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
     # channel_params_ranges = {i:{ } for i in rews}
     # temperature_params = {i:{'mannings_n':0.1, 'windspeed':1.0,'thetahalf':10600000000.0, 'thetamax':50.0*3.14/180, 'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':5.5969,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}
     # temperature_params_ranges = {i:{'kh':(0.1,20.0), 'c1':(0.1,3.0), 'c2':(0.1,3.0)} for i in rews}
+
+
+########### PREP SETUP FOR PREFERENTIAL FLOW PAPER
+    #with preferential flow
+    parameter_group_params = {i:{'eta':1.0, 'zrS': 75., 'zrR': 692.7, 'alpha':0.3819, 'res2': 1.0, 'res1': 1.0, 'storageGZ':2.0, 'gz': NonlinearReservoir , 'nR': 0.3638, 'b': 2.239, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.002388, 'k12': 0.408, 'storageR': 100.0, 'f': 0.1245, 's0R': 0.1016, 's0S': 0.19, 'k1': 0.2618, 'stR': 0.23596, 'vz': PreferentialRockMoistureZone  } for i in parameter_groups}          
+    parameter_ranges = {i:{'zrR':(500.,1200.),'nR':(0.01,0.6),'f':(.1,.9),'s0R':(0,.4),'stR':(0.1,0.9), 'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01)} for i in parameter_groups}
+    channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
+    channel_params_ranges = {i:{ } for i in rews}
+    temperature_params = {i:{'e':3.31, 'f':0.175, 'g':0.5, 'kf':1.84, 'tau0':0.52, 'ktau':1.59, 'Tgw_offset':10.0, 'mannings_n':0.2, 'cp':4186.0, 'eps':1.0, 'alphaw':0.2, 'rho':1000.0, 'kh':10.96,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureChengHeatedGW} for i in rews}
+    temperature_params_ranges = {i:{'mannings_n':(0.01,0.15), 'g':(0.2, 1.0), 'e':(0.5,3.0), 'f':(0.01,0.6), 'tau0':(0.1,2), 'ktau':(0.01,5.0),'kf':(.1,20.0),'kh':(5.0,14.0)} for i in rews}
+
+    # without preferential flow
+    # parameter_group_params = {i:{'eta':1.0, 'zrS': 75., 'zrR': 692.7, 'alpha':0.3819, 'res2': 1.0, 'res1': 1.0, 'gz': NonlinearReservoir , 'nR': 0.3638, 'b': 2.239, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.002388, 'k12': 0.408, 'storageR': 100.0, 'f': 0.1245, 's0R': 0.1016, 's0S': 0.19, 'k1': 0.2618, 'stR': 0.23596, 'vz': SimpleRockMoistureZone  } for i in parameter_groups}          
+    # parameter_ranges = {i:{'zrR':(500.,1200.),'nR':(0.01,0.6),'f':(.1,.9),'s0R':(0,.4),'stR':(0.1,0.9), 'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01)} for i in parameter_groups}
+    # channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
+    # channel_params_ranges = {i:{ } for i in rews}
+    # temperature_params = {i:{'e':3.31, 'f':0.175, 'g':0.5, 'kf':1.84, 'tau0':0.52, 'ktau':1.59, 'Tgw_offset':10.0, 'mannings_n':0.2, 'cp':4186.0, 'eps':1.0, 'alphaw':0.2, 'rho':1000.0, 'kh':10.96,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureChengHeatedGW} for i in rews}
+    # temperature_params_ranges = {i:{'mannings_n':(0.01,0.15), 'g':(0.2, 1.0), 'e':(0.5,3.0), 'f':(0.01,0.6), 'tau0':(0.1,2), 'ktau':(0.01,5.0),'kf':(.1,20.0),'kh':(5.0,14.0)} for i in rews}
+
 
 
     pickle.dump( parameter_group_params, open( os.path.join(parent_dir,'model_data','parameter_group_params.p'), "wb" ) )

@@ -16,11 +16,13 @@ rm $MODEL/raw_data/basins_poly/*
 rm $MODEL/raw_data/streams_poly/*
 
 M=dem
-r.in.gdal --quiet input=$MODEL/raw_data/dem/dem.tif output=dem_unfilled
-r.mapcalc "dem_unfilled_nulled = if(dem_unfilled ,dem_unfilled , null() , null() )"
-g.region raster=dem_unfilled_nulled -p
+r.in.gdal --quiet input=$MODEL/raw_data/dem/dem.tif output=dem_filled
+r.mapcalc "dem_filled_nulled = if(dem_filled ,dem_filled , null() , null() )"
+g.region raster=dem_filled_nulled -p
 g.region res=$DEMRES -ap
-r.resamp.stats --overwrite input=dem_unfilled_nulled output=$M
+r.resamp.stats --overwrite input=dem_filled_nulled output=$M
+
+r.out.gdal input=$M output=/Users/daviddralle/Desktop/test.tif format=GTiff
 
 g.region raster=$M
 g.region -p > info.txt
@@ -51,6 +53,7 @@ STREAMSTRING="stream_$THRESHMETERS"
 r.watershed -a --overwrite --quiet elevation=$M accumulation=$ACCUMSTRING
 r.stream.extract --overwrite --quiet elevation=$M threshold=$THRESH stream_length=$MINSTREAM stream_raster=$STREAMSTRING stream_vector=stream_vector_temp direction=$DIRSTRING
 
+v.out.ogr --overwrite -c input=stream_vector_temp type=line output="/Users/daviddralle/Desktop"
 #uncomment and install r extensions, which are not pre-installed with grass 7.0.x
 # g.extension r.stream.order
 # g.extension r.stream.basins
@@ -82,8 +85,6 @@ v.to.rast --overwrite --quiet input=$STREAMVECT output=streamrastertemp type=lin
 POINTSVECT="points_$THRESHMETERS"
 r.to.vect --overwrite --quiet input=streamrastertemp output=$POINTSVECT type=point
 v.out.ogr --overwrite -c --quiet input=$POINTSVECT type=point output="$MODEL/raw_data/streams_points"
-
-
 
 # export table with stream topology info
 db.out.ogr --overwrite --quiet input=$STREAMVECT output="$MODEL/raw_data/topology/topology.csv"

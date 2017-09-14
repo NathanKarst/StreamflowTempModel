@@ -91,8 +91,10 @@ def main(argv):
 
 # Nash sutcliffe efficiency. Should be maximized for best fit. 
 def objective_function(modeled, observed):
+    # Uncomment for calibration on Elder Creek
     inds = ((modeled != 0) & (observed != 0))
     inds[-1] = False
+    inds[0] = False
     if np.sum(modeled)<0.01:
         return -9999.0
     elif np.isnan(np.sum(modeled)):
@@ -110,9 +112,10 @@ def objective_function(modeled, observed):
     # else:
     #     return 1-np.sum((observed.loc[inds]-modeled.loc[inds])**2)/np.sum((observed.loc[inds]-np.mean(observed.loc[inds]))**2)
 
-    # # For melange
-    # inds = ((observed > 0.05 ))
+    # # Uncommen to calibrate on melange
+    # inds = ((observed > 0.01)&(modeled>0.01))
     # inds[-1] = False
+    # inds[0] = False
     # if np.sum(modeled)<0.01:
     #     return -9999.0
     # elif np.isnan(np.sum(modeled)):
