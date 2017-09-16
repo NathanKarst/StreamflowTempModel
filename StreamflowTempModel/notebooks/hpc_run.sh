@@ -14,14 +14,13 @@
 ## Command(s) to run:
 git checkout master
 source activate py2k_model
-x=$(python hpc_hillslope_calibrate.py False 5 elder_runoff.p elder.shp)
-
-DATE=`date +%Y-%m-%d:%H:%M:%S`
+x=$(python hpc_hillslope_calibrate.py False 30000 elder_runoff.p elder.shp)
+DATE=`date +%Y-%m-%d_%H%M`
 TITLESTR="ELDER_$DATE"
 TXT='.txt'
 SAVETXT=$TITLESTR$TXT
 echo $x > $SAVETXT
-sendmail daviddralle@gmail.com << EOF
-subject:$TITLESTR
-$x
-EOF
+# sendmail daviddralle@gmail.com << EOF
+# subject:$TITLESTR
+# $x
+# EOF
