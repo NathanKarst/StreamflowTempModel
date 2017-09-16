@@ -20,7 +20,7 @@ DATE=`date +%Y-%m-%d:%H:%M:%S`
 TITLESTR="ELDER_$DATE"
 TXT='.txt'
 SAVETXT=$TITLESTR$TXT
-echo x > SAVETXT
+echo $x > $SAVETXT
 sendmail daviddralle@gmail.com << EOF
 subject:$TITLESTR
 $x
