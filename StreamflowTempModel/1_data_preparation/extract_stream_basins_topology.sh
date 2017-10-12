@@ -17,12 +17,13 @@ rm $MODEL/raw_data/streams_poly/*
 
 M=dem
 r.in.gdal --quiet input=$MODEL/raw_data/dem/dem.tif output=dem_filled
+g.region raster=dem_filled -p
 r.mapcalc "dem_filled_nulled = if(dem_filled ,dem_filled , null() , null() )"
 g.region raster=dem_filled_nulled -p
-g.region res=$DEMRES -ap
+# g.region res=$DEMRES -ap
 r.resamp.stats --overwrite input=dem_filled_nulled output=$M
 
-r.out.gdal input=$M output=/Users/daviddralle/Desktop/test.tif format=GTiff
+r.out.gdal --overwrite input=$M output=/Users/daviddralle/Desktop/test.tif format=GTiff
 
 g.region raster=$M
 g.region -p > info.txt
@@ -53,7 +54,7 @@ STREAMSTRING="stream_$THRESHMETERS"
 r.watershed -a --overwrite --quiet elevation=$M accumulation=$ACCUMSTRING
 r.stream.extract --overwrite --quiet elevation=$M threshold=$THRESH stream_length=$MINSTREAM stream_raster=$STREAMSTRING stream_vector=stream_vector_temp direction=$DIRSTRING
 
-v.out.ogr --overwrite -c input=stream_vector_temp type=line output="/Users/daviddralle/Desktop"
+# v.out.ogr --overwrite -c input=stream_vector_temp type=line output="/Users/daviddralle/Desktop"
 #uncomment and install r extensions, which are not pre-installed with grass 7.0.x
 # g.extension r.stream.order
 # g.extension r.stream.basins

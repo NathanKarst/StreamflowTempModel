@@ -14,9 +14,9 @@
 ## Command(s) to run:
 git checkout master
 source activate py2k_model
-x=$(python hpc_hillslope_calibrate.py False 30000 elder_runoff.p elder.shp)
+x=$(python hpc_hillslope_calibrate.py False 30000 dry_runoff.p dry.shp)
 DATE=`date +%Y-%m-%d_%H%M`
-TITLESTR="ELDER_$DATE"
+TITLESTR="DRY_$DATE"
 TXT='.txt'
 SAVETXT=$TITLESTR$TXT
 echo $x > $SAVETXT

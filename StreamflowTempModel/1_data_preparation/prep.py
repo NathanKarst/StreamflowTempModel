@@ -55,8 +55,8 @@ def model_config(outputFilename='model_config.p'):
     # stop_date = date(2016, 12, 30)
 
 
-    start_date = date(2012, 1, 1)             
-    spinup_date = date(2015, 10, 1)
+    start_date = date(2015, 12, 1)             
+    spinup_date = date(2016, 10, 1)
     stop_date = date(2017, 5, 30)
 
 
@@ -162,8 +162,8 @@ def rew_config():
     rew_config = _get_parameter_groups(rew_config, parent_dir)
     rew_config = _get_elevations(rew_config, parent_dir)
     rew_config = _get_climate_groups(rew_config, parent_dir) 
+    rew_config = _get_interception_factor(rew_config)
     rew_config['group'] = zip(rew_config['parameter_group'], rew_config['climate_group'])
-    rew_config['interception_factor'] = _get_interception_factor(rew_config)
 
     #Get basins from shapefile to check that the REW ids and basins ids match
     try:
@@ -311,7 +311,14 @@ def _get_climate_groups(rew_config, parent_dir):
     return rew_config
 
 def _get_interception_factor(rew_config):
-    return [0.3]*len(rew_config)
+    rew_config['interception_factor'] = 0.0
+    for rew_id in rew_config.index: 
+        if rew_config['parameter_group'].loc[rew_id]==2:
+            rew_config.set_value(rew_id, 'interception_factor', 0.1)
+        elif rew_config['parameter_group'].loc[rew_id]==1:
+            rew_config.set_value(rew_id, 'interception_factor', 0.4)
+    return rew_config
+
 
 def _get_upstream_contributing(rew_config, rew_id):
     if (rew_config.prev_str02.loc[rew_id]==0) and (rew_config.prev_str01.loc[rew_id]==0):
@@ -391,13 +398,13 @@ def rew_params():
     # temperature_params_ranges = {i:{'tau0':(0.1,2), 'ktau':(0.01,5.0),'kf':(.1,20.0),'kh':(5.0,14.0), 'angle':(30.0, 70.0), 'Tgw_offset':(9.0,11.0)} for i in rews}
 
 
-    # # Dry Creek with MelangeVadoseZone
-    # parameter_group_params = {i:{'gz':NonlinearReservoir, 'vz': MelangeVadoseZone, 'zr':100.0, 'sstar':0.57,'storageGZ':1.0, 's1':0.65, 'n':0.45, 'a':0.8, 'b':1.6, 'k12':0.24, 'k1':6.0, 'storageVZ':1.0, 'eta':.99} for i in parameter_groups}        
-    # parameter_ranges = {i:{'k12':(0,0.6), 'k1':(1.0,10.0), 'b':(1.0,1.5), 'a':(0.1,1.0)} for i in parameter_groups}
-    # channel_params = {i:{'mannings_n':0.1, 'e':0.02, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
-    # channel_params_ranges = {i:{ } for i in rews}
-    # temperature_params = {i:{'mannings_n':0.1, 'windspeed':1.0,'thetahalf':10600000000.0, 'thetamax':50.0*3.14/180, 'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':5.5969,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}
-    # temperature_params_ranges = {i:{'kh':(0.1,20.0), 'c1':(0.1,3.0), 'c2':(0.1,3.0)} for i in rews}
+    # Dry Creek with MelangeVadoseZone
+    parameter_group_params = {i:{'gz':NonlinearReservoir, 'vz': MelangeVadoseZone, 'zr':100.0, 'sstar':0.57,'storageGZ':1.0, 's1':0.65, 'n':0.45, 'a':0.8, 'b':1.6, 'k12':0.24, 'k1':6.0, 'storageVZ':1.0, 'eta':.99} for i in parameter_groups}        
+    parameter_ranges = {i:{'k12':(0,0.6), 'k1':(1.0,10.0), 'b':(1.0,2.5), 'a':(0.1,1.0)} for i in parameter_groups}
+    channel_params = {i:{'mannings_n':0.1, 'e':0.02, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
+    channel_params_ranges = {i:{ } for i in rews}
+    temperature_params = {i:{'mannings_n':0.1, 'windspeed':1.0,'thetahalf':10600000000.0, 'thetamax':50.0*3.14/180, 'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':5.5969,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}
+    temperature_params_ranges = {i:{'kh':(0.1,20.0), 'c1':(0.1,3.0), 'c2':(0.1,3.0)} for i in rews}
 
 
     # Model for SF leggett; best fits for coastal belt and melange. Temp params are meaningless, do not pay attention
@@ -413,12 +420,12 @@ def rew_params():
 
 ########### PREP SETUP FOR PREFERENTIAL FLOW PAPER
     #with preferential flow
-    parameter_group_params = {i:{'eta':1.0, 'zrS': 75., 'zrR': 692.7, 'alpha':0.3819, 'res2': 1.0, 'res1': 1.0, 'storageGZ':2.0, 'gz': NonlinearReservoir , 'nR': 0.3638, 'b': 2.239, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.002388, 'k12': 0.408, 'storageR': 100.0, 'f': 0.1245, 's0R': 0.1016, 's0S': 0.19, 'k1': 0.2618, 'stR': 0.23596, 'vz': PreferentialRockMoistureZone  } for i in parameter_groups}          
-    parameter_ranges = {i:{'zrR':(500.,1200.),'nR':(0.01,0.6),'f':(.1,.9),'s0R':(0,.4),'stR':(0.1,0.9), 'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01)} for i in parameter_groups}
-    channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
-    channel_params_ranges = {i:{ } for i in rews}
-    temperature_params = {i:{'e':3.31, 'f':0.175, 'g':0.5, 'kf':1.84, 'tau0':0.52, 'ktau':1.59, 'Tgw_offset':10.0, 'mannings_n':0.2, 'cp':4186.0, 'eps':1.0, 'alphaw':0.2, 'rho':1000.0, 'kh':10.96,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureChengHeatedGW} for i in rews}
-    temperature_params_ranges = {i:{'mannings_n':(0.01,0.15), 'g':(0.2, 1.0), 'e':(0.5,3.0), 'f':(0.01,0.6), 'tau0':(0.1,2), 'ktau':(0.01,5.0),'kf':(.1,20.0),'kh':(5.0,14.0)} for i in rews}
+    # parameter_group_params = {i:{'eta':1.0, 'zrS': 75., 'zrR': 692.7, 'alpha':0.3819, 'res2': 1.0, 'res1': 1.0, 'storageGZ':2.0, 'gz': NonlinearReservoir , 'nR': 0.3638, 'b': 2.239, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.002388, 'k12': 0.408, 'storageR': 100.0, 'f': 0.1245, 's0R': 0.1016, 's0S': 0.19, 'k1': 0.2618, 'stR': 0.23596, 'vz': PreferentialRockMoistureZone  } for i in parameter_groups}          
+    # parameter_ranges = {i:{'zrR':(500.,1200.),'nR':(0.01,0.6),'f':(.1,.9),'s0R':(0,.4),'stR':(0.1,0.9), 'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01)} for i in parameter_groups}
+    # channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
+    # channel_params_ranges = {i:{ } for i in rews}
+    # temperature_params = {i:{'e':3.31, 'f':0.175, 'g':0.5, 'kf':1.84, 'tau0':0.52, 'ktau':1.59, 'Tgw_offset':10.0, 'mannings_n':0.2, 'cp':4186.0, 'eps':1.0, 'alphaw':0.2, 'rho':1000.0, 'kh':10.96,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureChengHeatedGW} for i in rews}
+    # temperature_params_ranges = {i:{'mannings_n':(0.01,0.15), 'g':(0.2, 1.0), 'e':(0.5,3.0), 'f':(0.01,0.6), 'tau0':(0.1,2), 'ktau':(0.01,5.0),'kf':(.1,20.0),'kh':(5.0,14.0)} for i in rews}
 
     # without preferential flow
     # parameter_group_params = {i:{'eta':1.0, 'zrS': 75., 'zrR': 692.7, 'alpha':0.3819, 'res2': 1.0, 'res1': 1.0, 'gz': NonlinearReservoir , 'nR': 0.3638, 'b': 2.239, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.002388, 'k12': 0.408, 'storageR': 100.0, 'f': 0.1245, 's0R': 0.1016, 's0S': 0.19, 'k1': 0.2618, 'stR': 0.23596, 'vz': SimpleRockMoistureZone  } for i in parameter_groups}          
