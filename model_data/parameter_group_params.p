@@ -17,7 +17,7 @@ p6
 F1.0
 sS'alpha'
 p7
-F0.8
+F0.15
 sS'vz'
 p8
 cvadoseZone
@@ -31,13 +31,13 @@ p11
 F100.0
 sS'a'
 p12
-F0.01
+F0.11
 sS'k12'
 p13
-F0.408
+F0.515
 sS'b'
 p14
-F2.5
+F2.09
 sS's0'
 p15
 F0.2
@@ -46,7 +46,7 @@ p16
 F0.45
 sS'k1'
 p17
-F2.0
+F1.56
 sS'eta'
 p18
 F0.99
