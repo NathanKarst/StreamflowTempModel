@@ -3,7 +3,7 @@ I2
 (dp1
 S'a'
 p2
-(F0.1
+(F0.001
 F1.0
 tp3
 sS'k12'
@@ -19,7 +19,7 @@ tp7
 sS'b'
 p8
 (F1.0
-F2.5
+F3.5
 tp9
 sS'alpha'
 p10

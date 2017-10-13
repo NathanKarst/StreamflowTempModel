@@ -401,7 +401,7 @@ def rew_params():
 
     # Dry Creek with PorporatoPref and LinearToNonlinear
     parameter_group_params = {i:{'gz':LinearToNonlinearReservoir, 'vz': PorporatoPreferentialVadoseZone, 'zr':100.0, 's0':0.2,'res1':1.0, 'res2':1.0, 'st':0.65, 'n':0.45, 'a':0.01, 'b':2.5, 'alpha':0.8, 'k12': 0.408,'k1':2.0, 'storageVZ':1.0, 'eta':.99} for i in parameter_groups}        
-    parameter_ranges = {i:{'k12':(0,0.6), 'k1':(1.0,10.0), 'b':(1.0,3.5), 'a':(0.1,1.0), 'alpha':(0.1,0.9)} for i in parameter_groups}
+    parameter_ranges = {i:{'k12':(0,0.6), 'k1':(1.0,10.0), 'b':(1.0,3.5), 'a':(0.001,1.0), 'alpha':(0.1,0.9)} for i in parameter_groups}
     channel_params = {i:{'mannings_n':0.1, 'e':0.02, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
     channel_params_ranges = {i:{ } for i in rews}
     temperature_params = {i:{'mannings_n':0.1, 'windspeed':1.0,'thetahalf':10600000000.0, 'thetamax':50.0*3.14/180, 'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':5.5969,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}
