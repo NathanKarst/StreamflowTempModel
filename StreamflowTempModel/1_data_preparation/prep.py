@@ -19,7 +19,7 @@ parent_dir = dirname(dirname(os.getcwd()))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','2_hillslope_discharge'))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','3_channel_routing'))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','4_temperature'))
-from vadoseZone import LaioVadoseZone, MelangeVadoseZone, PorporatoVadoseZone, SimpleRockMoistureZone, PreferentialRockMoistureZone
+from vadoseZone import LaioVadoseZone, PorporatoPreferentialVadoseZone, SimpleRockMoistureZone, PreferentialRockMoistureZone
 from groundwaterZone import GroundwaterZone, Melange, NonlinearReservoir, NonlinearReservoir, TwoLinearReservoir, TwoParallelLinearReservoir, LinearToNonlinearReservoir
 from temperature import LagrangianSimpleTemperatureTriangularHeatedGW, LagrangianSimpleTemperatureChengHeatedGW, SimpleTemperature, LagrangianSimpleTemperature, EulerianWesthoff, LaxWendroffWesthoff, LagrangianSimpleTemperatureTriangular
 from channel import SimpleChannel, NoChannel
@@ -398,13 +398,23 @@ def rew_params():
     # temperature_params_ranges = {i:{'tau0':(0.1,2), 'ktau':(0.01,5.0),'kf':(.1,20.0),'kh':(5.0,14.0), 'angle':(30.0, 70.0), 'Tgw_offset':(9.0,11.0)} for i in rews}
 
 
-    # Dry Creek with MelangeVadoseZone
-    parameter_group_params = {i:{'gz':NonlinearReservoir, 'vz': MelangeVadoseZone, 'zr':100.0, 'sstar':0.57,'storageGZ':1.0, 's1':0.65, 'n':0.45, 'a':0.8, 'b':1.6, 'k12':0.24, 'k1':6.0, 'storageVZ':1.0, 'eta':.99} for i in parameter_groups}        
-    parameter_ranges = {i:{'k12':(0,0.6), 'k1':(1.0,10.0), 'b':(1.0,2.5), 'a':(0.1,1.0)} for i in parameter_groups}
+
+    # Dry Creek with PorporatoPref and LinearToNonlinear
+    parameter_group_params = {i:{'gz':LinearToNonlinearReservoir, 'vz': PorporatoPreferentialVadoseZone, 'zr':100.0, 's0':0.2,'res1':1.0, 'res2':1.0, 'st':0.65, 'n':0.45, 'a':0.01, 'b':2.5, 'alpha':0.8, 'k12': 0.408,'k1':2.0, 'storageVZ':1.0, 'eta':.99} for i in parameter_groups}        
+    parameter_ranges = {i:{'k12':(0,0.6), 'k1':(1.0,10.0), 'b':(1.0,3.5), 'a':(0.1,1.0), 'alpha':(0.1,0.9)} for i in parameter_groups}
     channel_params = {i:{'mannings_n':0.1, 'e':0.02, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
     channel_params_ranges = {i:{ } for i in rews}
     temperature_params = {i:{'mannings_n':0.1, 'windspeed':1.0,'thetahalf':10600000000.0, 'thetamax':50.0*3.14/180, 'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':5.5969,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}
     temperature_params_ranges = {i:{'kh':(0.1,20.0), 'c1':(0.1,3.0), 'c2':(0.1,3.0)} for i in rews}
+
+
+    # # Dry Creek with MelangeVadoseZone
+    # parameter_group_params = {i:{'gz':LinearToNonlinearReservoir, 'vz': PorporatoPreferentialVadoseZone, 'zr':100.0, 'sstar':0.57,'storageGZ':1.0, 's1':0.65, 'n':0.45, 'a':0.1, 'b':1.5, 'k12':0.24, 'k1':3.0, 'storageVZ':1.0, 'eta':.99} for i in parameter_groups}        
+    # parameter_ranges = {i:{'k12':(0,0.6), 'k1':(1.0,10.0), 'b':(1.0,2.5), 'a':(0.1,1.0)} for i in parameter_groups}
+    # channel_params = {i:{'mannings_n':0.1, 'e':0.02, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
+    # channel_params_ranges = {i:{ } for i in rews}
+    # temperature_params = {i:{'mannings_n':0.1, 'windspeed':1.0,'thetahalf':10600000000.0, 'thetamax':50.0*3.14/180, 'cp':4186.0, 'eps':0.95, 'Tgw':11.0, 'alphaw':0.05, 'rho':1000.0, 'kh':5.5969,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureTriangular} for i in rews}
+    # temperature_params_ranges = {i:{'kh':(0.1,20.0), 'c1':(0.1,3.0), 'c2':(0.1,3.0)} for i in rews}
 
 
     # Model for SF leggett; best fits for coastal belt and melange. Temp params are meaningless, do not pay attention
@@ -418,9 +428,11 @@ def rew_params():
     # temperature_params_ranges = {i:{'kh':(0.1,20.0), 'c1':(0.1,3.0), 'c2':(0.1,3.0)} for i in rews}
 
 
+
+
 ########### PREP SETUP FOR PREFERENTIAL FLOW PAPER
     #with preferential flow
-    # parameter_group_params = {i:{'eta':1.0, 'zrS': 75., 'zrR': 692.7, 'alpha':0.3819, 'res2': 1.0, 'res1': 1.0, 'storageGZ':2.0, 'gz': NonlinearReservoir , 'nR': 0.3638, 'b': 2.239, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.002388, 'k12': 0.408, 'storageR': 100.0, 'f': 0.1245, 's0R': 0.1016, 's0S': 0.19, 'k1': 0.2618, 'stR': 0.23596, 'vz': PreferentialRockMoistureZone  } for i in parameter_groups}          
+    # parameter_group_params = {i:{'eta':1.0, 'zrS': 75., 'zrR': 1073.7, 'alpha':0.8081806051749173, 'res2': 1.0, 'res1': 1.0, 'storageGZ':2.0, 'gz': NonlinearReservoir , 'nR': 0.2654095712914742, 'b': 2.483405091817454, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.001340226931339227, 'k12': 0.408, 'storageR': 100.0, 'f': 0.10237419461065862, 's0R': 0.12248601, 's0S': 0.19, 'k1': 0.2618, 'stR': 0.3114770363809568, 'vz': PreferentialRockMoistureZone  } for i in parameter_groups}          
     # parameter_ranges = {i:{'zrR':(500.,1200.),'nR':(0.01,0.6),'f':(.1,.9),'s0R':(0,.4),'stR':(0.1,0.9), 'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01)} for i in parameter_groups}
     # channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
     # channel_params_ranges = {i:{ } for i in rews}

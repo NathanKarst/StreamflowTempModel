@@ -19,6 +19,11 @@ tp7
 sS'b'
 p8
 (F1.0
-F1.5
+F2.5
 tp9
+sS'alpha'
+p10
+(F0.1
+F0.9
+tp11
 ss.

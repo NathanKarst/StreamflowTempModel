@@ -110,21 +110,21 @@ class LaioVadoseZone(VadoseZone):
         if t < tsw: return self.sw + (self.sstar - self.sw)*(self._eta/(self._eta - self._etaw)*np.exp(-(self._eta-self._etaw)/(self.sstar - self.sw)*(t - tsstar)) - self._etaw/(self._eta-self._etaw))
         else: return self.sh + (self.sw - self.sh)*np.exp(-self._etaw/(self.sw-self.sh)*(t-tsw))
 
-class PorporatoVadoseZone(VadoseZone): 
+class PorporatoPreferentialVadoseZone(VadoseZone): 
     """ Vadose zone model based on Porporato 
     
     Public attributes:
         - storageVZ (float): [L] current vadose zone storage stock
         - zr (float): [L] rooting zone depth
-        - sw (float): [] wilting point
-        - emax (float): [L/T] maximum ET
-        - sfc (float): [] field capacity
+        - s0 (float): [] wilting point
+        - st (float): [] field capacity
         - n (float): [] porosity 
+        - alpha (float): [] fraction of incoming rainfall as preferential flow 
     
     """
     def __init__(self, **kwargs):        
     
-        args = ['storageVZ','zr','sw','sfc','n']
+        args = ['storageVZ','zr','s0','st','n', 'alpha', 'eta']
         for arg in args: setattr(self, arg, kwargs[arg])
 
         # main external variables
@@ -132,32 +132,6 @@ class PorporatoVadoseZone(VadoseZone):
         self.ET             = 0             # [cm/day]
         self.overlandFlow   = 0
 
-
-class MelangeVadoseZone(VadoseZone): 
-    """ Vadose zone model based on Rodriguez Iturbe (1999)
-    
-    Public attributes:
-        - eta
-        - s1
-        - sstar 
-        - k1 
-        - k12
-        - n 
-        - zr 
-    
-    """
-    def __init__(self, **kwargs):        
-    
-        args = ['storageVZ', 'eta', 's1', 'sstar', 'k1', 'k12', 'n', 'zr']
-        for arg in args: setattr(self, arg, kwargs[arg])
-
-        # main external variables
-        self.leakage        = 0             # [cm/day]
-        self.ET             = 0             # [cm/day]
-        self.overlandFlow   = 0
-        self.overlandRes    = 0 
-        self.soilRes        = self.storageVZ
-    
     def update(self,dt,**kwargs):
         """ Update vadose zone stocks and compute fluxes.
     
@@ -172,34 +146,88 @@ class MelangeVadoseZone(VadoseZone):
         
         ppt = kwargs['ppt']
         pet = kwargs['pet']
+        s = self.storageVZ/(self.n*self.zr)
+        x = (s-self.s0)/(self.st - self.s0)
+        bypass = ppt*self.alpha*x
+        ppt = ppt - bypass
 
-        #convert current storage to normalized relative soil moisture
-        s = self.soilRes/(self.n*self.zr)
-        self.ET = self.eta*pet if (s > self.sstar) else s*(pet*self.eta)/self.sstar
-
+        self.ET = self.eta*pet*x
         s += ppt*dt/(self.n*self.zr) - self.ET*dt/(self.n*self.zr)
-
-        #anything in excess of field capacity is drained to groundwater (slow zone) 
-        #or to surface overland flow; k12 splits leakage between these reservoirs
-        leakage = np.max([s - self.s1, 0])*self.n*self.zr/dt
-        s = np.min([s, self.s1])
-
-        self.soilRes = s*self.n*self.zr
-
-        # get output from overland flow reservoir
-        self.overlandFlow = self.overlandRes*self.k1
-
-        # get input to overland flow reservoir
-        overlandResInput = leakage*(1-self.k12)
-
-        # update overland flow reservoir
-        self.overlandRes += overlandResInput*dt - self.overlandFlow*dt 
-
-        self.leakage = leakage*self.k12
-
-        self.storageVZ = self.overlandRes + self.soilRes
-
+        leakage = np.max([s - self.st, 0])*self.n*self.zr/dt
+        s = np.max([np.min([s, self.st]), self.s0])
+        self.storageVZ = s*self.n*self.zr
+        self.leakage = leakage + bypass
         return {'ET':self.ET, 'leakage':self.leakage, 'overlandFlow':self.overlandFlow}
+
+
+
+# class MelangeVadoseZone(VadoseZone): 
+#     """ Vadose zone model based on Rodriguez Iturbe (1999)
+    
+#     Public attributes:
+#         - eta
+#         - s1
+#         - sstar 
+#         - k1 
+#         - k12
+#         - n 
+#         - zr 
+    
+#     """
+#     def __init__(self, **kwargs):        
+    
+#         args = ['storageVZ', 'eta', 's1', 'sstar', 'k1', 'k12', 'n', 'zr']
+#         for arg in args: setattr(self, arg, kwargs[arg])
+
+#         # main external variables
+#         self.leakage        = 0             # [cm/day]
+#         self.ET             = 0             # [cm/day]
+#         self.overlandFlow   = 0
+#         self.overlandRes    = 0 
+#         self.soilRes        = self.storageVZ
+    
+#     def update(self,dt,**kwargs):
+#         """ Update vadose zone stocks and compute fluxes.
+    
+#         Args:
+#             - dt (float): time step
+#             - ppt (float): precipitation flux [L / T]
+#             - pet (float): potential evapotranspiration flux [L / T] -- if not specified, set to LaioVadoseZone::emax
+
+#         Returns: 
+#             - fluxes (dict): dictionary of fluxes, with keys [ET, leakage]
+#          """
+        
+#         ppt = kwargs['ppt']
+#         pet = kwargs['pet']
+
+#         #convert current storage to normalized relative soil moisture
+#         s = self.soilRes/(self.n*self.zr)
+#         self.ET = self.eta*pet if (s > self.sstar) else s*(pet*self.eta)/self.sstar
+
+#         s += ppt*dt/(self.n*self.zr) - self.ET*dt/(self.n*self.zr)
+
+#         #anything in excess of field capacity is drained to groundwater (slow zone) 
+#         #or to surface overland flow; k12 splits leakage between these reservoirs
+#         leakage = np.max([s - self.s1, 0])*self.n*self.zr/dt
+#         s = np.min([s, self.s1])
+
+#         self.soilRes = s*self.n*self.zr
+
+#         # get output from overland flow reservoir
+#         self.overlandFlow = self.overlandRes*self.k1
+
+#         # get input to overland flow reservoir
+#         overlandResInput = leakage*(1-self.k12)
+
+#         # update overland flow reservoir
+#         self.overlandRes += overlandResInput*dt - self.overlandFlow*dt 
+
+#         self.leakage = leakage*self.k12
+
+#         self.storageVZ = self.overlandRes + self.soilRes
+
+#         return {'ET':self.ET, 'leakage':self.leakage, 'overlandFlow':self.overlandFlow}
 
 
 class SimpleRockMoistureZone(VadoseZone): 
