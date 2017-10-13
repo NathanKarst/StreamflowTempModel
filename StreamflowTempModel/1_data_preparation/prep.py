@@ -56,7 +56,7 @@ def model_config(outputFilename='model_config.p'):
 
 
     start_date = date(2015, 1, 1)             
-    spinup_date = date(2016, 1, 1)
+    spinup_date = date(2016, 10, 1)
     stop_date = date(2017, 5, 30)
 
 
@@ -400,7 +400,7 @@ def rew_params():
 
 
     # Dry Creek with PorporatoPref and LinearToNonlinear
-    parameter_group_params = {i:{'gz':LinearToNonlinearReservoir, 'vz': PorporatoPreferentialVadoseZone, 'zr':100.0, 's0':0.2,'res1':1.0, 'res2':1.0, 'st':0.65, 'n':0.45, 'a':0.11, 'b':2.09, 'alpha':0.15, 'k12': 0.515,'k1':1.56, 'storageVZ':1.0, 'eta':.99} for i in parameter_groups}        
+    parameter_group_params = {i:{'gz':LinearToNonlinearReservoir, 'vz': PorporatoPreferentialVadoseZone, 'zr':100.0, 's0':0.2,'res1':1.0, 'res2':1.0, 'st':0.65, 'n':0.45, 'a':0.075, 'b':1.1, 'alpha':0.11, 'k12': 0.263,'k1':1.73, 'storageVZ':1.0, 'eta':.58} for i in parameter_groups}        
     parameter_ranges = {i:{'eta':(0.1,1.0),'k12':(0,0.6), 'k1':(1.0,10.0), 'b':(1.0,3.5), 'a':(0.001,1.0), 'alpha':(0.1,0.9)} for i in parameter_groups}
     channel_params = {i:{'mannings_n':0.1, 'e':0.02, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
     channel_params_ranges = {i:{ } for i in rews}

@@ -14,7 +14,7 @@ p5
 cdatetime
 date
 p6
-(S'\x07\xe0\x01\x01'
+(S'\x07\xe0\n\x01'
 p7
 tp8
 Rp9
