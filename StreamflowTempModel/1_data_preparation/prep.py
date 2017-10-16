@@ -55,8 +55,8 @@ def model_config(outputFilename='model_config.p'):
     # stop_date = date(2016, 12, 30)
 
 
-    start_date = date(2014, 1, 1)             
-    spinup_date = date(2016, 10, 1)
+    start_date = date(2013, 1, 1)             
+    spinup_date = date(2015, 10, 1)
     stop_date = date(2017, 5, 30)
 
 
