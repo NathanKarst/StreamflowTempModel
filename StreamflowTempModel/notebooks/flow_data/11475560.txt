@@ -11,7 +11,7 @@
 # Automated-retrieval info: https://help.waterdata.usgs.gov/faq/automated-retrievals
 #
 # Contact:   gs-w_support_nwisweb@usgs.gov
-# retrieved: 2017-10-14 16:13:06 EDT       (caww02)
+# retrieved: 2017-10-17 14:57:28 EDT       (sdww02)
 #
 # Data for the following 1 site(s) are contained in this file
 #    USGS 11475560 ELDER C NR BRANSCOMB CA

@@ -57,7 +57,7 @@ def model_config(outputFilename='model_config.p'):
 
     start_date = date(2013, 1, 1)             
     spinup_date = date(2015, 10, 1)
-    stop_date = date(2017, 5, 30)
+    stop_date = date(2017, 8, 30)
 
 
     
@@ -432,7 +432,7 @@ def rew_params():
 
 ########### PREP SETUP FOR PREFERENTIAL FLOW PAPER
     # with preferential flow
-    parameter_group_params = {i:{'zr':1000., 'st':0.6, 's0':0.2, 'n':0.2,'eta':1.0, 'alpha':0.90, 'res2': 1.0, 'res1': 1.0, 'storageGZ':2.0, 'storageVZ':1.0, 'gz': NonlinearReservoir , 'b': 2.323405091817454, 'a': 0.001540226931339227, 'k12': 0.408, 'k1': 0.2618, 'vz': PorporatoPreferentialVadoseZone  } for i in parameter_groups}          
+    parameter_group_params = {i:{'zr':624., 'st':0.508, 's0':0.24, 'n':0.23,'eta':1.0, 'alpha':0.717, 'res2': 1.0, 'res1': 1.0, 'storageGZ':2.0, 'storageVZ':1.0, 'gz': LinearToNonlinearReservoir , 'b': 2.323405091817454, 'a': 0.001697226931339227, 'k12': 0.625, 'k1': 0.8176, 'vz': PorporatoPreferentialVadoseZone  } for i in parameter_groups}          
     parameter_ranges = {i:{'zr':(500.,1200.), 'k12':(0.05, .8), 'k1':(0.05, 0.6),'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01), 'st':(0.1,1.0), 's0':(0.,0.5), 'n':(0.05,0.6)} for i in parameter_groups}
     channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
     channel_params_ranges = {i:{ } for i in rews}
