@@ -286,11 +286,12 @@ def _get_climate_groups(rew_config, parent_dir):
     """
     raster_file = os.path.join(parent_dir,'raw_data','climate_groups','climate_groups.tif')
     try:
+        # if climate groups are specified, load the climate groups raster
         gdata = gdal.Open(raster_file)
         gt = gdata.GetGeoTransform()
     except:
         for rew_id in rew_config.index: 
-            rew_config.set_value(rew_id, 'climate_group', 1)
+            rew_config.set_value(rew_id, 'climate_group', int(rew_id))
         return rew_config
 
     data = gdata.ReadAsArray().astype(np.float)
@@ -419,7 +420,7 @@ def rew_params():
 
     # Model for SF leggett; best fits for coastal belt and melange. Temp params are meaningless, do not pay attention
     # parameter_group_params = {2:{'gz':LinearToNonlinearReservoir, 'vz': PorporatoPreferentialVadoseZone, 'zr':100.0, 's0':0.2,'res1':1.0, 'res2':1.0, 'st':0.65, 'n':0.45, 'a':0.19, 'b':1.58, 'alpha':0.10, 'k12': 0.46,'k1':1.74, 'storageVZ':1.0, 'eta':.92},
-    # 						 1:{'eta':1.0, 'zrS': 75., 'zrR': 1073.7, 'alpha':0.8081806051749173, 'res2': 1.0, 'res1': 1.0, 'storageGZ':2.0, 'gz': NonlinearReservoir , 'nR': 0.2654095712914742, 'b': 2.483405091817454, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.001340226931339227, 'k12': 0.408, 'storageR': 100.0, 'f': 0.10237419461065862, 's0R': 0.12248601, 's0S': 0.19, 'k1': 0.2618, 'stR': 0.3114770363809568, 'vz': PreferentialRockMoistureZone  },
+    # 						 1:{'zr':677.02913, 'st':0.488581441, 's0':0.353736, 'n':0.3365,'eta':1.0, 'alpha':0.2992, 'res2': 1.0, 'res1': 1.0, 'storageGZ':2.0, 'storageVZ':1.0, 'gz': LinearToNonlinearReservoir , 'b': 2.2142640899277124, 'a': 0.001350959656213178, 'k12': 0.3505204, 'k1': 0.284870263, 'vz': PorporatoPreferentialVadoseZone  },
     # 						 }          
     # parameter_ranges = {i:{'k12':(0,0.4), 'k1':(0.5,4.0), 'eta':(0.2, 1.0)} for i in parameter_groups}
     # channel_params = {i:{'mannings_n':0.1, 'e':0.02, 'f':0.39, 'volume':1.0, 'model':SimpleChannel} for i in rews}
@@ -432,7 +433,7 @@ def rew_params():
 
 ########### PREP SETUP FOR PREFERENTIAL FLOW PAPER
     # with preferential flow
-    parameter_group_params = {i:{'zr':624., 'st':0.508, 's0':0.24, 'n':0.23,'eta':1.0, 'alpha':0.717, 'res2': 1.0, 'res1': 1.0, 'storageGZ':2.0, 'storageVZ':1.0, 'gz': LinearToNonlinearReservoir , 'b': 2.323405091817454, 'a': 0.001697226931339227, 'k12': 0.625, 'k1': 0.8176, 'vz': PorporatoPreferentialVadoseZone  } for i in parameter_groups}          
+    parameter_group_params = {i:{'zr':677.02913, 'st':0.488581441, 's0':0.353736, 'n':0.3365,'eta':1.0, 'alpha':0.2992, 'res2': 1.0, 'res1': 1.0, 'storageGZ':2.0, 'storageVZ':1.0, 'gz': LinearToNonlinearReservoir , 'b': 2.2142640899277124, 'a': 0.001350959656213178, 'k12': 0.3505204, 'k1': 0.284870263, 'vz': PorporatoPreferentialVadoseZone  } for i in parameter_groups}          
     parameter_ranges = {i:{'zr':(500.,1200.), 'k12':(0.05, .8), 'k1':(0.05, 0.6),'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01), 'st':(0.1,1.0), 's0':(0.,0.5), 'n':(0.05,0.6)} for i in parameter_groups}
     channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
     channel_params_ranges = {i:{ } for i in rews}

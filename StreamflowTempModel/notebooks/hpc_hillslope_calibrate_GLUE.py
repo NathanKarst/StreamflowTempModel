@@ -60,7 +60,9 @@ def main(argv):
     #specify the number of parameter sets to generat
 
     cores = mp.cpu_count()
-    print('There are %s cores on this machine, \n%s model runs will be performed on each core'%(str(cores), str(N)))
+    print('There are %s cores on this machine, \n%s calibration runs will be performed on each core.'%(str(cores), str(N)))
+    print('The %s best model runs from each core will be saved, for a total of %s saved parameter sets.'%(str(num_save), str(num_save*cores)))
+
     sys.stdout.write('\r\n')
     calibration_data = pickle.load( open(os.path.join(parent_dir,'calibration_data',subwatershed_calibration_name)))
     calibration_data = calibration_data[spinup_date:stop_date]
