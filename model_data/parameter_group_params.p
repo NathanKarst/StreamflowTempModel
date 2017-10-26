@@ -42,7 +42,7 @@ F0.2992
 sS'vz'
 p15
 cvadoseZone
-PorporatoPreferentialVadoseZone
+PorporatoVadoseZone
 p16
 sS'n'
 p17

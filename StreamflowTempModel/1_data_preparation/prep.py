@@ -19,7 +19,7 @@ parent_dir = dirname(dirname(os.getcwd()))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','2_hillslope_discharge'))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','3_channel_routing'))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','4_temperature'))
-from vadoseZone import LaioVadoseZone, PorporatoPreferentialVadoseZone, SimpleRockMoistureZone, PreferentialRockMoistureZone
+from vadoseZone import LaioVadoseZone, PorporatoVadoseZone, PorporatoPreferentialVadoseZone, SimpleRockMoistureZone, PreferentialRockMoistureZone
 from groundwaterZone import GroundwaterZone, Melange, NonlinearReservoir, NonlinearReservoir, TwoLinearReservoir, TwoParallelLinearReservoir, LinearToNonlinearReservoir
 from temperature import LagrangianSimpleTemperatureTriangularHeatedGW, LagrangianSimpleTemperatureChengHeatedGW, SimpleTemperature, LagrangianSimpleTemperature, EulerianWesthoff, LaxWendroffWesthoff, LagrangianSimpleTemperatureTriangular
 from channel import SimpleChannel, NoChannel
@@ -433,20 +433,20 @@ def rew_params():
 
 ########### PREP SETUP FOR PREFERENTIAL FLOW PAPER
     # with preferential flow
-    parameter_group_params = {i:{'zr':677.02913, 'st':0.488581441, 's0':0.353736, 'n':0.3365,'eta':1.0, 'alpha':0.2992, 'res2': 1.0, 'res1': 1.0, 'storageGZ':2.0, 'storageVZ':1.0, 'gz': LinearToNonlinearReservoir , 'b': 2.2142640899277124, 'a': 0.001350959656213178, 'k12': 0.3505204, 'k1': 0.284870263, 'vz': PorporatoPreferentialVadoseZone  } for i in parameter_groups}          
-    parameter_ranges = {i:{'zr':(500.,1200.), 'k12':(0.05, .8), 'k1':(0.05, 0.6),'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01), 'st':(0.1,1.0), 's0':(0.,0.5), 'n':(0.05,0.6)} for i in parameter_groups}
-    channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
-    channel_params_ranges = {i:{ } for i in rews}
-    temperature_params = {i:{'e':3.31, 'f':0.175, 'g':0.5, 'kf':1.84, 'tau0':0.52, 'ktau':1.59, 'Tgw_offset':10.0, 'mannings_n':0.2, 'cp':4186.0, 'eps':1.0, 'alphaw':0.2, 'rho':1000.0, 'kh':10.96,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureChengHeatedGW} for i in rews}
-    temperature_params_ranges = {i:{'mannings_n':(0.01,0.15), 'g':(0.2, 1.0), 'e':(0.5,3.0), 'f':(0.01,0.6), 'tau0':(0.1,2), 'ktau':(0.01,5.0),'kf':(.1,20.0),'kh':(5.0,14.0)} for i in rews}
-
-    # without preferential flow
-    # parameter_group_params = {i:{'eta':1.0, 'zrS': 75., 'zrR': 692.7, 'alpha':0.3819, 'res2': 1.0, 'res1': 1.0, 'gz': NonlinearReservoir , 'nR': 0.3638, 'b': 2.239, 'stS': 0.6, 'storageS': 1.0, 'nS': 0.4, 'a': 0.002388, 'k12': 0.408, 'storageR': 100.0, 'f': 0.1245, 's0R': 0.1016, 's0S': 0.19, 'k1': 0.2618, 'stR': 0.23596, 'vz': SimpleRockMoistureZone  } for i in parameter_groups}          
-    # parameter_ranges = {i:{'zrR':(500.,1200.),'nR':(0.01,0.6),'f':(.1,.9),'s0R':(0,.4),'stR':(0.1,0.9), 'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01)} for i in parameter_groups}
+    # parameter_group_params = {i:{'zr':677.02913, 'st':0.488581441, 's0':0.353736, 'n':0.3365,'eta':1.0, 'alpha':0.2992, 'res2': 1.0, 'res1': 1.0, 'storageGZ':2.0, 'storageVZ':1.0, 'gz': LinearToNonlinearReservoir , 'b': 2.2142640899277124, 'a': 0.001350959656213178, 'k12': 0.3505204, 'k1': 0.284870263, 'vz': PorporatoPreferentialVadoseZone  } for i in parameter_groups}          
+    # parameter_ranges = {i:{'zr':(500.,1200.), 'k12':(0.05, .8), 'k1':(0.05, 0.6),'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01), 'st':(0.1,1.0), 's0':(0.,0.5), 'n':(0.05,0.6)} for i in parameter_groups}
     # channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
     # channel_params_ranges = {i:{ } for i in rews}
     # temperature_params = {i:{'e':3.31, 'f':0.175, 'g':0.5, 'kf':1.84, 'tau0':0.52, 'ktau':1.59, 'Tgw_offset':10.0, 'mannings_n':0.2, 'cp':4186.0, 'eps':1.0, 'alphaw':0.2, 'rho':1000.0, 'kh':10.96,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureChengHeatedGW} for i in rews}
     # temperature_params_ranges = {i:{'mannings_n':(0.01,0.15), 'g':(0.2, 1.0), 'e':(0.5,3.0), 'f':(0.01,0.6), 'tau0':(0.1,2), 'ktau':(0.01,5.0),'kf':(.1,20.0),'kh':(5.0,14.0)} for i in rews}
+
+    # without preferential flow
+    parameter_group_params = {i:{'zr':677.02913, 'st':0.488581441, 's0':0.353736, 'n':0.3365,'eta':1.0, 'alpha':0.2992, 'res2': 1.0, 'res1': 1.0, 'storageGZ':2.0, 'storageVZ':1.0, 'gz': LinearToNonlinearReservoir , 'b': 2.2142640899277124, 'a': 0.001350959656213178, 'k12': 0.3505204, 'k1': 0.284870263, 'vz': PorporatoVadoseZone  } for i in parameter_groups}          
+    parameter_ranges = {i:{'zr':(50.,1200.), 'k12':(0.05, .8), 'k1':(0.05, 0.6),'b':(1.8,2.5), 'alpha':(.05,.95),'a':(.0005,.01), 'st':(0.1,1.0), 's0':(0.,0.5), 'n':(0.05,0.6)} for i in parameter_groups}
+    channel_params = {i:{'volume':1.0, 'model':NoChannel} for i in rews}
+    channel_params_ranges = {i:{ } for i in rews}
+    temperature_params = {i:{'e':3.31, 'f':0.175, 'g':0.5, 'kf':1.84, 'tau0':0.52, 'ktau':1.59, 'Tgw_offset':10.0, 'mannings_n':0.2, 'cp':4186.0, 'eps':1.0, 'alphaw':0.2, 'rho':1000.0, 'kh':10.96,'sigma':5.67e-8, 'temperature':11.0, 'model':LagrangianSimpleTemperatureChengHeatedGW} for i in rews}
+    temperature_params_ranges = {i:{'mannings_n':(0.01,0.15), 'g':(0.2, 1.0), 'e':(0.5,3.0), 'f':(0.01,0.6), 'tau0':(0.1,2), 'ktau':(0.01,5.0),'kf':(.1,20.0),'kh':(5.0,14.0)} for i in rews}
 
 
 

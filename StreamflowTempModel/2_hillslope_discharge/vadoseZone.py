@@ -161,6 +161,54 @@ class PorporatoPreferentialVadoseZone(VadoseZone):
 
 
 
+class PorporatoVadoseZone(VadoseZone): 
+    """ Vadose zone model based on Porporato 
+    
+    Public attributes:
+        - storageVZ (float): [L] current vadose zone storage stock
+        - zr (float): [L] rooting zone depth
+        - s0 (float): [] wilting point
+        - st (float): [] field capacity
+        - n (float): [] porosity 
+    
+    """
+    def __init__(self, **kwargs):        
+    
+        args = ['storageVZ','zr','s0','st','n', 'eta']
+        for arg in args: setattr(self, arg, kwargs[arg])
+
+        # main external variables
+        self.leakage        = 0             # [cm/day]
+        self.ET             = 0             # [cm/day]
+        self.overlandFlow   = 0
+
+    def update(self,dt,**kwargs):
+        """ Update vadose zone stocks and compute fluxes.
+    
+        Args:
+            - dt (float): time step
+            - ppt (float): precipitation flux [L / T]
+            - pet (float): potential evapotranspiration flux [L / T] -- if not specified, set to LaioVadoseZone::emax
+
+        Returns: 
+            - fluxes (dict): dictionary of fluxes, with keys [ET, leakage]
+         """
+        
+        ppt = kwargs['ppt']
+        pet = kwargs['pet']
+        s = self.storageVZ/(self.n*self.zr)
+        x = (s-self.s0)/(self.st - self.s0)
+
+        self.ET = self.eta*pet*x
+        s += ppt*dt/(self.n*self.zr) - self.ET*dt/(self.n*self.zr)
+        leakage = np.max([s - self.st, 0])*self.n*self.zr/dt
+        s = np.max([np.min([s, self.st]), self.s0])
+        self.storageVZ = s*self.n*self.zr
+        self.leakage = leakage
+        return {'ET':self.ET, 'leakage':self.leakage, 'overlandFlow':self.overlandFlow}
+
+
+
 # class MelangeVadoseZone(VadoseZone): 
 #     """ Vadose zone model based on Rodriguez Iturbe (1999)
     
