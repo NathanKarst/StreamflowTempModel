@@ -63,22 +63,22 @@ def meteolib():
     Date: November 2014
     
     '''
-    print 'Python library with functions meteorology.\n'
-    print 'Functions:\n'
-    print '- cp_calc: Calculate specific heat.'
-    print '- Delta_calc: Calculate slope of vapour pressure curve.'
-    print '- ea_calc: Calculate actual vapour pressures.'
-    print '- es_calc: Calculate saturation vapour pressures.'
-    print '- gamma_calc: Calculate psychrometric constant.'
-    print '- L_calc: Calculate latent heat of vapourisation.'
-    print '- pottemp: Calculate potential temperature (1000 hPa reference pressure)'
-    print '- rho_calc: Calculate air density.'
-    print '- sun_NR: Calculate extraterrestrial radiation and daylenght.'
-    print '- vpd_calc: Calculate vapour pressure deficits.'
-    print '- windvec: Calculate average wind direction and speed.\n'
-    print 'Author: ',__author__
-    print 'Version: ',__version__ 
-    print 'Date: ',__date__
+    print('Python library with functions meteorology.\n')
+    print('Functions:\n')
+    print('- cp_calc: Calculate specific heat.')
+    print('- Delta_calc: Calculate slope of vapour pressure curve.')
+    print('- ea_calc: Calculate actual vapour pressures.')
+    print('- es_calc: Calculate saturation vapour pressures.')
+    print('- gamma_calc: Calculate psychrometric constant.')
+    print('- L_calc: Calculate latent heat of vapourisation.')
+    print('- pottemp: Calculate potential temperature (1000 hPa reference pressure)')
+    print('- rho_calc: Calculate air density.')
+    print('- sun_NR: Calculate extraterrestrial radiation and daylenght.')
+    print('- vpd_calc: Calculate vapour pressure deficits.')
+    print('- windvec: Calculate average wind direction and speed.\n')
+    print('Author: '),__author__
+    print('Version: '),__version__ 
+    print('Date: '),__date__
     return
     
 # Load relevant python functions
@@ -561,7 +561,7 @@ def sun_NR(doy=scipy.array([]),\
     S = 1367.0 # [W/m2]
     # Print warning if latitude is above 67 degrees
     if abs(lat) > 67.:
-        print 'WARNING: Latitude outside range of application (0-67 degrees).\n)'
+        print('WARNING: Latitude outside range of application (0-67 degrees).\n)')
     # Convert latitude [degrees] to radians
     latrad = lat * math.pi / 180.0
     # calculate solar declination dt [radians]
@@ -687,4 +687,4 @@ def windvec(u= scipy.array([]),\
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    print 'Ran all tests...'
+    print('Ran all tests...')

@@ -25,18 +25,18 @@ from ast import literal_eval as make_tuple
 import multiprocessing as mp
 parent_dir = os.path.dirname(os.path.dirname(os.getcwd()))
 sys.path.append(os.path.join(parent_dir, 'StreamflowTempModel', '1_data_preparation'))
-rew_config = pickle.load( open( os.path.join(parent_dir,'model_data','rew_config.p'), "rb" ) )
-climate_group_forcing = pickle.load( open( os.path.join(parent_dir,'model_data','climate_group_forcing.p'), "rb" ) )
-parameter_group_params = pickle.load( open( os.path.join(parent_dir,'model_data','parameter_group_params.p'), "rb" ))
-model_config = pickle.load( open( os.path.join(parent_dir, 'model_data', 'model_config.p'), 'rb'))
-parameter_ranges = pickle.load( open( os.path.join(parent_dir, 'model_data', 'parameter_ranges.p'), 'rb'))
+rew_config = pd.read_pickle(os.path.join(parent_dir,'model_data','rew_config.p'))
+climate_group_forcing = pd.read_pickle(os.path.join(parent_dir,'model_data','climate_group_forcing.p') )
+parameter_group_params = pd.read_pickle(os.path.join(parent_dir,'model_data','parameter_group_params.p'))
+model_config = pd.read_pickle(os.path.join(parent_dir, 'model_data', 'model_config.p'))
+parameter_ranges = pd.read_pickle(os.path.join(parent_dir, 'model_data', 'parameter_ranges.p'))
 start_date = model_config['start_date']
 stop_date = model_config['stop_date']
 spinup_date = model_config['spinup_date']
 Tmax = model_config['Tmax']
 dt = model_config['dt_hillslope']
 resample_freq_hillslope = model_config['resample_freq_hillslope']
-t = np.linspace(0,Tmax,np.ceil(Tmax/dt)+1)
+t = np.linspace(0,Tmax,int(np.ceil(Tmax/dt))+1)
 timestamps_hillslope = pd.date_range(start_date, stop_date, freq=resample_freq_hillslope)
 
 def main(argv):
@@ -60,7 +60,7 @@ def main(argv):
     cores = mp.cpu_count()
     print('There are %s cores on this machine, \n%s model runs will be performed on each core'%(str(cores), str(N)))
     sys.stdout.write('\r\n')
-    calibration_data = pickle.load( open(os.path.join(parent_dir,'calibration_data',subwatershed_calibration_name)))
+    calibration_data = pd.read_pickle(os.path.join(parent_dir,'calibration_data',subwatershed_calibration_name))
     calibration_data = calibration_data[spinup_date:stop_date]
 
     arguments = []
@@ -186,7 +186,7 @@ def calibrate(arguments):
     calibration_data_filename, groups_to_calibrate, ids_in_subwatershed, N, objective_function, minimize_objective_function, cpu = arguments
     
     # Load calibration data
-    calibration_data = pickle.load( open(os.path.join(parent_dir,'calibration_data',calibration_data_filename)))
+    calibration_data = pd.read_pickle(os.path.join(parent_dir,'calibration_data',calibration_data_filename))
     calibration_data = calibration_data[spinup_date:stop_date]
     
     # for each parameter realization 

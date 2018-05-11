@@ -43,10 +43,10 @@
       </HistItem>
     </Histograms>
     <Metadata>
-      <MDI key="STATISTICS_MAXIMUM">1284.0243</MDI>
-      <MDI key="STATISTICS_MEAN">357.97863529741</MDI>
+      <MDI key="STATISTICS_MAXIMUM">1276.3853</MDI>
+      <MDI key="STATISTICS_MEAN">409.38835910755</MDI>
       <MDI key="STATISTICS_MINIMUM">0</MDI>
-      <MDI key="STATISTICS_STDDEV">337.564336341</MDI>
+      <MDI key="STATISTICS_STDDEV">445.48060470903</MDI>
     </Metadata>
   </PAMRasterBand>
 </PAMDataset>

@@ -23,7 +23,6 @@ from tqdm import tnrange, tqdm_notebook
 import sys
 import shapely
 import fiona
-import folium
 from multiprocessing import Process, Queue, current_process, freeze_support
 from ast import literal_eval as make_tuple
 
@@ -109,7 +108,8 @@ def calibrate(arguments):
     calibration_data_filename, groups_to_calibrate, ids_in_subwatershed, parameter_realz, objective_function, minimize_objective_function, cpu = arguments
     
     # Load calibration data
-    calibration_data = pickle.load( open(os.path.join(parent_dir,'calibration_data',calibration_data_filename)))
+    f = os.path.join(parent_dir,'calibration_data',calibration_data_filename)
+    calibration_data = pd.read_pickle(f)
     calibration_data = calibration_data[spinup_date:stop_date]
     
     N = len(parameter_realz)

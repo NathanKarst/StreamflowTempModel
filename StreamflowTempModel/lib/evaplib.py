@@ -58,21 +58,21 @@ def evaplib():
     Date: Sep 2012, last modified November June 2016.
     
     '''
-    print 'A libray with Python functions for calculation of'
-    print 'evaporation from meteorological and vegetation data.\n'
-    print 'Functions:\n'
-    print '- E0: Calculate Penman (1948, 1956) (open water) evaporation'
-    print '- Em: Calculate evaporation according to Makkink (1965)'
-    print '- Ept: Calculate evaporation according to Priestley and Taylor (1972).'
-    print '- ET0pm: Calculate Penman Monteith reference evaporation short grass.'
-    print '- Epm: Calculate Penman Monteith evaporation (Monteith, 1965).'
-    print '- ra: Calculate aerodynamic resistance.'
-    print '- tvardry: calculate sensible heat flux from temperature variations \
-          (Vugts et al., 1993).'
-    print '- gash79: calculate rainfall interception (Gash, 1979).\n'
-    print 'Author: ',__author__
-    print 'Version: ',__version__ 
-    print 'Date: ',__date__
+    print('A libray with Python functions for calculation of')
+    print('evaporation from meteorological and vegetation data.\n')
+    print('Functions:\n')
+    print('- E0: Calculate Penman (1948, 1956) (open water) evaporation')
+    print('- Em: Calculate evaporation according to Makkink (1965)')
+    print('- Ept: Calculate evaporation according to Priestley and Taylor (1972).')
+    print('- ET0pm: Calculate Penman Monteith reference evaporation short grass.')
+    print('- Epm: Calculate Penman Monteith evaporation (Monteith, 1965).')
+    print('- ra: Calculate aerodynamic resistance.')
+    print('- tvardry: calculate sensible heat flux from temperature variations \
+          (Vugts et al., 1993).')
+    print('- gash79: calculate rainfall interception (Gash, 1979).\n')
+    print('Author: '),__author__
+    print('Version: '),__version__ 
+    print('Date: '),__date__
     return
 
 
@@ -709,4 +709,4 @@ def gash79(Pg=scipy.array([]),
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    print 'Ran all tests...'
+    print('Ran all tests...')
