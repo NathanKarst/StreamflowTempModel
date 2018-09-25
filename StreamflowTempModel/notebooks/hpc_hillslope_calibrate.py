@@ -226,6 +226,8 @@ def calibrate(arguments):
             # Resample pet and ppt to integration timestep
             ppt = np.array(rew.ppt[start_date:stop_date].resample(resample_freq_hillslope).ffill())
             pet = np.array(rew.pet[start_date:stop_date].resample(resample_freq_hillslope).ffill())
+            pet[np.isnan(pet)] = 0
+            ppt[np.isnan(ppt)] = 0
 
             # Solve group hillslope
             for l in range(len(t)):

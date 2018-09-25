@@ -368,14 +368,8 @@ class PreferentialRockMoistureZone(VadoseZone):
     """ Two layer vadose zone model. Each layer is treated as a porporato type vadose zone. 
     
     Public attributes:
-        - nS (float): [] porosity of soil layer
-        - nR (float): [] porosity of rock moisture layer
-        - s0R (float): [] water content at which ET = 0 in rock moisture zone
-        - s0S (float): [] water content at which ET = 0 in soil moisture zone
-        - stR (float): [] water content at which ET = PET in rock moisture zone
-        - stS (float): [] water content at which ET = PET in soil moisture zone
-        - zrR (float): [L] thickness of rock moisture zone
-        - zrS (float): [L] thickness of soil moisture zone
+        - smaxR
+        - smaxS
         - alpha (float): [] fraction of water that exits soil zone and is preferentially routed to groundwater
         - f (float): [] fraction of roots in soil layer (i.e., fraction of PET apportioned to soil layer)
         - storageR (float): [L] storage in rock moisture zone
@@ -384,7 +378,7 @@ class PreferentialRockMoistureZone(VadoseZone):
     """
     def __init__(self, **kwargs):        
     
-        args = ['nS','nR','s0R','s0S','stR','stS','zrR','zrS','f','alpha','eta','storageR','storageS']
+        args = ['f','smaxR', 'smaxS', 'alpha','eta','storageR','storageS']
         for arg in args: setattr(self, arg, kwargs[arg])
 
         # main external variables
@@ -411,49 +405,46 @@ class PreferentialRockMoistureZone(VadoseZone):
         pet = self.eta*kwargs['pet']
 
         #convert current storage to normalized relative value
-        sR = self.storageR/(self.nR*self.zrR)
-        xR = (sR - self.s0R)/(self.stR - self.s0R)
-        sS = self.storageS/(self.nS*self.zrS)
+        xR = self.storageR/self.smaxR
+        xS = self.storageS/self.smaxS
 
         # frac = self.storageVZ/(self.nS*self.zrS + self.nR*self.zrR)
 
-        if (sS <= self.s0S):
+        if (xS <= 0):
             self.ETS = 0 
-        elif (sS <= self.stS):
-            self.ETS = (self.f)*pet*(sS-self.s0S)/(self.stS-self.s0S)
+        elif (xS <= 1):
+            self.ETS = (self.f)*pet*xS
         else: 
             self.ETS = (self.f)*pet    
 
-        sS += ppt*dt/(self.nS*self.zrS) - self.ETS*dt/(self.nS*self.zrS)
+        newstorageS = self.storageS + ppt*dt - self.ETS*dt
 
-        #anything in excess of stS is drained to rock moisture
-        soilLeakage = np.max([sS - self.stS, 0])*self.nS*self.zrS/dt
-        sS = np.min([sS, self.stS])
-        self.storageS = sS*self.nS*self.zrS
+        #anything in excess of smaxS is drained to rock moisture
+        soilLeakage = np.max([newstorageS - self.smaxS, 0])
 
-
+        # actual soil storage is lesser of new storage and the maximum
+        self.storageS = np.min([newstorageS, self.smaxS])
         
-        if (sR <= self.s0R):
+        if (xR <= 0):
             self.ETR = 0
-        elif (sR <= self.stR):
-            self.ETR = (1-self.f)*pet*(sR-self.s0R)/(self.stR-self.s0R)
+        elif (xR <= self.smaxR):
+            self.ETR = (1-self.f)*pet*xR
         else: 
             self.ETR = (1-self.f)*pet
 
         # soil leakage is partitioned into bypass flow, and storage in rock moisture
-        # bypass flow is a linear function of rock moisture storage
+        # bypass flow is a linear function of rock moisture storage, proportionality constant alpha
         bypass = soilLeakage*self.alpha*xR
         leakageToMatrix = soilLeakage - bypass
 
-        sR += leakageToMatrix*dt/(self.nR*self.zrR) - self.ETR*dt/(self.nR*self.zrR)
+        newstorageR = self.storageR + leakageToMatrix - self.ETR*dt
 
-        #anything in excess of stR is drained
-        self.leakage = np.max([sR - self.stR, 0])*self.nR*self.zrR/dt
+        #anything in excess of capacity is drained
+        self.leakage = np.max([newstorageR - self.smaxR, 0])/dt
         # add water preferentially routed through rock moisture zone
-        self.leakage += bypass
+        self.leakage += bypass/dt
 
-        sR = np.min([sR, self.stR])
-        self.storageR = sR*self.nR*self.zrR
+        self.storageR = np.min([newstorageR, self.smaxR])
         self.ET = self.ETS + self.ETR
         self.storageVZ = self.storageS + self.storageR
         

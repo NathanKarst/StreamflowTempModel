@@ -28,11 +28,11 @@ from ast import literal_eval as make_tuple
 
 parent_dir = os.path.dirname(os.path.dirname(os.getcwd()))
 sys.path.append(os.path.join(parent_dir, 'StreamflowTempModel', '1_data_preparation'))
-rew_config = pickle.load( open( os.path.join(parent_dir,'model_data','rew_config.p'), "rb" ) )
-climate_group_forcing = pickle.load( open( os.path.join(parent_dir,'model_data','climate_group_forcing.p'), "rb" ) )
-parameter_group_params = pickle.load( open( os.path.join(parent_dir,'model_data','parameter_group_params.p'), "rb" ))
-model_config = pickle.load( open( os.path.join(parent_dir, 'model_data', 'model_config.p'), 'rb'))
-parameter_ranges = pickle.load( open( os.path.join(parent_dir, 'model_data', 'parameter_ranges.p'), 'rb'))
+rew_config = pd.read_pickle(os.path.join(parent_dir,'model_data','rew_config.p'))
+climate_group_forcing = pd.read_pickle(os.path.join(parent_dir,'model_data','climate_group_forcing.p'))
+parameter_group_params = pd.read_pickle(os.path.join(parent_dir,'model_data','parameter_group_params.p'))
+model_config = pd.read_pickle(os.path.join(parent_dir, 'model_data', 'model_config.p'))
+parameter_ranges = pd.read_pickle(os.path.join(parent_dir, 'model_data', 'parameter_ranges.p'))
 start_date = model_config['start_date']
 stop_date = model_config['stop_date']
 spinup_date = model_config['spinup_date']
@@ -149,6 +149,8 @@ def calibrate(arguments):
             # Resample pet and ppt to integration timestep
             ppt = np.array(rew.ppt[start_date:stop_date].resample(resample_freq_hillslope).ffill())
             pet = np.array(rew.pet[start_date:stop_date].resample(resample_freq_hillslope).ffill())
+            pet[np.isnan(pet)] = 0
+            ppt[np.isnan(ppt)] = 0
 
             # Solve group hillslope
             for l in range(len(t)):
