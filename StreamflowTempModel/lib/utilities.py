@@ -20,7 +20,6 @@ import geopandas as gp
 parent_dir = dirname(dirname(os.getcwd()))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','lib'))
 rew_config = pickle.load( open( os.path.join(parent_dir,'model_data','rew_config.p'), "rb" ) )
-import zonal_stats as zs
 import meteolib as meteo
 import evaplib as evap
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','lib'))
@@ -33,7 +32,7 @@ from channel import SimpleChannel
 try:
     basins = glob.glob(os.path.join(parent_dir,'raw_data','basins_poly','*.shp'))[0]
 except RuntimeError:
-    print 'Cannot find basins shapefile. Please make sure basins shapefile is located in \n the model directory under /raw_data/basins_poly'
+    print('Cannot find basins shapefile. Please make sure basins shapefile is located in \n the model directory under /raw_data/basins_poly')
 basins = gp.read_file(basins)
 
 rew_config = pickle.load( open( os.path.join(parent_dir,'model_data','rew_config.p'), "rb" ) )

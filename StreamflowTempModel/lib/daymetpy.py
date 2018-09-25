@@ -69,6 +69,8 @@ def daymet_timeseries(lat=36.0133, lon=-84.2625, start_year=2012, end_year=2014,
     if as_dataframe:
         import pandas as pd
         df = pd.read_csv(daymet_file, header=6)
+        df.year = df.year.astype(int)
+        df.yday = df.yday.astype(int)
         df.index = pd.to_datetime(df.year.astype(str) + '-' + df.yday.astype(str), format="%Y-%j")
         df.columns = [c[:c.index('(')].strip() if '(' in c else c for c in df.columns ]
         return df

@@ -116,9 +116,9 @@ def model_config(outputFilename='model_config.p'):
     """
     #start/stop dates for running model
 
-    start_date = date(2013, 1, 1)             
+    start_date = date(2012, 1, 1)             
     spinup_date = date(2014, 10, 1)
-    stop_date = date(2015, 8, 30)
+    stop_date = date(2016, 8, 30)
 
 
     
@@ -206,15 +206,21 @@ def rew_config():
         if row.gradient==0:
             prev_2 = row['prev_str02']
             prev_1 = row['prev_str01']
-            prev_grad2 = float(df.gradient.loc[df.rew==prev_2])
-            prev_grad1 = float(df.gradient.loc[df.rew==prev_1])
+            if (prev_2==0)|(prev_1==0):
+                prev_grad2 = 0.001
+                prev_grad1 = 0.001
+            else:
+                prev_grad2 = float(df.gradient.loc[df.rew==prev_2])
+                prev_grad1 = float(df.gradient.loc[df.rew==prev_1])
+                
             prev_grad = np.min([prev_grad2, prev_grad1])
             print('Zero gradient in REW %s! Set to minimum gradient of adjacent, upstream REWs.\n\n'%(int(row.rew)))
             df.ix[i,'gradient'] = prev_grad
 
     rew_config = df[['rew','next_stream','prev_str01','prev_str02','strahler','shreve','length','flow_accum','out_dist','elev_drop','gradient']].set_index('rew')
     del df_basins['label']
-    df_basins.set_index('cat', inplace=True)
+    df_basins = df_basins.drop_duplicates('cat')
+    df_basins = df_basins.set_index('cat')
     rew_config = pd.concat([rew_config, df_basins], axis=1)
 
     #Assign parameter groups and climate groups
@@ -226,22 +232,23 @@ def rew_config():
     rew_config = _get_interception_factor(rew_config)
     rew_config['group'] = [item for item in zip(rew_config['parameter_group'], rew_config['climate_group'])]
 
-    #Get basins from shapefile to check that the REW ids and basins ids match
+    #Get basins from shapefile to check that the REW ids and basins ids match    
     try:
         basins = glob.glob(os.path.join(parent_dir,'raw_data','basins_poly','*.shp'))[0]
     except RuntimeError:
         print('Cannot find basins shapefile. Please make sure basins shapefile is located in \n the model directory under /raw_data/basins_poly')
-    fc = fiona.open(basins)
-    shapefile_record = fc.next()
-    basins_list = []
-    for shapefile_record in fc:
-        rew_idx = int(shapefile_record['properties']['cat'])
-        basins_list.append(rew_idx)
-        if rew_idx == -1: continue
-
+    #often there will be a couple extra dangling microbasins that need to be dropped
+    basins_gdf = gp.read_file(basins)
+    cols = basins_gdf.columns
+    basins_gdf['shapelyarea'] = basins_gdf.geometry.area
+    basins_gdf = basins_gdf.sort_values('shapelyarea').drop_duplicates(subset=['cat'], keep='last')
+    basins_gdf = basins_gdf[cols]
+    basins_gdf.to_file(basins)
+    basins_list = list(basins_gdf['cat'].values)
+    basins_list.sort()
+    
     x = list(df['rew'])
     x.sort()
-    basins_list.sort()
     if x!=basins_list:
         print('REW IDs do not match basins IDs. REW config file cannot be written. \n Please clear out model data folders and re-run extract stream basins script.')        
 
@@ -263,8 +270,6 @@ def rew_config():
     #save config dataframe into model_data folder
     pickle.dump( rew_config, open( os.path.join(parent_dir,'model_data','rew_config.p'), "wb" ) )
     
-
-
 def _get_parameter_groups(rew_config, parent_dir):
     """ Fetch parameter groups from parameter groups raster. 
     
@@ -284,7 +289,8 @@ def _get_parameter_groups(rew_config, parent_dir):
         gt = gdata.GetGeoTransform()
     except:
         for rew_id in rew_config.index: 
-            rew_config.set_value(rew_id, 'parameter_group', 1)
+            #rew_config.set_value(rew_id, 'parameter_group', 1)
+            rew_config.at[rew_id, 'parameter_group'] = 1
         return rew_config
 
     data = gdata.ReadAsArray().astype(np.float)
@@ -297,9 +303,12 @@ def _get_parameter_groups(rew_config, parent_dir):
         x = int((pos[0] - gt[0])/gt[1])
         y = int((pos[1] - gt[3])/gt[5])
         try: 
-            rew_config.set_value(rew_id, 'parameter_group', data[y, x])
+            rew_config.at[rew_id, 'parameter_group'] = data[y,x]
+            #rew_config.set_value(rew_id, 'parameter_group', data[y, x])
+            
         except:  #default set parameter group to melange
-            rew_config.set_value(rew_id, 'parameter_group', 2)
+            rew_config.at[rew_id, 'parameter_group'] = 2
+            #rew_config.set_value(rew_id, 'parameter_group', 2)
 
     return rew_config
 
@@ -331,7 +340,8 @@ def _get_elevations(rew_config, parent_dir):
         pos = pos_dict[rew_id]
         x = int((pos[0] - gt[0])/gt[1])
         y = int((pos[1] - gt[3])/gt[5])
-        rew_config.set_value(rew_id, 'elevation', data[y, x])
+        rew_config.at[rew_id, 'elevation'] = data[y,x]
+        #rew_config.set_value(rew_id, 'elevation', data[y, x])
         
     return rew_config
 
@@ -353,34 +363,40 @@ def _get_climate_groups(rew_config, parent_dir):
         gdata = gdal.Open(raster_file)
         gt = gdata.GetGeoTransform()
     except:
+        # if there is no climate group raster, each REW gets its own unique climate group
         for rew_id in rew_config.index: 
-            rew_config.set_value(rew_id, 'climate_group', int(rew_id))
+            rew_config.at[rew_id, 'climate_group'] = int(rew_id)
         return rew_config
 
+    # if climate group raster exists, extract the climate group for each REW
     data = gdata.ReadAsArray().astype(np.float)
     gdata = None
     pos_dict = _get_coords(parent_dir)
     rew_config['climate_group'] = 0
-
     for rew_id in rew_config.index: 
         pos = pos_dict[rew_id]
         x = int((pos[0] - gt[0])/gt[1])
         y = int((pos[1] - gt[3])/gt[5])
         try: 
-            rew_config.set_value(rew_id, 'climate_group', data[y, x])
+            #rew_config.set_value(rew_id, 'climate_group', data[y, x])
+            rew_config.at[rew_id, 'climate_group'] = data[y, x]
+
         except:  #default set parameter group to melange
-            rew_config.set_value(rew_id, 'climate_group', 2)
+            rew_config.at[rew_id, 'climate_group'] = 2
+            #rew_config.set_value(rew_id, 'climate_group', 2)
 
         
     return rew_config
 
 def _get_interception_factor(rew_config):
+    # TODO: Make this a raster operation; interception factor can be specified as a raster map
     rew_config['interception_factor'] = 0.0
     for rew_id in rew_config.index: 
         if rew_config['parameter_group'].loc[rew_id]==2:
-            rew_config.set_value(rew_id, 'interception_factor', 0.1)
+            #rew_config.set_value(rew_id, 'interception_factor', 0.1)
+            rew_config.at[rew_id, 'interception_factor'] = 0.1
         elif rew_config['parameter_group'].loc[rew_id]==1:
-            rew_config.set_value(rew_id, 'interception_factor', 0.4)
+            rew_config.at[rew_id, 'interception_factor'] = 0.4
     return rew_config
 
 

@@ -23,7 +23,7 @@ g.region raster=dem_filled_nulled -p
 # g.region res=$DEMRES -ap
 r.resamp.stats --overwrite input=dem_filled_nulled output=$M
 
-r.out.gdal --overwrite input=$M output=/Users/daviddralle/Desktop/test.tif format=GTiff
+# r.out.gdal --overwrite input=$M output=/Users/daviddralle/Desktop/test.tif format=GTiff
 
 g.region raster=$M
 g.region -p > info.txt
@@ -53,6 +53,7 @@ STREAMSTRING="stream_$THRESHMETERS"
 # r.stream.extract --overwrite elevation=$M threshold=$THRESH stream_length=2 stream_raster=$STREAMSTRING stream_vector=stream_vector_temp direction=$DIRSTRING
 r.watershed -a --overwrite --quiet elevation=$M accumulation=$ACCUMSTRING
 r.stream.extract --overwrite --quiet elevation=$M threshold=$THRESH stream_length=$MINSTREAM stream_raster=$STREAMSTRING stream_vector=stream_vector_temp direction=$DIRSTRING
+
 
 # v.out.ogr --overwrite -c input=stream_vector_temp type=line output="/Users/daviddralle/Desktop"
 #uncomment and install r extensions, which are not pre-installed with grass 7.0.x
@@ -99,6 +100,7 @@ r.stream.basins --overwrite --quiet direction=$DIRSTRING stream_rast=$STREAMSTRI
 #convert basins raster into basins polygons, rebuild topology of vector layer
 r.to.vect --overwrite -v input=$BASINSTRING output=$BASINVECT type=area
 v.build --overwrite map=$BASINVECT option=build
+
 
 #NOTE! NEEDS TO BE RE-WRITTEN SO THAT THRESH=MINIMUM MAPPING UNIT + EPSILON. 
 #The point of v.clean is to get rid of dangly pieces of raster around the edge of the map
