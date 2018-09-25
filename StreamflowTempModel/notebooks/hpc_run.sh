@@ -13,7 +13,7 @@
 #
 ## Command(s) to run:
 git checkout master
-source activate py2k_model
+source activate py3k
 x=$(python hpc_hillslope_calibrate.py False 10 elder_runoff.p elder.shp)
 DATE=`date +%Y-%m-%d_%H%M`
 TITLESTR="ELDER_$DATE"
