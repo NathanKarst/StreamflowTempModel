@@ -14,9 +14,9 @@
 ## Command(s) to run:
 git checkout master
 source activate py3k
-x=$(python hpc_hillslope_calibrate.py False 10 elder_runoff.p elder.shp)
+x=$(python hpc_hillslope_calibrate.py False 2 dry_runoff.p dry.shp)
 DATE=`date +%Y-%m-%d_%H%M`
-TITLESTR="ELDER_$DATE"
+TITLESTR="DRY_$DATE"
 TXT='.txt'
 SAVETXT=$TITLESTR$TXT
 echo $x > $SAVETXT
