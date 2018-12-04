@@ -14,6 +14,7 @@ rm $MODEL/raw_data/topology/basin.csv
 rm $MODEL/raw_data/topology/topology.csv
 rm $MODEL/raw_data/basins_poly/*
 rm $MODEL/raw_data/streams_poly/*
+rm $MODEL/raw_data/streams_points/*
 
 M=dem
 r.in.gdal --quiet input=$MODEL/raw_data/dem/dem.tif output=dem_filled
@@ -80,13 +81,13 @@ r.stream.extract --overwrite --quiet elevation=$M threshold=$THRESH stream_lengt
 # get topologic properties of stream network
 STREAMVECT="stream_vect_$THRESHMETERS"
 r.stream.order --overwrite --quiet accumulation=$ACCUMSTRING elevation=$M stream_rast=$STREAMSTRING direction=$DIRSTRING stream_vect=$STREAMVECT
-v.out.ogr --overwrite -c input=$STREAMVECT type=line output="$MODEL/raw_data/streams_poly"
+v.out.ogr --overwrite -c format=ESRI_Shapefile input=$STREAMVECT type=line output="$MODEL/raw_data/streams_poly/streams.shp"
 
 # streamvector to points, export
 v.to.rast --overwrite --quiet input=$STREAMVECT output=streamrastertemp type=line use=val value=1
 POINTSVECT="points_$THRESHMETERS"
 r.to.vect --overwrite --quiet input=streamrastertemp output=$POINTSVECT type=point
-v.out.ogr --overwrite -c --quiet input=$POINTSVECT type=point output="$MODEL/raw_data/streams_points"
+v.out.ogr --overwrite -c --quiet input=$POINTSVECT type=point output="$MODEL/raw_data/streams_points/streams_points.shp"
 
 # export table with stream topology info
 db.out.ogr --overwrite --quiet input=$STREAMVECT output="$MODEL/raw_data/topology/topology.csv"
@@ -109,7 +110,7 @@ v.db.addcolumn map=$BASINVECTCLEAN columns="area_sqkm DOUBLE PRECISION"
 v.to.db map=$BASINVECTCLEAN option=area columns=area_sqkm unit=k
 
 #export basins polygon as shape file
-v.out.ogr --overwrite input=$BASINVECTCLEAN type=area output="$MODEL/raw_data/basins_poly"
+v.out.ogr --overwrite format=ESRI_Shapefile input=$BASINVECTCLEAN type=area output="$MODEL/raw_data/basins_poly/basins_poly.shp"
 db.out.ogr --overwrite input=$BASINVECTCLEAN output="$MODEL/raw_data/topology/basin.csv"
 
 

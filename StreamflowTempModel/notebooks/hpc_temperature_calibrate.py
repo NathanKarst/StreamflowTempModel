@@ -20,25 +20,24 @@ parent_dir = dirname(dirname(os.getcwd()))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','lib'))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','4_temperature'))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','3_channel_routing'))
-from temperature import SimpleTemperature, LagrangianSimpleTemperature, LagrangianSimpleTemperatureTriangularHeatedGW
-from channel import SimpleChannel
-import zonal_stats as zs
+from temperature import ImplicitEulerWesthoff
+from channel import SimpleChannel, TrapezoidalChannel
 import meteolib as meteo
 import evaplib as evap
 from ast import literal_eval as make_tuple
 import multiprocessing as mp
 
 
-rew_config = pickle.load( open( os.path.join(parent_dir,'model_data','rew_config.p'), "rb" ) )
-climate_group_forcing = pickle.load( open( os.path.join(parent_dir,'model_data','climate_group_forcing.p'), "rb" ) )
-model_config = pickle.load( open( os.path.join(parent_dir, 'model_data', 'model_config.p'), 'rb'))
-temperature_params = pickle.load( open( os.path.join(parent_dir, 'model_data', 'temperature_params.p'), 'rb'))
-temperature_params_ranges = pickle.load( open( os.path.join(parent_dir, 'model_data', 'temperature_params_ranges.p'), 'rb'))
-hill_groups = pickle.load( open( os.path.join(parent_dir,'model_data','solved_hillslope_discharge.p'), "rb" ) )
-solved_channel_routing = pickle.load( open( os.path.join(parent_dir,'model_data','solved_channel_routing.p'), "rb" ) )
-channel_params = pickle.load( open( os.path.join(parent_dir,'model_data','channel_params.p'), "rb" ))
-radiation = pickle.load( open(os.path.join(parent_dir, 'raw_data', 'radiation', 'radiation.p'),'rb') )
-ta_ea = pickle.load( open(os.path.join(parent_dir, 'raw_data', 'ta_ea', 'ta_ea.p'),'rb') )
+rew_config = pd.read_pickle(os.path.join(parent_dir,'model_data','rew_config.p'))
+climate_group_forcing = pd.read_pickle(os.path.join(parent_dir,'model_data','climate_group_forcing.p'))
+model_config = pd.read_pickle(os.path.join(parent_dir, 'model_data', 'model_config.p'))
+temperature_params = pd.read_pickle(os.path.join(parent_dir, 'model_data', 'temperature_params.p'))
+temperature_params_ranges = pd.read_pickle(os.path.join(parent_dir, 'model_data', 'temperature_params_ranges.p'))
+hill_groups = pd.read_pickle(os.path.join(parent_dir,'model_data','solved_hillslope_discharge.p'))
+solved_channel_routing = pd.read_pickle(os.path.join(parent_dir,'model_data','solved_channel_routing.p'))
+channel_params = pd.read_pickle(os.path.join(parent_dir,'model_data','channel_params.p'))
+radiation = pd.read_pickle(os.path.join(parent_dir, 'raw_data', 'radiation', 'radiation.p'))
+ta_ea = pd.read_pickle( os.path.join(parent_dir, 'raw_data', 'ta_ea', 'ta_ea.p'))
 
 #start/stop dates for running model  
 #spinup date is the date after start_date for which we assume model is finished spinning up         
@@ -71,7 +70,7 @@ def main(argv):
 
     cores = mp.cpu_count()
     print('There are %s cores on this machine, \n%s model runs will be performed on each core'%(str(cores), str(N)))
-    calibration_data = pickle.load( open(os.path.join(parent_dir,'calibration_data',subwatershed_calibration_name)))
+    calibration_data = pd.read_pickle(os.path.join(parent_dir,'calibration_data',subwatershed_calibration_name))
     calibration_data = calibration_data[spinup_date:stop_date]
 
     arguments = []
@@ -102,7 +101,7 @@ def main(argv):
 def objective_function(modeled, observed):
     modeled = modeled.resample('D').mean()
     observed = observed.resample('D').mean()
-    inds = ((modeled != 0) & (observed != 0))&((modeled.index.month>=5)&(modeled.index.month<=10))
+    inds = ((modeled != 0) & (observed != 0))#&((modeled.index.month>=5)&(modeled.index.month<=10))
     if np.sum(modeled)<0.01:
         return -9999.0
     elif np.isnan(np.sum(modeled)):
@@ -163,7 +162,7 @@ def calibrate(arguments):
     calibration_data_filename, ids_in_subwatershed, N, objective_function, minimize_objective_function, cpu = arguments
     
     # Load calibration data
-    calibration_data = pickle.load( open(os.path.join(parent_dir,'calibration_data',calibration_data_filename)))
+    calibration_data = pd.read_pickle(os.path.join(parent_dir,'calibration_data',calibration_data_filename))
     calibration_data = calibration_data[spinup_date:stop_date]
     
     best_fit = pd.DataFrame({'modeled':np.zeros(len(timestamps_hillslope))}, index=timestamps_hillslope).resample('D').mean()
@@ -185,13 +184,11 @@ def calibrate(arguments):
 
     desc = "Core #%s"%(cpu)
     for i in range(N):
-        
         channel_network = {}
         for rew_id in ids_in_subwatershed: 
             args = rew_config[rew_id].copy()
             args.update(channel_params[rew_id])
             channel_network[rew_id] = args['model'](rew_id=rew_id, **args)
-
 
         shreves = [rew_config[rew_id]['shreve'] for rew_id in ids_in_subwatershed]
         rewQueue = [rew_id for (shreve,rew_id) in sorted(zip(shreves,ids_in_subwatershed))]
@@ -290,7 +287,7 @@ def calibrate(arguments):
                 best_obj = objs_curr
                 best_fit = solved_outlet.copy()
                 best_parameter_set = copy.deepcopy(parameters_current)
-    print best_obj
+    print(best_obj)
     return (best_fit, best_obj, best_parameter_set)
 
 

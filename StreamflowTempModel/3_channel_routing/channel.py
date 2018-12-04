@@ -26,7 +26,7 @@ class SimpleChannel(Channel):
     """
     def __init__(self, rew_id, **kwargs):
         Channel.__init__(self, rew_id)
-        
+
         args = ['volume','mannings_n','upstream_area','gradient','length','e','f']
         for arg in args: setattr(self, arg, kwargs[arg])        
 
@@ -104,6 +104,7 @@ class NoChannel(Channel):
         self.volumetric_discharge = upstream_volumetric_discharge + hillslope_volumetric_discharge 
         return 0
 
+
 class TrapezoidalChannel(Channel):
     """ Trapezoidal hydrologic channel model using Manning's equation for open channel flow (for a reference, see doi:10.1103/PhysRevLett.88.014501.)
     	The channel has a bottom width and a bank slope, making a symmetric channel with sloped sides. If
@@ -127,9 +128,14 @@ class TrapezoidalChannel(Channel):
 
         # e and f are the power law scaling parameters for the bottom width
         # g and h are the power law scaling parameters for the bank slope
+        self.base_width = self.e*self.upstream_area**self.f
         self.width = self.e*self.upstream_area**self.f
         self.bank_slope = self.g*self.upstream_area**self.h
         self.volumetric_discharge = 0
+        self.depth = 0
+        self.u = 0
+        self.area = 0
+        self.x = 0
 
     def update(self, dt, upstream_volumetric_discharge, hillslope_volumetric_discharge, ppt):
         """ Update channel storage stock and volumetric discharge
@@ -142,15 +148,20 @@ class TrapezoidalChannel(Channel):
         
         Returns: 
             - Boolean variable indicating whether or not instability approximation was used to solve kinematic wave.
-        
         """
         xs_area = self.volume/self.length
-        depth = (-(self.bank_slope*self.width) + np.sqrt(self.bank_slope)*np.sqrt(4*xs_area + self.bank_slope*self.width**2))/2.
-        wetted_perimeter = self.width + 2*depth*np.sqrt(1+1/self.bank_slope**2)
-        top_width = self.width + 2*depth/self.bank_slope
+        self.area = xs_area
+        depth = (-(self.bank_slope*self.base_width) + np.sqrt(self.bank_slope)*np.sqrt(4*xs_area + self.bank_slope*self.base_width**2))/2.
+        x = (-self.base_width*self.bank_slope + np.sqrt(self.bank_slope)*np.sqrt(4*xs_area + self.bank_slope*self.base_width**2))/(2*self.bank_slope)
+        self.depth = depth
+        side = np.sqrt(depth**2 + x**2)
+        wetted_perimeter = side*2+self.base_width
         h = xs_area/wetted_perimeter
+        top_width = self.base_width + 2*x
+        self.width = top_width
 
         if _manning_u(h, self.mannings_n, self.gradient)*dt>self.length:
+            self.u = self.length/dt
             self.volumetric_discharge = xs_area*self.length/dt
             self.volume = 0
             self.volume += ppt*dt*top_width*self.length
@@ -158,7 +169,8 @@ class TrapezoidalChannel(Channel):
             self.volume += hillslope_volumetric_discharge*dt
             return 1
         else:
-            self.volumetric_discharge = _manning_u(h, self.mannings_n, self.gradient)*xs_area
+            self.u = _manning_u(h, self.mannings_n, self.gradient)
+            self.volumetric_discharge = self.u*xs_area
             self.volume += ppt*dt*top_width*self.length
             self.volume += upstream_volumetric_discharge*dt
             self.volume += hillslope_volumetric_discharge*dt
