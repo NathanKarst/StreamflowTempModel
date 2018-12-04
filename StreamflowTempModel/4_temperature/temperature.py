@@ -328,7 +328,7 @@ class ImplicitEulerWesthoff(Temperature):
 
         # now add in various heat fluxes
         back_radiation = lambda temp: 0.96*self.sigma*(temp)**4 # W/m-2
-        sensible = lambda temp: self.kh*(temp - Ta) # W/m-2
+        sensible = lambda temp: -self.kh*(temp - Ta) # W/m-2
         shortwave = (1-self.alphaw)*Sin
 
         # GET THIS FIXED USING REAL WIND DATA
@@ -340,7 +340,7 @@ class ImplicitEulerWesthoff(Temperature):
         wnd = 0.0
         latent = lambda temp: -rhoa*cpa/psychro*(avw*wnd + bvw)*(esat(temp) - ea)
 
-        phi = lambda temp: Lin - back_radiation(temp) - sensible(temp) + shortwave + latent(temp)
+        phi = lambda temp: Lin - back_radiation(temp) + sensible(temp) + shortwave + latent(temp)
 
         # groundwater added per unit length channel m^3/s/m
         qsub = hillslope_volumetric_discharge/length
