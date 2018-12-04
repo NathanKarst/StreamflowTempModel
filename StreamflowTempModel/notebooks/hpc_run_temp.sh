@@ -13,7 +13,7 @@
 #
 ## Command(s) to run:
 git checkout master
-source activate py2k_model
+source activate py3k
 x=$(python hpc_temperature_calibrate.py False 1000 elder_temperature.p elder.shp)
 DATE=`date +%Y-%m-%d_%H%M`
 TITLESTR="ELDER_TEMP_$DATE"
