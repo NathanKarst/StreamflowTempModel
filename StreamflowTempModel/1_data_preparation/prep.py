@@ -53,8 +53,9 @@ def rew_params():
     parameter_ranges = {i:{'k12':(0,0.4), 'k1':(0.5,4.0), 'eta':(0.2, 1.0)} for i in parameter_groups}
     channel_params = {i:{'mannings_n':0.05, 'e':0.0108, 'f':0.3759, 'g':2.0, 'h':-0.1029, 'volume':1.0, 'model':TrapezoidalChannel} for i in rews}
     channel_params_ranges = {i:{} for i in rews}
-    temperature_params = {i:{'model':ImplicitEulerWesthoff, 'alphaw':0.2 ,'cp':4186.0, 'kh':10.96,'rho':1000.0,'sigma':5.67e-8, 'temperature':11.0, 'kf':1.84, 'tau0':0.52, 'ktau':1.59, 'Tgw_offset':10.0} for i in rews}
-    temperature_params_ranges = {i:{'Tgw_offset':(9, 13), 'tau0':(0.1,2), 'ktau':(0.01,10.0),'kf':(.1,20.0),'kh':(1.0,20.0), 'alphaw':(0.05, 0.3)} for i in rews}
+    temperature_params = {i:{'model':ImplicitEulerWesthoff, 'alphaw':0.06 ,'cp':4186.0, 'kh':6.0,'rho':1000.0,'sigma':5.67e-8, 'temperature':11.0, 'kf':1.84, 'tau0':0.89, 'ktau':1.8, 'Tgw_offset':12.0} for i in rews}
+    temperature_params_ranges = {i:{'tau0':(0.1,2), 'ktau':(0.01,10.0),'kf':(.1,20.0),'kh':(1.0,20.0), 'alphaw':(0.05, 0.3)} for i in rews}
+
 
     # Save config files
     pickle.dump( parameter_group_params, open( os.path.join(parent_dir,'model_data','parameter_group_params.p'), "wb" ) )

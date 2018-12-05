@@ -206,11 +206,10 @@ def calibrate(arguments):
             group_id = rew_config[rew_id]['group']
             climate_group_id = group_id[1]
             rew_df = climate_group_forcing[climate_group_id]
-            width = channel_network[rew_id].width
             length = channel_network[rew_id].length
-            
-            Lin = np.array(radiation[rew_id]['Lin'][start_date:stop_date].resample(resample_freq_temperature).ffill())
-            Sin = np.array(radiation[rew_id]['Sin'][start_date:stop_date].resample(resample_freq_temperature).ffill())
+
+            Lin = np.array(radiation[rew_id]['Lin'][start_date:stop_date].resample(resample_freq_temperature).interpolate())
+            Sin = np.array(radiation[rew_id]['Sin'][start_date:stop_date].resample(resample_freq_temperature).interpolate())
             doy = np.array(radiation[rew_id]['doy'][start_date:stop_date].resample(resample_freq_temperature).ffill())
 
             temp_ea = ta_ea[rew_id].resample(resample_freq_temperature).interpolate()
@@ -219,13 +218,18 @@ def calibrate(arguments):
             ta = np.array(temp_ea['ta'][start_date:stop_date])
             ta_mean = np.array(temp_ea['tmean'][start_date:stop_date])
             ea = np.array(temp_ea['ea'][start_date:stop_date])
+
             hillslope_discharge = pd.DataFrame({'discharge':hill_groups[group_id]['discharge']}, index=hill_groups[group_id].index)
             hillslope_overlandFlow = pd.DataFrame({'overlandFlow':hill_groups[group_id]['overlandFlow']}, index=hill_groups[group_id].index)
-            
+
             hillslope_volumetric_overlandFlow = np.array(hillslope_overlandFlow[start_date:stop_date].overlandFlow.resample(resample_freq_temperature).ffill())*rew_config[rew_id]['area_sqcm']
             hillslope_volumetric_discharge = np.array(hillslope_discharge[start_date:stop_date].discharge.resample(resample_freq_temperature).ffill())*rew_config[rew_id]['area_sqcm']
             hillslope_volumetric_discharge_daily = hillslope_discharge[start_date:stop_date].discharge*rew_config[rew_id]['area_sqcm']
-            
+
+            width = np.array(solved_channel_routing[rew_id][start_date:stop_date].width.resample(resample_freq_temperature).ffill())
+            u = np.array(solved_channel_routing[rew_id][start_date:stop_date].u.resample(resample_freq_temperature).ffill())
+            depth = np.array(solved_channel_routing[rew_id][start_date:stop_date].depth.resample(resample_freq_temperature).ffill())
+
             volumetric_discharge = np.array(solved_channel_routing[rew_id][start_date:stop_date].volumetric_discharge.resample(resample_freq_temperature).ffill())
             volumetric_discharge_daily = solved_channel_routing[rew_id][start_date:stop_date].volumetric_discharge
             temp = np.zeros(np.shape(t))
@@ -260,8 +264,8 @@ def calibrate(arguments):
                 if l<start_temp_model:
                     temp[l] = temperature_network[rew_id].temperature
                 else:  
-                    varyArgs = ['ta_mean', 'doy','vol_1','temp_1','vol_2','temp_2','hillslope_volumetric_discharge', 'hillslope_volumetric_overlandFlow', 'volumetric_discharge', 'volume', 'ta', 'Lin', 'Sin', 'ppt', 'ea']
-                    constArgs = ['width','length']
+                    varyArgs = ['u','width','ta_mean','vol_1','temp_1','vol_2','temp_2','hillslope_volumetric_discharge', 'hillslope_volumetric_overlandFlow', 'volumetric_discharge', 'volume', 'ta', 'Lin', 'Sin', 'ppt', 'ea', 'doy']
+                    constArgs = ['length']
                     tempArgs = {}
                     for arg in varyArgs: tempArgs[arg] = copy.copy(locals()[arg][l])
                     for arg in constArgs: tempArgs[arg] = copy.copy(locals()[arg])
