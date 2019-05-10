@@ -22,7 +22,7 @@ sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','4_temperature'))
 from vadoseZone import LaioVadoseZone, PorporatoVadoseZone, PorporatoPreferentialVadoseZone, SimpleRockMoistureZone, PreferentialRockMoistureZone
 from groundwaterZone import GroundwaterZone, Melange, NonlinearReservoir, NonlinearReservoir, TwoLinearReservoir, TwoParallelLinearReservoir, LinearToNonlinearReservoir
 from temperature import LagrangianSimpleTemperatureChengHeatedGW, ImplicitEulerWesthoff
-from channel import TrapezoidalChannel
+from channel import TrapezoidalChannel, AllenChannel
   
 def rew_params():
     """ Write REW parameter groups and channel parameter files. 
@@ -46,16 +46,30 @@ def rew_params():
     # Model SF @ MIRANDA - Calibrated Melange and Coastal Belt using Dry and Elder only
     # Parameter group 2 = Melange
     # Parameter group 1 = Coastal Belt
+    # parameter_group_params = {
+    # 2:{'smax':19.18, 'b':2.41, 'vz':PorporatoVadoseZone, 'capacity':2.69, 'gz':Melange, 'storageVZ':10, 'storageGZ':1, 'eta':0.75, 'a':0.10},
+    # 1:{'smaxS':2.579, 'smaxR':30.3, 'eta':1.0, 'alpha':0.296, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'b': 2.09,'storageS': 1.0, 'a': 0.00216, 'k12': 0.366, 'storageR': 1.0, 'f': 0.136, 'k1': 0.308, 'vz': PreferentialRockMoistureZone },
+    #                        }  
+    # parameter_ranges = {i:{'k12':(0,0.4), 'k1':(0.5,4.0), 'eta':(0.2, 1.0)} for i in parameter_groups}
+    # channel_params = {i:{'mannings_n':0.1, 'e':0.0108, 'f':0.3759, 'g':2.0, 'h':-0.1029, 'volume':1.0, 'model':TrapezoidalChannel} for i in rews}
+    # channel_params_ranges = {i:{} for i in rews}
+    # temperature_params = {i:{'model':ImplicitEulerWesthoff, 'alphaw':0.06 ,'cp':4186.0, 'kh':1.0,'rho':1000.0,'sigma':5.67e-8, 'temperature':11.0, 'Tgw_offset':10.0, 'tau':50} for i in rews}
+    # temperature_params_ranges = {i:{'tau0':(0.1,2), 'ktau':(0.01,10.0),'kf':(.1,20.0),'kh':(1.0,20.0), 'alphaw':(0.05, 0.3)} for i in rews}
+
+
+  # Model SF @ MIRANDA - Calibrated Melange and Coastal Belt using Dry and Elder only
+    # Parameter group 2 = Melange
+    # Parameter group 1 = Coastal Belt
     parameter_group_params = {
     2:{'smax':19.18, 'b':2.41, 'vz':PorporatoVadoseZone, 'capacity':2.69, 'gz':Melange, 'storageVZ':10, 'storageGZ':1, 'eta':0.75, 'a':0.10},
     1:{'smaxS':2.579, 'smaxR':30.3, 'eta':1.0, 'alpha':0.296, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'b': 2.09,'storageS': 1.0, 'a': 0.00216, 'k12': 0.366, 'storageR': 1.0, 'f': 0.136, 'k1': 0.308, 'vz': PreferentialRockMoistureZone },
-                           }  
+                           }
+                           
     parameter_ranges = {i:{'k12':(0,0.4), 'k1':(0.5,4.0), 'eta':(0.2, 1.0)} for i in parameter_groups}
-    channel_params = {i:{'mannings_n':0.05, 'e':0.0108, 'f':0.3759, 'g':2.0, 'h':-0.1029, 'volume':1.0, 'model':TrapezoidalChannel} for i in rews}
+    channel_params = {i:{'mannings_n':0.04, 'volume':1.0,'model':AllenChannel, 'c':0.131, 'd':0.373, 'e':2.12, 'f':0.46, 'g':1.2, 'h':0.143} for i in rews}
     channel_params_ranges = {i:{} for i in rews}
-    temperature_params = {i:{'model':ImplicitEulerWesthoff, 'alphaw':0.06 ,'cp':4186.0, 'kh':6.0,'rho':1000.0,'sigma':5.67e-8, 'temperature':11.0, 'kf':1.84, 'tau0':0.89, 'ktau':1.8, 'Tgw_offset':12.0} for i in rews}
+    temperature_params = {i:{'model':ImplicitEulerWesthoff, 'alphaw':0.06 ,'cp':4186.0, 'kh':11.2,'rho':1000.0,'sigma':5.67e-8, 'temperature':11.0, 'kf':3.45, 'tau0':0.44, 'ktau':7.74, 'Tgw_offset':11.0} for i in rews}
     temperature_params_ranges = {i:{'tau0':(0.1,2), 'ktau':(0.01,10.0),'kf':(.1,20.0),'kh':(1.0,20.0), 'alphaw':(0.05, 0.3)} for i in rews}
-
 
     # Save config files
     pickle.dump( parameter_group_params, open( os.path.join(parent_dir,'model_data','parameter_group_params.p'), "wb" ) )
@@ -96,16 +110,18 @@ def model_config(outputFilename='model_config.p'):
     # stop_date = date(2017, 9, 30)
     start_date = date(2010, 1, 1)             
     spinup_date = date(2012, 10, 1)
-    stop_date = date(2015, 9, 30)
+    stop_date = date(2016, 9, 30)
 
     Tmax = 1.0*(stop_date - start_date).days
 
     #hillslope timestep information
+    # this is in units of days - save the freq in units of minutes
+    # must choose timestep so that there are an integer number of minutes in the timestep
     dt_hillslope = 1/8.
     resample_freq_hillslope = str(int(dt_hillslope*24*60)) + 'T'
 
     #channel timestep information
-    dt_channel = 4./1440.
+    dt_channel = 8./1440.
     resample_freq_channel = str(int(dt_channel*24*60)) + 'T'
 
     #temperature timestep information
