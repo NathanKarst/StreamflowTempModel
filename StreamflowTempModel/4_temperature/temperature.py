@@ -259,7 +259,7 @@ class ImplicitEulerWesthoff(Temperature):
     def __init__(self, rew_id, **kwargs):
         Temperature.__init__(self, rew_id)
         
-        args = ['alphaw','rho','cp','kh','sigma','temperature', 'kf', 'tau0', 'ktau', 'Tgw_offset']
+        args = ['vts_coefficient', 'alphaw','rho','cp','kh','sigma','temperature', 'kf', 'tau0', 'ktau', 'Tgw_offset']
         for arg in args: setattr(self, arg, kwargs[arg])        
 
 
@@ -325,8 +325,8 @@ class ImplicitEulerWesthoff(Temperature):
         Lin = kwargs['Lin'] # W/m-2
         Sin = kwargs['Sin'] # W/m-2
         esat = lambda temp: 0.611*np.exp(2.5*10**6/461.0*(1/273.2 - 1/temp)) # saturation vapor pressure in kPa
-        VTS = 0.9
-        land_cover = 0.96*(1-VTS)*self.sigma*(Ta_mean)**4
+        VTS = (1-self.vts_coefficient*kwargs['lpi']/100.0)
+        land_cover = 0.96*(1-VTS)*0.96*self.sigma*(Ta_mean)**4
 
         # now add in various heat fluxes
         back_radiation = lambda temp: 0.96*self.sigma*(temp)**4 # W/m-2

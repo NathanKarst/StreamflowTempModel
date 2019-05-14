@@ -31,8 +31,12 @@ import multiprocessing as mp
 rew_config = pd.read_pickle(os.path.join(parent_dir,'model_data','rew_config.p'))
 climate_group_forcing = pd.read_pickle(os.path.join(parent_dir,'model_data','climate_group_forcing.p'))
 model_config = pd.read_pickle(os.path.join(parent_dir, 'model_data', 'model_config.p'))
-temperature_params = pd.read_pickle(os.path.join(parent_dir, 'model_data', 'temperature_params.p'))
-temperature_params_ranges = pd.read_pickle(os.path.join(parent_dir, 'model_data', 'temperature_params_ranges.p'))
+
+temperature_parameter_group_params = pd.read_pickle(os.path.join(parent_dir, 'model_data', 'temperature_parameter_group_params.p'))
+temperature_parameter_ranges = pd.read_pickle(os.path.join(parent_dir, 'model_data', 'temperature_parameter_ranges.p'))
+
+
+
 hill_groups = pd.read_pickle(os.path.join(parent_dir,'model_data','solved_hillslope_discharge.p'))
 solved_channel_routing = pd.read_pickle(os.path.join(parent_dir,'model_data','solved_channel_routing.p'))
 channel_params = pd.read_pickle(os.path.join(parent_dir,'model_data','channel_params.p'))
@@ -66,8 +70,9 @@ def main(argv):
 
     print(subwatershed_calibration_name)
 
-    ids_in_subwatershed = get_rews_to_calibrate(subwatershed_name)
-
+    groups_to_calibrate, ids_in_subwatershed = get_groups_to_calibrate(subwatershed_name)
+    parameter_groups_to_calibrate = list(set([item[0] for item in groups_to_calibrate]))
+    print('Groups to calibrate: %s'%str(parameter_groups_to_calibrate))
     cores = mp.cpu_count()
     print('There are %s cores on this machine, \n%s model runs will be performed on each core'%(str(cores), str(N)))
     calibration_data = pd.read_pickle(os.path.join(parent_dir,'calibration_data',subwatershed_calibration_name))
@@ -75,7 +80,7 @@ def main(argv):
 
     arguments = []
     for cpu in range(0,cores):
-        arguments.append((subwatershed_calibration_name, ids_in_subwatershed, N, objective_function, minimize_objective_function, cpu))
+        arguments.append((subwatershed_calibration_name, groups_to_calibrate, ids_in_subwatershed, N, objective_function, minimize_objective_function, cpu))
 
     pool = mp.Pool()
 
@@ -95,7 +100,8 @@ def main(argv):
     best_params = copy.deepcopy(results[cpu_best][2])
 
     print('With an objective function value of %0.2f, the best parameter set is:' % (best_objective))
-    print(best_params)
+    for key in parameter_groups_to_calibrate:
+        print('Parameter group %s: %s'%(str(key),str(best_params[key])))
 
 # Nash sutcliffe efficiency. Should be maximized for best fit. 
 def objective_function(modeled, observed):
@@ -108,6 +114,53 @@ def objective_function(modeled, observed):
         return -9999.0
     else:
         return 1-np.sum((observed.loc[inds]-modeled.loc[inds])**2)/np.sum((observed.loc[inds]-np.mean(observed.loc[inds]))**2)
+
+
+def get_groups_to_calibrate(subwatershed_name):
+    shapefile_path = os.path.join(parent_dir, 'raw_data','watershed_poly', subwatershed_name)
+
+    # get coordinate tuples corresponding to each REW
+    # these are stored in the x, y columns of points
+    points = pd.read_csv( os.path.join(parent_dir, 'raw_data', 'basins_centroids', 'points.csv')).set_index('cat')
+
+    # check to see which REWs fall within sub-watershed
+    ids_in_subwatershed = []
+    with fiona.open(shapefile_path) as fiona_collection:
+        for shapefile_record in fiona_collection:
+            # note: the shapefile record must be of type polygon, not multi-polygon
+            # i.e. the sub-watershed must be a single polygon
+            shape = shapely.geometry.Polygon( shapefile_record['geometry']['coordinates'][0] )
+
+            for index, row in points.iterrows(): 
+                point =  shapely.geometry.Point(row.x, row.y)
+                if shape.contains(point):
+                    ids_in_subwatershed.append(index)
+
+    ids_in_subwatershed = list(set(ids_in_subwatershed))
+
+    # if no REWs found inside sub-watershed, 
+    # assume the sub-watershed is contained within a single REW. 
+    # Here, find the id of that REW
+    if len(ids_in_subwatershed)==0:
+        subwatershed_shape = gp.GeoDataFrame.from_file(shapefile_path)
+        basins = glob.glob(os.path.join(parent_dir,'raw_data','basins_poly','*.shp'))[0]
+        with fiona.open(basins) as fiona_collection:
+            for shapefile_record in fiona_collection:
+                shape    = shapely.geometry.Polygon(shapefile_record['geometry']['coordinates'][0])
+        if shape.contains(subwatershed_shape['geometry'].loc[0].centroid):
+            ids_in_subwatershed.append(shapefile_record['properties']['cat'])
+
+
+    groups_to_calibrate = []
+    for rew_id in ids_in_subwatershed:
+        groups_to_calibrate.append(rew_config[rew_id]['group'])
+
+    groups_to_calibrate = list(set(groups_to_calibrate))
+
+    print('REWs %s are located within the calibration sub-watershed' % str(ids_in_subwatershed))
+    return groups_to_calibrate, ids_in_subwatershed
+
+
 
 def get_rews_to_calibrate(subwatershed_name):
     shapefile_path = os.path.join(parent_dir, 'raw_data','watershed_poly', subwatershed_name)
@@ -147,20 +200,32 @@ def get_rews_to_calibrate(subwatershed_name):
     print('REWs %s are located within the calibration sub-watershed' % str(ids_in_subwatershed))
     return ids_in_subwatershed
 
-def generate_parameter_set(parameters, parameter_ranges, outlet_id):
-    parameters_current = copy.deepcopy(parameters)
-    
-    for k, parameter in enumerate(parameter_ranges[outlet_id].keys()):
-                new_value = random.random()*(parameter_ranges[outlet_id][parameter][1] - parameter_ranges[outlet_id][parameter][0]) + parameter_ranges[outlet_id][parameter][0]
-                for rew_id in parameters.keys():
-                    parameters_current[rew_id][parameter] = new_value
+def generate_parameter_set(parameter_group_params, parameter_ranges):
+    parameter_group_params_current = {}
+    for w in parameter_group_params.keys():
+        parameter_group_params_current[w] = parameter_group_params[w].copy()
 
-    return parameters_current
+    for j, parameter_group in enumerate(parameter_ranges.keys()):
+            for k, parameter in enumerate(parameter_ranges[parameter_group].keys()):
+                new_value = random.random()*(parameter_ranges[parameter_group][parameter][1] - parameter_ranges[parameter_group][parameter][0]) + parameter_ranges[parameter_group][parameter][0]
+                parameter_group_params_current[parameter_group][parameter] = new_value
+    return parameter_group_params_current
+
+# def generate_parameter_set(parameters, parameter_ranges, outlet_id):
+#     parameters_current = copy.deepcopy(parameters)
+    
+#     for k, parameter in enumerate(parameter_ranges[outlet_id].keys()):
+#                 new_value = random.random()*(parameter_ranges[outlet_id][parameter][1] - parameter_ranges[outlet_id][parameter][0]) + parameter_ranges[outlet_id][parameter][0]
+#                 for rew_id in parameters.keys():
+#                     parameters_current[rew_id][parameter] = new_value
+
+#     return parameters_current
 
   
 def calibrate(arguments):
-    calibration_data_filename, ids_in_subwatershed, N, objective_function, minimize_objective_function, cpu = arguments
-    
+    # calibration_data_filename, ids_in_subwatershed, N, objective_function, minimize_objective_function, cpu = arguments
+    calibration_data_filename, groups_to_calibrate, ids_in_subwatershed, N, objective_function, minimize_objective_function, cpu = arguments
+
     # Load calibration data
     calibration_data = pd.read_pickle(os.path.join(parent_dir,'calibration_data',calibration_data_filename))
     calibration_data = calibration_data[spinup_date:stop_date]
@@ -183,6 +248,7 @@ def calibrate(arguments):
             outlet_id = rew_id
 
     desc = "Core #%s"%(cpu)
+
     for i in range(N):
         channel_network = {}
         for rew_id in ids_in_subwatershed: 
@@ -193,11 +259,13 @@ def calibrate(arguments):
         shreves = [rew_config[rew_id]['shreve'] for rew_id in ids_in_subwatershed]
         rewQueue = [rew_id for (shreve,rew_id) in sorted(zip(shreves,ids_in_subwatershed))]
         network_temps = {}        
-        parameters_current = generate_parameter_set(temperature_params, temperature_params_ranges, outlet_id)
+        parameters_current = generate_parameter_set(temperature_parameter_group_params, temperature_parameter_ranges)
+        
         temperature_network = {}
-        for rew_id in ids_in_subwatershed: 
+        for rew_id in rew_config.keys(): 
+            parameter_group = rew_config[rew_id]['parameter_group']
             args = rew_config[rew_id].copy()
-            args.update(parameters_current[rew_id])
+            args.update(parameters_current[parameter_group])
             temperature_network[rew_id] = args['model'](rew_id=rew_id, **args)
 
 
@@ -207,6 +275,7 @@ def calibrate(arguments):
             climate_group_id = group_id[1]
             rew_df = climate_group_forcing[climate_group_id]
             length = channel_network[rew_id].length
+            lpi = rew_config[rew_id]['lpi']
 
             Lin = np.array(radiation[rew_id]['Lin'][start_date:stop_date].resample(resample_freq_temperature).interpolate())
             Sin = np.array(radiation[rew_id]['Sin'][start_date:stop_date].resample(resample_freq_temperature).interpolate())
@@ -265,7 +334,7 @@ def calibrate(arguments):
                     temp[l] = temperature_network[rew_id].temperature
                 else:  
                     varyArgs = ['u','width','ta_mean','vol_1','temp_1','vol_2','temp_2','hillslope_volumetric_discharge', 'hillslope_volumetric_overlandFlow', 'volumetric_discharge', 'volume', 'ta', 'Lin', 'Sin', 'ppt', 'ea', 'doy']
-                    constArgs = ['length']
+                    constArgs = ['length', 'lpi']
                     tempArgs = {}
                     for arg in varyArgs: tempArgs[arg] = copy.copy(locals()[arg][l])
                     for arg in constArgs: tempArgs[arg] = copy.copy(locals()[arg])

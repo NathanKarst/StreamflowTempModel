@@ -63,21 +63,42 @@ def rew_params():
     parameter_group_params = {
     2:{'smax':19.18, 'b':2.41, 'vz':PorporatoVadoseZone, 'capacity':2.69, 'gz':Melange, 'storageVZ':10, 'storageGZ':1, 'eta':0.75, 'a':0.10},
     1:{'smaxS':2.579, 'smaxR':30.3, 'eta':1.0, 'alpha':0.296, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'b': 2.09,'storageS': 1.0, 'a': 0.00216, 'k12': 0.366, 'storageR': 1.0, 'f': 0.136, 'k1': 0.308, 'vz': PreferentialRockMoistureZone },
-                           }
-                           
-    parameter_ranges = {i:{'k12':(0,0.4), 'k1':(0.5,4.0), 'eta':(0.2, 1.0)} for i in parameter_groups}
-    channel_params = {i:{'mannings_n':0.04, 'volume':1.0,'model':AllenChannel, 'c':0.131, 'd':0.373, 'e':2.12, 'f':0.46, 'g':1.2, 'h':0.143} for i in rews}
+    }                  
+    parameter_ranges = {
+    2:{'smax':(5,30), 'b':(1,3), 'eta':(0.2, 1.0), 'capacity':(0.5,10), 'a':(0.01,1.0)},
+    1:{'k12':(0.05,2.0), 'eta':(0.2, 1.0),'b':(1,3),'a':(0.001,0.1), 'k1':(0.05,2.0),'f':(0,1),'alpha':(0,1),'smaxS':(1,10),'smaxR':(10,50)}
+    }
+
+    channel_params = {i:{'mannings_n':0.1, 'volume':1.0,'model':AllenChannel, 'c':0.131, 'd':0.373, 'e':2.12, 'f':0.46, 'g':1.2, 'h':0.143} for i in rews}
     channel_params_ranges = {i:{} for i in rews}
-    temperature_params = {i:{'model':ImplicitEulerWesthoff, 'alphaw':0.06 ,'cp':4186.0, 'kh':11.2,'rho':1000.0,'sigma':5.67e-8, 'temperature':11.0, 'kf':3.45, 'tau0':0.44, 'ktau':7.74, 'Tgw_offset':11.0} for i in rews}
-    temperature_params_ranges = {i:{'tau0':(0.1,2), 'ktau':(0.01,10.0),'kf':(.1,20.0),'kh':(1.0,20.0), 'alphaw':(0.05, 0.3)} for i in rews}
+
+    
+    temperature_parameter_group_params = {
+    2:{'model':ImplicitEulerWesthoff, 'alphaw':0.06 ,'cp':4186.0, 'kh':1.36,'rho':1000.0,'sigma':5.67e-8, 'temperature':11.0, 'kf':0.42, 'tau0':1.43, 'ktau':5.02, 'Tgw_offset':10.0, 'vts_coefficient':1.0},
+    1:{'model':ImplicitEulerWesthoff, 'alphaw':0.06 ,'cp':4186.0, 'kh':11.2,'rho':1000.0,'sigma':5.67e-8, 'temperature':11.0, 'kf':0.42, 'tau0':0.44, 'ktau':7.74, 'Tgw_offset':11.0, 'vts_coefficient':1.0}
+    }
+    temperature_parameter_ranges = {
+    2:{'tau0':(0.1,2), 'ktau':(0.01,10.0),'kf':(.1,20.0),'kh':(0.1,10.0), 'alphaw':(0.05, 0.3), 'Tgw_offset':(9.0,12.0), 'vts_coefficient':(0.0, 2.0)},
+    1:{'tau0':(0.1,2), 'ktau':(0.01,10.0),'kf':(.1,20.0),'kh':(0.1,10.0), 'alphaw':(0.05, 0.3), 'Tgw_offset':(9.0,12.0), 'vts_coefficient':(0.0, 2.0)},
+    }
+
+
+    # temperature_params = {i:{'model':ImplicitEulerWesthoff, 'alphaw':0.06 ,'cp':4186.0, 'kh':11.2,'rho':1000.0,'sigma':5.67e-8, 'temperature':11.0, 'kf':3.45, 'tau0':0.44, 'ktau':7.74, 'Tgw_offset':11.0} for i in rews}
+    # pickle.dump( temperature_params, open( os.path.join(parent_dir,'model_data','temperature_params.p'), "wb" ) )
 
     # Save config files
+    # HILLSLOPE
     pickle.dump( parameter_group_params, open( os.path.join(parent_dir,'model_data','parameter_group_params.p'), "wb" ) )
-    pickle.dump( channel_params, open( os.path.join(parent_dir,'model_data','channel_params.p'), "wb" ) )
-    pickle.dump( temperature_params, open( os.path.join(parent_dir,'model_data','temperature_params.p'), "wb" ) )
     pickle.dump( parameter_ranges, open( os.path.join(parent_dir,'model_data','parameter_ranges.p'), "wb" ) )
-    pickle.dump( temperature_params_ranges, open( os.path.join(parent_dir,'model_data','temperature_params_ranges.p'), "wb" ) )
+
+    # CHANNEL
+    pickle.dump( channel_params, open( os.path.join(parent_dir,'model_data','channel_params.p'), "wb" ) )
     pickle.dump( channel_params_ranges, open( os.path.join(parent_dir,'model_data','channel_params_ranges.p'), "wb" ) )
+
+    # TEMPERATURE
+    pickle.dump( temperature_parameter_group_params, open( os.path.join(parent_dir,'model_data','temperature_parameter_group_params.p'), "wb" ) )
+    pickle.dump( temperature_parameter_ranges, open( os.path.join(parent_dir,'model_data','temperature_parameter_ranges.p'), "wb" ) )
+
 
 def model_config(outputFilename='model_config.p'): 
     """ Write model configuration file.
@@ -109,8 +130,8 @@ def model_config(outputFilename='model_config.p'):
     # spinup_date = date(1984, 10, 1)
     # stop_date = date(2017, 9, 30)
     start_date = date(2010, 1, 1)             
-    spinup_date = date(2012, 10, 1)
-    stop_date = date(2016, 9, 30)
+    spinup_date = date(2013, 10, 1)
+    stop_date = date(2017, 9, 30)
 
     Tmax = 1.0*(stop_date - start_date).days
 
@@ -125,7 +146,7 @@ def model_config(outputFilename='model_config.p'):
     resample_freq_channel = str(int(dt_channel*24*60)) + 'T'
 
     #temperature timestep information
-    dt_temperature = 64./1440.
+    dt_temperature = 32./1440.
     resample_freq_temperature = str(int(dt_temperature*24*60)) + 'T'
     
     parent_dir = dirname(dirname(os.getcwd()))
