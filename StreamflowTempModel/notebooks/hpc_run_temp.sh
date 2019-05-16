@@ -14,7 +14,7 @@
 ## Command(s) to run:
 git checkout master
 source activate py3k
-x=$(python hpc_temperature_calibrate.py False 1000 branscomb_temperature.p sf_branscomb.shp)
+x=$(python hpc_temperature_calibrate.py False 1000 elder_temperature.p elder.shp)
 DATE=`date +%Y-%m-%d_%H%M`
 TITLESTR="TEMP_$DATE"
 TXT='.txt'
