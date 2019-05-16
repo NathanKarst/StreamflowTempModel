@@ -7,6 +7,7 @@ import sys
 import os
 parent_dir = os.path.dirname(os.path.dirname(os.getcwd()))
 sys.path.append(os.path.join(parent_dir,'StreamflowTempModel','lib'))
+import meteolib as meteo
 
 
 class Temperature:
@@ -259,7 +260,7 @@ class ImplicitEulerWesthoff(Temperature):
     def __init__(self, rew_id, **kwargs):
         Temperature.__init__(self, rew_id)
         
-        args = ['vts_coefficient', 'alphaw','rho','cp','kh','sigma','temperature', 'kf', 'tau0', 'ktau', 'Tgw_offset']
+        args = ['vts_exponent', 'alphaw','rho','cp','kh','sigma','temperature', 'kf', 'tau0', 'ktau', 'Tgw_offset']
         for arg in args: setattr(self, arg, kwargs[arg])        
 
 
@@ -325,8 +326,10 @@ class ImplicitEulerWesthoff(Temperature):
         Lin = kwargs['Lin'] # W/m-2
         Sin = kwargs['Sin'] # W/m-2
         esat = lambda temp: 0.611*np.exp(2.5*10**6/461.0*(1/273.2 - 1/temp)) # saturation vapor pressure in kPa
-        VTS = (1-self.vts_coefficient*kwargs['lpi']/100.0)
-        land_cover = 0.96*(1-VTS)*0.96*self.sigma*(Ta_mean)**4
+        
+        VTS = (kwargs['lpi']/100.0)**self.vts_exponent
+        land_cover = 0.96*(1-VTS)*0.96*self.sigma*(Ta)**4
+
 
         # now add in various heat fluxes
         back_radiation = lambda temp: 0.96*self.sigma*(temp)**4 # W/m-2
@@ -336,14 +339,14 @@ class ImplicitEulerWesthoff(Temperature):
 
         # GET THIS FIXED USING REAL WIND DATA
         # These equations come from Gallice et al 2016
-        # psychro = meteo.gamma_calc(Ta-273.15, np.min([1,ea/esat(Ta)]), 6611.11)
-        # rhoa = meteo.rho_calc(Ta-273.15, np.min([1,ea/esat(Ta)]), 6611.11)
-        # cpa = meteo.cp_calc(Ta-273.15, np.min([1,ea/esat(Ta)]), 6611.11)
-        # avw, bvw = 2.2e-3, 2.08e-3
-        # wnd = 0.5
-        # latent = lambda temp: -rhoa*cpa/psychro*(avw*wnd + bvw)*(esat(temp) - ea)
+        psychro = meteo.gamma_calc(Ta-273.15, np.min([1,ea/esat(Ta)]), 6611.11)
+        rhoa = meteo.rho_calc(Ta-273.15, np.min([1,ea/esat(Ta)]), 6611.11)
+        cpa = meteo.cp_calc(Ta-273.15, np.min([1,ea/esat(Ta)]), 6611.11)
+        avw, bvw = 2.2e-3, 2.08e-3
+        wnd = 0.5
+        latent = lambda temp: -rhoa*cpa/psychro*(avw*wnd + bvw)*(esat(temp) - ea)
 
-        phi = lambda temp: Lin - back_radiation(temp) + sensible(temp) + shortwave  + land_cover # + latent(temp)
+        phi = lambda temp: Lin - back_radiation(temp) + sensible(temp) + shortwave  + land_cover + latent(temp)
 
         # groundwater added per unit length channel m^3/s/m
         qsub = hillslope_volumetric_discharge/length
