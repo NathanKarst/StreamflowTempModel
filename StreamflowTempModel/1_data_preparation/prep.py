@@ -76,17 +76,17 @@ def rew_params():
     temperature_parameter_group_params = {
         1:{'model':ImplicitEulerWesthoff, 'alphaw':0.05 ,'cp':4186.0, 
         'kh':2.41,'rho':1000.0,'sigma':5.67e-8, 'temperature':11.0, 'kf':0.67,
-        'tau0':0.69, 'ktau':0.5, 'Tgw_offset':11.44, 'vts_exponent':1.29
+        'tau0':0.69, 'ktau':0.5, 'Tgw_offset':11.44, 'vts_exponent':0.1, 'latent_coefficient':10.0
         },
         2:{'model':ImplicitEulerWesthoff, 'alphaw':0.05 ,'cp':4186.0, 
         'kh':2.41,'rho':1000.0,'sigma':5.67e-8, 'temperature':11.0, 'kf':0.67,
-        'tau0':0.69, 'ktau':0.5, 'Tgw_offset':11.44, 'vts_exponent':5.0
+        'tau0':0.69, 'ktau':0.5, 'Tgw_offset':11.44, 'vts_exponent':5.0, 'latent_coefficient':10.0
         }
     }
     
     temperature_parameter_ranges = {
-    2:{'tau0':(0.1,2), 'ktau':(0.01,20.0),'kf':(.1,20.0),'kh':(0.1,10.0), 'alphaw':(0.05, 0.3), 'Tgw_offset':(9.0,12.0), 'vts_exponent':(0.0, 3)},
-    1:{'tau0':(0.1,2), 'ktau':(0.01,20.0),'kf':(.1,20.0),'kh':(0.1,10.0), 'alphaw':(0.05, 0.3), 'Tgw_offset':(9.0,12.0), 'vts_exponent':(0.0, 3)},
+    2:{'tau0':(0.1,2), 'ktau':(0.01,20.0),'kf':(.1,20.0),'kh':(0.1,10.0), 'alphaw':(0.05, 0.3), 'Tgw_offset':(9.0,12.0), 'vts_exponent':(0.0, 3), 'latent_coefficient':(1,50)},
+    1:{'tau0':(0.1,2), 'ktau':(0.01,20.0),'kf':(.1,20.0),'kh':(0.1,10.0), 'alphaw':(0.05, 0.3), 'Tgw_offset':(9.0,12.0), 'vts_exponent':(0.0, 3), 'latent_coefficient':(1,50)},
     }
 
 

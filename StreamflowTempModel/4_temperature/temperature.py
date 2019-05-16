@@ -78,8 +78,6 @@ class ChengHeatedGw(Temperature):
         # hc = 1.5*10**6*1.74*10**(-6)*(1 + 0.72*kwargs['va'])
         hc = 1.5*10**6*1.74*10**(-6)*(1 + 0)
 
-
-
         # temperatures 
         temp_1 = kwargs['temp_1'] + 273.15
         temp_2 = kwargs['temp_2'] + 273.15
@@ -260,7 +258,7 @@ class ImplicitEulerWesthoff(Temperature):
     def __init__(self, rew_id, **kwargs):
         Temperature.__init__(self, rew_id)
         
-        args = ['vts_exponent', 'alphaw','rho','cp','kh','sigma','temperature', 'kf', 'tau0', 'ktau', 'Tgw_offset']
+        args = ['latent_coefficient', 'vts_exponent', 'alphaw','rho','cp','kh','sigma','temperature', 'kf', 'tau0', 'ktau', 'Tgw_offset']
         for arg in args: setattr(self, arg, kwargs[arg])        
 
 
@@ -318,7 +316,6 @@ class ImplicitEulerWesthoff(Temperature):
         tau = self.tau0*np.exp(-self.ktau*hillslope_volumetric_discharge)
         Tgw = (self.Tgw_offset+273.15)*np.exp(-self.kf*tau) + Ta_mean*(1-np.exp(-self.kf*tau))
 
-
         # atmospheric data (water vapor pressure in kPa)
         ea = kwargs['ea']
         
@@ -335,36 +332,32 @@ class ImplicitEulerWesthoff(Temperature):
         back_radiation = lambda temp: 0.96*self.sigma*(temp)**4 # W/m-2
         sensible = lambda temp: -self.kh*(temp - Ta) # W/m-2
         shortwave = (1-self.alphaw)*Sin
-
+        latent = lambda temp: -self.latent_coefficient*(esat(temp) - ea)
 
         # GET THIS FIXED USING REAL WIND DATA
         # These equations come from Gallice et al 2016
-        psychro = meteo.gamma_calc(Ta-273.15, np.min([1,ea/esat(Ta)]), 6611.11)
-        rhoa = meteo.rho_calc(Ta-273.15, np.min([1,ea/esat(Ta)]), 6611.11)
-        cpa = meteo.cp_calc(Ta-273.15, np.min([1,ea/esat(Ta)]), 6611.11)
-        avw, bvw = 2.2e-3, 2.08e-3
-        wnd = 0.5
-        latent = lambda temp: -rhoa*cpa/psychro*(avw*wnd + bvw)*(esat(temp) - ea)
-
+        # psychro = meteo.gamma_calc(Ta-273.15, np.min([1,ea/esat(Ta)]), 6611.11)
+        # pyschro = 660.0
+        # rhoa = 1.2
+        # cpa = 1004.0
+        # avw, bvw = 2.2e-3, 2.08e-3
+        # wnd = 0.0
+        # latent = lambda temp: -rhoa*cpa/psychro*(avw*wnd + bvw)*(esat(temp) - ea)*1000
+        # latent = lambda temp: 0
+        
         phi = lambda temp: Lin - back_radiation(temp) + sensible(temp) + shortwave  + land_cover + latent(temp)
+
 
         # groundwater added per unit length channel m^3/s/m
         qsub = hillslope_volumetric_discharge/length
         qoverland = hillslope_volumetric_overlandFlow/length
         qppt = ppt*width
-        
         rhs = lambda temp: 1/area*(Qin/length*(Tin - temp) + qsub*(Tgw - temp) + qoverland*(Ta - temp) + width*phi(temp)/(self.rho*self.cp))
         solve = lambda tnew: temp_curr - tnew + dt*rhs(tnew)
-
         try: 
             tnew = scipy.optimize.newton(solve, temp_curr)
         except:
             tnew = temp_curr
-
-
-        ## Garner, What causes cooling water..., 2014
-        # tnew += 2*dt*285.9*(0.132 + 0.143*kwargs['va'])*(ea - esat)/(self.rho*self.cp*depth) ## latent heat
-
 
         self.temperature = np.max([0,tnew - 273.15])
 
