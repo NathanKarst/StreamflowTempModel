@@ -258,7 +258,7 @@ class ImplicitEulerWesthoff(Temperature):
     def __init__(self, rew_id, **kwargs):
         Temperature.__init__(self, rew_id)
         
-        args = ['latent_coefficient', 'vts_exponent', 'alphaw','rho','cp','kh','sigma','temperature', 'kf', 'tau0', 'ktau', 'Tgw_offset']
+        args = ['alphaw','rho','cp','kh','sigma','temperature', 'kf', 'tau0', 'ktau', 'Tgw_offset']
         for arg in args: setattr(self, arg, kwargs[arg])        
 
 
@@ -324,7 +324,7 @@ class ImplicitEulerWesthoff(Temperature):
         Sin = kwargs['Sin'] # W/m-2
         esat = lambda temp: 0.611*np.exp(2.5*10**6/461.0*(1/273.2 - 1/temp)) # saturation vapor pressure in kPa
         
-        VTS = (kwargs['lpi']/100.0)**self.vts_exponent
+        VTS = 0.9
         land_cover = 0.96*(1-VTS)*0.96*self.sigma*(Ta)**4
 
 
@@ -332,20 +332,10 @@ class ImplicitEulerWesthoff(Temperature):
         back_radiation = lambda temp: 0.96*self.sigma*(temp)**4 # W/m-2
         sensible = lambda temp: -self.kh*(temp - Ta) # W/m-2
         shortwave = (1-self.alphaw)*Sin
-        latent = lambda temp: -self.latent_coefficient*(esat(temp) - ea)
+#         latent = lambda temp: -self.latent_coefficient*(esat(temp) - ea)
 
-        # GET THIS FIXED USING REAL WIND DATA
-        # These equations come from Gallice et al 2016
-        # psychro = meteo.gamma_calc(Ta-273.15, np.min([1,ea/esat(Ta)]), 6611.11)
-        # pyschro = 660.0
-        # rhoa = 1.2
-        # cpa = 1004.0
-        # avw, bvw = 2.2e-3, 2.08e-3
-        # wnd = 0.0
-        # latent = lambda temp: -rhoa*cpa/psychro*(avw*wnd + bvw)*(esat(temp) - ea)*1000
-        # latent = lambda temp: 0
         
-        phi = lambda temp: Lin - back_radiation(temp) + sensible(temp) + shortwave  + land_cover + latent(temp)
+        phi = lambda temp: Lin - back_radiation(temp) + sensible(temp) + shortwave  + land_cover #+ latent(temp)
 
 
         # groundwater added per unit length channel m^3/s/m

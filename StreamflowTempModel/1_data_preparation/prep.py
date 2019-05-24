@@ -73,20 +73,21 @@ def rew_params():
     channel_params_ranges = {i:{} for i in rews}
 
     
+
     temperature_parameter_group_params = {
         1:{'model':ImplicitEulerWesthoff, 'alphaw':0.05 ,'cp':4186.0, 
-        'kh':2.41,'rho':1000.0,'sigma':5.67e-8, 'temperature':11.0, 'kf':0.67,
-        'tau0':0.69, 'ktau':0.5, 'Tgw_offset':11.44, 'vts_exponent':0.1, 'latent_coefficient':10.0
+        'kh':2.4,'rho':1000.0, 'sigma':5.67e-8, 'temperature':11.0, 'kf':0.67,
+        'tau0':0.69, 'ktau':0.5, 'Tgw_offset':11.4
         },
         2:{'model':ImplicitEulerWesthoff, 'alphaw':0.05 ,'cp':4186.0, 
-        'kh':2.41,'rho':1000.0,'sigma':5.67e-8, 'temperature':11.0, 'kf':0.67,
-        'tau0':0.69, 'ktau':0.5, 'Tgw_offset':11.44, 'vts_exponent':5.0, 'latent_coefficient':10.0
-        }
+        'kh':2.4,'rho':1000.0, 'sigma':5.67e-8, 'temperature':11.0, 'kf':0.67,
+        'tau0':0.69, 'ktau':0.5, 'Tgw_offset':11.4
+        },
     }
     
     temperature_parameter_ranges = {
-    2:{'tau0':(0.1,2), 'ktau':(0.01,20.0),'kf':(.1,20.0),'kh':(0.1,10.0), 'alphaw':(0.05, 0.3), 'Tgw_offset':(9.0,12.0), 'vts_exponent':(0.0, 3), 'latent_coefficient':(1,50)},
-    1:{'tau0':(0.1,2), 'ktau':(0.01,20.0),'kf':(.1,20.0),'kh':(0.1,10.0), 'alphaw':(0.05, 0.3), 'Tgw_offset':(9.0,12.0), 'vts_exponent':(0.0, 3), 'latent_coefficient':(1,50)},
+    2:{'tau0':(0.1,2), 'ktau':(0.01,20.0),'kf':(.1,20.0),'kh':(0.1,10.0), 'alphaw':(0.05, 0.3), 'Tgw_offset':(9.0,12.0)},
+    1:{'tau0':(0.1,2), 'ktau':(0.01,20.0),'kf':(.1,20.0),'kh':(0.1,10.0), 'alphaw':(0.05, 0.3), 'Tgw_offset':(9.0,12.0)},
     }
 
 
@@ -136,8 +137,8 @@ def model_config(outputFilename='model_config.p'):
     # start_date = date(1981, 1, 1)             
     # spinup_date = date(1984, 10, 1)
     # stop_date = date(2017, 9, 30)
-    start_date = date(2010, 1, 1)             
-    spinup_date = date(2013, 10, 1)
+    start_date = date(2014, 1, 1)             
+    spinup_date = date(2015, 10, 1)
     stop_date = date(2017, 9, 30)
 
     Tmax = 1.0*(stop_date - start_date).days

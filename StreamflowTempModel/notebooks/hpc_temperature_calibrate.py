@@ -107,7 +107,7 @@ def main(argv):
 def objective_function(modeled, observed):
     modeled = modeled.resample('D').mean()
     observed = observed.resample('D').mean()
-    inds = ((modeled != 0) & (observed != 0))&((modeled.index.month>=5)&(modeled.index.month<=10))
+    inds = ((modeled != 0) & (observed != 0))#&((modeled.index.month>=5)&(modeled.index.month<=10))
     if np.sum(modeled)<0.01:
         return -9999.0
     elif np.isnan(np.sum(modeled)):
