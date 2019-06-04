@@ -60,12 +60,16 @@ def rew_params():
   # Model SF @ MIRANDA - Calibrated Melange and Coastal Belt using Dry and Elder only
     # Parameter group 2 = Melange
     # Parameter group 1 = Coastal Belt
+    
     parameter_group_params = {
-    2:{'smax':19.18, 'b':2.41, 'vz':PorporatoVadoseZone, 'capacity':2.69, 'gz':Melange, 'storageVZ':10, 'storageGZ':1, 'eta':0.75, 'a':0.10},
-    1:{'smaxS':2.579, 'smaxR':30.3, 'eta':1.0, 'alpha':0.296, 'res2': 1.0, 'res1': 1.0, 'gz': LinearToNonlinearReservoir , 'b': 2.09,'storageS': 1.0, 'a': 0.00216, 'k12': 0.366, 'storageR': 1.0, 'f': 0.136, 'k1': 0.308, 'vz': PreferentialRockMoistureZone },
+    2:{'smax':19.18, 'b':2.41, 'vz':PorporatoVadoseZone, 'capacity':2.69, 
+       'gz':Melange, 'storageVZ':10, 'storageGZ':1, 'storageFAST':1, 'k':1.0,
+       'eta':0.75, 'a':0.10},
+    1:{'smaxS':2.579, 'smaxR':30.3, 'eta':1.0, 'alpha':0.296, 'res2': 1.0, 'resd1': 1.0, 'gz': LinearToNonlinearReservoir , 
+       'b': 2.09,'storageS': 1.0, 'a': 0.00216, 'k12': 0.366, 'storageR': 1.0, 'f': 0.136, 'k1': 0.308, 'vz': PreferentialRockMoistureZone },
     }                  
     parameter_ranges = {
-    2:{'smax':(5,30), 'b':(1,3), 'eta':(0.2, 1.0), 'capacity':(0.5,10), 'a':(0.01,1.0)},
+    2:{'smax':(5,30), 'b':(1,4), 'eta':(0.2, 1.0), 'capacity':(0.5,10), 'a':(0.01,1.0), 'k':(0.2,5)},
     1:{'k12':(0.05,2.0), 'eta':(0.2, 1.0),'b':(1,3),'a':(0.001,0.1), 'k1':(0.05,2.0),'f':(0,1),'alpha':(0,1),'smaxS':(1,10),'smaxR':(10,50)}
     }
 
@@ -138,7 +142,7 @@ def model_config(outputFilename='model_config.p'):
     # spinup_date = date(1984, 10, 1)
     # stop_date = date(2017, 9, 30)
     start_date = date(2014, 1, 1)             
-    spinup_date = date(2015, 10, 1)
+    spinup_date = date(2016, 1, 1)
     stop_date = date(2017, 9, 30)
 
     Tmax = 1.0*(stop_date - start_date).days

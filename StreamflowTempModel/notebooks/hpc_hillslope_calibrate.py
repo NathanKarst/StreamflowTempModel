@@ -112,7 +112,7 @@ def objective_function(modeled, observed):
     # else:
     #     return 1-np.sum((observed.loc[inds]-modeled.loc[inds])**2)/np.sum((observed.loc[inds]-np.mean(observed.loc[inds]))**2)
 
-    # # Uncommen to calibrate on melange
+    # # Uncommon to calibrate on melange
     inds = ((observed > 0.01)&(modeled>0.01))
     inds[-1] = False
     inds[0] = False

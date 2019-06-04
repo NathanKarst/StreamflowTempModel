@@ -225,24 +225,29 @@ class LinearToNonlinearReservoir(GroundwaterZone):
         
 class Melange(GroundwaterZone):
     def __init__(self, **kwargs):
-        args = ['storageGZ', 'a', 'b', 'capacity']
+        args = ['storageGZ', 'storageFAST', 'k', 'a', 'b', 'capacity']
         for arg in args: setattr(self, arg, kwargs[arg])        
         
         self.discharge = 0
         self.overlandFlow = 0
         
     def update(self, dt, **kwargs):
-        
         leakage = kwargs['leakage']
-        self.discharge = self.a*self.storageGZ**self.b
-
-        self.storageGZ += (leakage - self.discharge)*dt
-        self.overlandFlow = 0
         
+        # discharge from two reservoirs
+        dischargeFAST = self.k*self.storageFAST
+        dischargeGZ = self.a*self.storageGZ**self.b
+        self.discharge = dischargeFAST + dischargeGZ
+        self.overlandFlow = dischargeFAST
+        
+        # update storages
+        self.storageGZ += (leakage - dischargeGZ)*dt
+        self.storageFAST -= dischargeFAST*dt
+        
+        # if GZ is > capacity, add extra to fast bucket
         if self.storageGZ > self.capacity:
-            self.overlandFlow = (self.storageGZ - self.capacity)/dt
+            self.storageFAST = (self.storageGZ - self.capacity)
             self.storageGZ = self.capacity
-        
             
         return {'discharge':self.discharge, 'overlandFlow':self.overlandFlow}
          
