@@ -58,8 +58,8 @@ r.stream.extract --overwrite --quiet elevation=$M threshold=$THRESH stream_lengt
 
 # v.out.ogr --overwrite -c input=stream_vector_temp type=line output="/Users/daviddralle/Desktop"
 #uncomment and install r extensions, which are not pre-installed with grass 7.0.x
-# g.extension r.stream.order
-# g.extension r.stream.basins
+g.extension r.stream.order
+g.extension r.stream.basins
 
 #get the maximum accumulation point and use as watershed outlet for rest of analysis
 #r.watershed
