@@ -319,14 +319,14 @@ class ImplicitEulerWesthoff(Temperature):
         # atmospheric data (water vapor pressure in kPa)
         ea = kwargs['ea']
         
+#         VTS = 0.9
+        
         # energy fluxes
         Lin = kwargs['Lin'] # W/m-2
         Sin = kwargs['Sin'] # W/m-2
         esat = lambda temp: 0.611*np.exp(2.5*10**6/461.0*(1/273.2 - 1/temp)) # saturation vapor pressure in kPa
         
-        VTS = 0.9
-        land_cover = 0.96*(1-VTS)*0.96*self.sigma*(Ta)**4
-
+#         land_cover = 0.96*(1-VTS)*0.96*self.sigma*(Ta)**4
 
         # now add in various heat fluxes
         back_radiation = lambda temp: 0.96*self.sigma*(temp)**4 # W/m-2
@@ -335,7 +335,7 @@ class ImplicitEulerWesthoff(Temperature):
 #         latent = lambda temp: -self.latent_coefficient*(esat(temp) - ea)
 
         
-        phi = lambda temp: Lin - back_radiation(temp) + sensible(temp) + shortwave  + land_cover #+ latent(temp)
+        phi = lambda temp: Lin - back_radiation(temp) + sensible(temp) + shortwave # + land_cover #+ latent(temp)
 
 
         # groundwater added per unit length channel m^3/s/m

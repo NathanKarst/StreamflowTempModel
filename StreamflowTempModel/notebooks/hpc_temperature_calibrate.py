@@ -35,8 +35,6 @@ model_config = pd.read_pickle(os.path.join(parent_dir, 'model_data', 'model_conf
 temperature_parameter_group_params = pd.read_pickle(os.path.join(parent_dir, 'model_data', 'temperature_parameter_group_params.p'))
 temperature_parameter_ranges = pd.read_pickle(os.path.join(parent_dir, 'model_data', 'temperature_parameter_ranges.p'))
 
-
-
 hill_groups = pd.read_pickle(os.path.join(parent_dir,'model_data','solved_hillslope_discharge.p'))
 solved_channel_routing = pd.read_pickle(os.path.join(parent_dir,'model_data','solved_channel_routing.p'))
 channel_params = pd.read_pickle(os.path.join(parent_dir,'model_data','channel_params.p'))
